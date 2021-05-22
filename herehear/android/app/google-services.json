@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "555379185986",
+    "project_id": "hereandhear-a5dc9",
+    "storage_bucket": "hereandhear-a5dc9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555379185986:android:80e46242bb968492eb50db",
+        "android_client_info": {
+          "package_name": "com.example.herehear"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555379185986-62vp92j36mcav7uqk40g6ft77rkopffi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.herehear",
+            "certificate_hash": "c72dbb2bf382610fbaa9f6b44f171ca2e3643a24"
+          }
+        },
+        {
+          "client_id": "555379185986-4m0m3j26kds631nevb82lh6uge4o3bur.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_q9t6dQaQHD0GQZnPICtiHWp5B_CiS4Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555379185986-4m0m3j26kds631nevb82lh6uge4o3bur.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
