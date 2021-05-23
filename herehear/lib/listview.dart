@@ -140,14 +140,14 @@ class _ListViewPageState extends State<ListViewPage> {
                             ScaffoldMessenger.of(context).showSnackBar(snackBar2);
                         });
                       }),
-                      IconButton(icon: Icon(Icons.question_answer, color: Colors.red), onPressed: () {
+                      IconButton(icon: Icon(Icons.question_answer,), onPressed: () {
                         setState(() {
                         });
                       }),
                       Expanded(
                         child: Container(),
                       ),
-                      IconButton(icon: Icon(Icons.star_border, color: Colors.red), onPressed: () {
+                      IconButton(icon: Icon(Icons.star_border, color: Colors.yellow), onPressed: () {
                         setState(() {
                         });
                       }),
