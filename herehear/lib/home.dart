@@ -23,10 +23,11 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     List<Widget> _children = [
       ListViewPage(),
-      UploadPage(),
+
+      // UploadPage(),
       //GridViewPage(),
       // CalendarPage(),
-      MyPage(),
+        MyPage(),
     ];
     return ChangeNotifierProvider(
       create: (_) => ThemeNotifier(),
@@ -54,7 +55,7 @@ class _HomePageState extends State<HomePage> {
                 items: [
                   BottomNavigationBarItem(
                       title: Text('홈'),
-                      icon: Icon(Icons.home_outlined)),
+                      icon: Icon(Icons.home)),
                   BottomNavigationBarItem(
                       title: Text('피드'),
                       // icon: ImageIcon(AssetImage('assets/closet.png'), size: 24,)
