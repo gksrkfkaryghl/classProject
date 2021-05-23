@@ -34,7 +34,7 @@ class _UploadPageState extends State<UploadPage> {
     String docID = Timestamp.now().seconds.toString();
     final now = FieldValue.serverTimestamp();
     Reference firebaseStorageRef =
-    FirebaseStorage.instance.ref().child('images/$docID');
+    FirebaseStorage.instance.ref().child('posts/$docID');
 
     await firebaseStorageRef.putString(nameController.text);
     if(is_default)
@@ -47,7 +47,6 @@ class _UploadPageState extends State<UploadPage> {
 
     Map<String, dynamic> data = {
       // 'type': _results.first["label"],
-      'name': nameController.text,
       'description' : descriptionController.text,
       "imageURL": downloadURL,
       'uid' : currentUID,
@@ -55,11 +54,12 @@ class _UploadPageState extends State<UploadPage> {
       'docID': docID,
       'generatedTime': now,
       'updatedTime': '',
+      'tags' : tagList,
     };
 
 
     FirebaseFirestore.instance
-        .collection('images')
+        .collection('posts')
         .doc(docID)
         .set(data);
   }
@@ -184,6 +184,7 @@ class _UploadPageState extends State<UploadPage> {
                       onSubmitted: (value) {
                         setState(() {
                           tagList.add(Item(title: value));
+                          print(tagList);
                         });
                       }
                     ),
