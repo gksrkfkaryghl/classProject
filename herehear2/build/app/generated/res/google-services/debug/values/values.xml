@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">555379185986-4m0m3j26kds631nevb82lh6uge4o3bur.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">555379185986</string>
+    <string name="google_api_key" translatable="false">AIzaSyA_q9t6dQaQHD0GQZnPICtiHWp5B_CiS4Y</string>
+    <string name="google_app_id" translatable="false">1:555379185986:android:80e46242bb968492eb50db</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyA_q9t6dQaQHD0GQZnPICtiHWp5B_CiS4Y</string>
+    <string name="google_storage_bucket" translatable="false">hereandhear-a5dc9.appspot.com</string>
+    <string name="project_id" translatable="false">hereandhear-a5dc9</string>
+</resources>
