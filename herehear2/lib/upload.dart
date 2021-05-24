@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import 'package:flutter_tags/flutter_tags.dart';
+
+import 'data/location.dart';
 // import 'package:firebase_analytics/firebase_analytics.dart';
 
 class UploadPage extends StatefulWidget {
@@ -32,6 +35,7 @@ class _UploadPageState extends State<UploadPage> {
 
   Future uploadToFirebase(File image) async {
     String docID = Timestamp.now().seconds.toString();
+    final Position position = await Location().getCurrentLocation();
     final now = FieldValue.serverTimestamp();
     Reference firebaseStorageRef =
     FirebaseStorage.instance.ref().child('posts/$docID');

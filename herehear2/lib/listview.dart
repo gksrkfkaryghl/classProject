@@ -123,7 +123,7 @@ class _ListViewPageState extends State<ListViewPage> {
                 children: [
                   Row(
                     children: <Widget>[
-                      IconButton(icon: Icon(Icons.favorite, color: Colors.red), onPressed: () {
+                      IconButton(icon: Icon(Icons.favorite_outline), onPressed: () {
                         setState(() {
                           if(!alreadyClicked) {
                             FirebaseFirestore.instance.collection('posts').doc(doc['docID']).update({
