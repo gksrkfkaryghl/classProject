@@ -19,6 +19,7 @@ class Add extends StatefulWidget {
   _State createState() => _State();
 }
 
+
 class _State extends State<Add> {
   // 이미지 가져오기.
   final picker = ImagePicker();

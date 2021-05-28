@@ -1,18 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class ListViewPage extends StatefulWidget {
+class GridViewPage extends StatefulWidget {
   @override
-  _ListViewPageState createState() => _ListViewPageState();
+  _GridViewPageState createState() => _GridViewPageState();
 }
 
-class _ListViewPageState extends State<ListViewPage> {
+class _GridViewPageState extends State<GridViewPage> {
 
   Future getPosts() async {
     var firestore = FirebaseFirestore.instance;
     //firestore.collection("posts").get();
-    firestore.collection("Product").get();
-    QuerySnapshot qn = await firestore.collection("Product").get();
+    firestore.collection("posts").get();
+    QuerySnapshot qn = await firestore.collection("posts").get();
 
     return qn.docs;
   }
@@ -108,9 +108,9 @@ class _ListViewPageState extends State<ListViewPage> {
                 searchString != ""
                     ? Expanded(child: StreamBuilder<QuerySnapshot>(
                   stream: (searchString == null || searchString.trim() == "")
-                      ? FirebaseFirestore.instance.collection("Product")
+                      ? FirebaseFirestore.instance.collection("posts")
                       .snapshots()
-                      : FirebaseFirestore.instance.collection("Product")
+                      : FirebaseFirestore.instance.collection("posts")
                       .where("searchIndex", arrayContains: searchString)
                       .snapshots(),
                   builder: (context, snapshot){
@@ -125,7 +125,7 @@ class _ListViewPageState extends State<ListViewPage> {
                             return new ListTile(
                               leading: CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                    document["imgurl"]
+                                    document["imageURL"]
                                 ),
                               ),
                               title: new Text(document['description']),
@@ -159,7 +159,7 @@ class _ListViewPageState extends State<ListViewPage> {
                                 AspectRatio(
                                   aspectRatio: 20 / 11,
                                   child: Image.network(
-                                      snapshot.data[index].data()["imgurl"]),
+                                      snapshot.data[index].data()["imageURL"]),
                                   // child: Image.asset(
                                   //   product.assetName,
                                   //   package: product.assetPackage,

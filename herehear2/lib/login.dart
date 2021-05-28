@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:herehear/home.dart';
 import "package:http/http.dart" as http;
 import 'dart:convert' show json;
 import 'package:google_sign_in/google_sign_in.dart';
@@ -13,6 +14,11 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   GoogleSignInAccount _currentUser;
+  User currentUser;
+  User user;
+  String displayName = "";
+  String email = "";
+  String photoURL = "";
 
   GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
@@ -35,9 +41,30 @@ class _LoginPageState extends State<LoginPage> {
     _googleSignIn.signInSilently();
   }
 
-  Future<void> _handlegoogleSignIn() async {
+  Future<User> _handlegoogleSignIn() async {
     try {
-      await _googleSignIn.signIn();
+      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(credential);
+      final User user = authResult.user;
+
+      assert(!user.isAnonymous);
+      assert(await user.getIdToken() != null);
+
+      currentUser = await FirebaseAuth.instance.currentUser;
+      assert(user.uid == currentUser.uid);
+      print('fin!!');
+
+      // Once signed in, return the UserCredential
+      return user;
       Navigator.pushNamed(context, '/home');
     } catch (error) {
       print(error);
@@ -63,16 +90,32 @@ class _LoginPageState extends State<LoginPage> {
           Text('Google', style: TextStyle(color: Colors.white)),
         ],
       ),
-      onPressed: _handlegoogleSignIn,
+      onPressed: () async {
+        user = await _handlegoogleSignIn();
+        setState(() {
+          print('set!!: ${user}');
+          email = user.email;
+          photoURL = user.photoURL;
+          displayName = user.displayName;
+        });
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    GoogleSignInAccount user = _currentUser;
-    if(user != null) {
-      Navigator.pushNamed(context, '/home');
+    // GoogleSignInAccount user = _currentUser;
+    print('?: $_currentUser}');
+    if(_currentUser != null) {
+      print('????: $user');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(currentUser: _currentUser),
+        ),
+      );
     }
+    print('!!!!: $user');
     return Scaffold(
       body: SafeArea(
         child: ListView(

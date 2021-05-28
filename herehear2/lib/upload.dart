@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,12 +13,19 @@ import 'data/location.dart';
 // import 'package:firebase_analytics/firebase_analytics.dart';
 
 class UploadPage extends StatefulWidget {
+  GoogleSignInAccount currentUser;
+
+  UploadPage({this.currentUser});
+
   @override
-  _UploadPageState createState() => _UploadPageState();
+  _UploadPageState createState() => _UploadPageState(currentUser: currentUser);
 }
 
 class _UploadPageState extends State<UploadPage> {
   final _picker = ImagePicker();
+  GoogleSignInAccount currentUser;
+
+  _UploadPageState({this.currentUser});
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
@@ -40,6 +48,9 @@ class _UploadPageState extends State<UploadPage> {
     Reference firebaseStorageRef =
     FirebaseStorage.instance.ref().child('posts/$docID');
 
+    List <String> splitList = descriptionController.text.split(" ");
+    List <String> indexList = [];
+
     await firebaseStorageRef.putString(nameController.text);
     if(is_default)
       downloadURL = 'http://handong.edu/site/handong/res/img/logo.png';
@@ -49,16 +60,25 @@ class _UploadPageState extends State<UploadPage> {
       downloadURL = await firebaseStorageRef.getDownloadURL();
     }
 
+    for (int i = 0; i < splitList.length; i++){
+      for (int y = 1; y < splitList[i].length + 1; y++) {
+        indexList.add(splitList[i].substring(0,y).toLowerCase());
+      }
+    }
+
     Map<String, dynamic> data = {
       // 'type': _results.first["label"],
       'description' : descriptionController.text,
       "imageURL": downloadURL,
       'uid' : currentUID,
+      'userDisplayName' : currentUser.displayName,
+      'userPhotoURL' : currentUser.photoUrl,
       'likeNum' : 0,
       'docID': docID,
       'generatedTime': now,
       'updatedTime': '',
       'tags' : tagList,
+      'searchIndex' : indexList
     };
 
 
@@ -121,6 +141,7 @@ class _UploadPageState extends State<UploadPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('upload currentUser: ${currentUser}');
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -187,14 +208,14 @@ class _UploadPageState extends State<UploadPage> {
                       // constraintSuggestion: true, suggestions: [],
                       onSubmitted: (value) {
                         setState(() {
-                          tagList.add(Item(title: value));
+                          tagList.add(value);
                           print(tagList);
                         });
                       }
                     ),
                     itemCount: tagList.length,
                     itemBuilder: (index) {
-                      final Item currentItem = tagList[index];
+                      final Item currentItem = Item(title:tagList[index]);
 
                       return ItemTags(
                         index: index,

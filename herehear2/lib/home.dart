@@ -1,33 +1,40 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:herehear/theme/theme.dart';
 import 'package:herehear/upload.dart';
 import 'package:provider/provider.dart';
+import 'gridview.dart';
 import 'listview.dart';
 import 'myPage.dart';
 import 'theme/colors.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({this.email});
+  // User currentUser;
+  GoogleSignInAccount currentUser;
 
-  final String email;
+  HomePage({this.currentUser});
+
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(currentUser);
 }
 
 class _HomePageState extends State<HomePage> {
+  GoogleSignInAccount currentUser;
   int _currentIndex = 0;
   //List<Widget> _children;
+  _HomePageState(this.currentUser);
+
   @override
   Widget build(BuildContext context) {
     List<Widget> _children = [
-      ListViewPage(),
-
+      ListViewPage(currentUser: currentUser),
+      GridViewPage(),
       // UploadPage(),
       //GridViewPage(),
       // CalendarPage(),
-        MyPage(),
+      MyPage(),
     ];
     return ChangeNotifierProvider(
       create: (_) => ThemeNotifier(),

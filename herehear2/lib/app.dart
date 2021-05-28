@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'comments.dart';
 import 'home.dart';
 import 'listview.dart';
 import 'login.dart';
@@ -10,6 +11,7 @@ class HeHeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('a');
     return MaterialApp(
       title: 'HereHear',
       home: HomePage(),
@@ -20,6 +22,7 @@ class HeHeApp extends StatelessWidget {
         '/upload': (context) => UploadPage(),
         '/mypage': (context) => MyPage(),
         '/login': (context) => LoginPage(),
+        '/comment': (context) => CommentPage(),
       },
       onGenerateRoute: _getRoute,
     );

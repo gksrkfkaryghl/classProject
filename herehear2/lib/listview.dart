@@ -1,27 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:herehear/upload.dart';
+import 'comments.dart';
 import 'update.dart';
 
 class ListViewPage extends StatefulWidget {
-  var data;
+  GoogleSignInAccount currentUser;
 
-  ListViewPage({this.data});
+  ListViewPage({this.currentUser});
 
   @override
-  _ListViewPageState createState() => _ListViewPageState(data: this.data);
+  _ListViewPageState createState() => _ListViewPageState(currentUser: currentUser);
 }
 
 class _ListViewPageState extends State<ListViewPage> {
-  var data;
+  // User currentUser;
+  GoogleSignInAccount currentUser;
   final snackBar1 = SnackBar(content: Text('I LIKE IT!'));
   final snackBar2 = SnackBar(content: Text('You can only do it once!!'));
-  bool alreadyClicked = false;
-  bool isClicked = false;
+  final String currentUID = FirebaseAuth.instance.currentUser.uid;
   int likeNum;
 
-  _ListViewPageState({this.data});
+  int n = 0;
+
+  _ListViewPageState({this.currentUser});
 
   void deleteDoc(String docID) {
     FirebaseFirestore.instance.collection('posts').doc(docID).delete();
@@ -30,6 +35,8 @@ class _ListViewPageState extends State<ListViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('currentUser?!!: ${currentUser}');
+    // print('_currentUser: ${_currentUser}');
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -43,10 +50,11 @@ class _ListViewPageState extends State<ListViewPage> {
             IconButton(
               icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary,),
               onPressed: () {
+                print('on more check: ${currentUser}');
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => UploadPage(),
+                    builder: (context) => UploadPage(currentUser: currentUser),
                   ),
                 );
               },
@@ -54,20 +62,20 @@ class _ListViewPageState extends State<ListViewPage> {
             IconButton(
               icon: Icon(Icons.notifications_none_outlined, color: Theme.of(context).colorScheme.primary,),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UpdatePage(doc: data),
-                  ),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => UpdatePage(doc: data),
+                //   ),
+                // );
               },
             ),
             IconButton(
               icon: Icon(Icons.mail_outline, color: Theme.of(context).colorScheme.primary,),
-              onPressed: () {
-                deleteDoc(data['docID']);
-                Navigator.pop(context);
-              },
+              // onPressed: () {
+              //   deleteDoc(data['docID']);
+              //   Navigator.pop(context);
+              // },
             ),
           ],
         ),
@@ -86,28 +94,32 @@ class _ListViewPageState extends State<ListViewPage> {
     );
   }
 
-  Widget likeNumber() {
-    if(isClicked)
-      likeNum = data['likeNum'] + 1;
-    else
-      likeNum = data['likeNum'];
-    return Text(
-      likeNum.toString(),
-      style: TextStyle(fontSize: 20, color: Colors.red),
-    );
-  }
-
   List<Widget> postList (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
     try {
       return snapshot.data.docs
           .map((doc) {
-        if(snapshot.hasData)
+        if(snapshot.hasData) {
+          Map<String, dynamic> data = doc.data();
           return Column(
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  //profile image
-                  Text('${doc['uid']}', style: TextStyle(fontSize: 13),),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: NetworkImage(doc['userPhotoURL']),
+                            fit: BoxFit.fill
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8,),
+                  Text('${doc['userDisplayName']}', style: TextStyle(fontSize: 17),),
                   Expanded(child: Container()),
                   IconButton(
                       icon: Icon(Icons.more_horiz),
@@ -123,26 +135,72 @@ class _ListViewPageState extends State<ListViewPage> {
                 children: [
                   Row(
                     children: <Widget>[
-                      IconButton(icon: Icon(Icons.favorite_outline), onPressed: () {
-                        setState(() {
-                          if(!alreadyClicked) {
-                            FirebaseFirestore.instance.collection('posts').doc(doc['docID']).update({
-                              'likeNum': doc['likeNum'] + 1,
-                            }).then((value) {
+                      IconButton(
+                          icon: likeIcon(data),
+                          onPressed: () {
+                            bool flag = true;
+
+                            //print(target);
+
+                            // 중복되는지 체크.
+                            print('?!?!?!: $data');
+                            var dataList = data.values.toList();
+                            var keyList = data.keys.toList();
+                            int tempLength = data.length;
+                            print('?????: $tempLength');
+                            for (int i = 0; i < tempLength; i++){
+                              print(dataList[i]);
+
+                              if (currentUID == dataList[i].toString()){
+                                if (keyList[i] == "uid"){
+                                  continue;
+                                }
+                                flag = false;
+                                print("같음");
+                                break;
+                              }
+                            }
+
+                            // 변경가능.
+                            if (flag == true){
+                              print("변경가능");
+
+                              // LikeData(widget.target3, widget.post.data()['like'] + 1);
+                              likeData(doc);
+
                               setState(() {
-                                isClicked = true;
+                                n++;
                               });
-                            });
-                            alreadyClicked = true;
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar1);
-                          }
-                          else
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar2);
-                        });
+
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content : Text("I Like it !!"),
+                                duration: const Duration(seconds: 2),
+                              )
+                              );
+
+
+                              // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              //   return Wrapper(target: widget.target3,);
+                              // }));
+
+                            }
+                            //변경불가
+                            else{
+                              print("변경불가");
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content : Text("You can only do it once !!"),
+                                duration: const Duration(seconds: 2),
+                              )
+                              );
+                        }
                       }),
                       IconButton(icon: Icon(Icons.question_answer), onPressed: () {
-                        setState(() {
-                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CommentPage(doc: doc, currentUser: currentUser),
+                          ),
+                        );
                       }),
                       Expanded(
                         child: Container(),
@@ -170,66 +228,73 @@ class _ListViewPageState extends State<ListViewPage> {
               ),
             ],
           );
+        }
       }).toList();
-      // Card(
-      //   clipBehavior: Clip.antiAlias,
-      //   child: Column(
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: <Widget>[
-      //       AspectRatio(
-      //         aspectRatio: 18 / 11,
-      //         child: Image.network(
-      //           doc['imageURL'],
-      //           fit: BoxFit.fitWidth,
-      //         ),
-      //       ),
-      //       Expanded(
-      //         child: Padding(
-      //           padding: EdgeInsets.fromLTRB(16.0, 10.0, 16.0, 12.0),
-      //           child: Column(
-      //             crossAxisAlignment: CrossAxisAlignment.start,
-      //             children: <Widget>[
-      //               Text(
-      //                 doc['name'],
-      //                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-      //                 maxLines: 1,
-      //               ),
-      //               SizedBox(height: 6.0),
-      //               Text(
-      //                 '\$ ${doc['price']}',
-      //                 style: TextStyle(fontSize: 12),
-      //               ),
-      //               Expanded(child: Container()),
-      //               Row(
-      //                 mainAxisAlignment: MainAxisAlignment.end,
-      //                 children: <Widget>[
-      //                   // Expanded(child: Container()),
-      //                   GestureDetector(
-      //                     onTap: () {
-      //                       Navigator.push(
-      //                         context,
-      //                         MaterialPageRoute(
-      //                           builder: (context) => DetailPage(data: doc),
-      //                         ),
-      //                       );
-      //                     },
-      //                     child: Text(
-      //                       "more",
-      //                       style: TextStyle(color: Colors.lightBlue),
-      //                     ),
-      //                   ),
-      //                 ],
-      //               )
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // );
     } catch(error) {
       print(error);
     }
+  }
+
+  Widget likeIcon(Map<String, dynamic> data){
+    var dataList = data.values.toList();
+    var keyList = data.keys.toList();
+    int tempLength = data.length;
+    for (int i = 0; i < tempLength; i++){
+
+      if (currentUID == dataList[i].toString()){
+        if (keyList[i] == "uid"){
+          continue;
+        }
+        print('~~');
+        return Icon(Icons.favorite, color: Colors.red);
+      }
+    }
+    return Icon(Icons.favorite_outline);
+  }
+
+  likeData(QueryDocumentSnapshot<Object> doc) async {
+    DocumentReference documentReference =
+    FirebaseFirestore.instance.collection("posts").doc(doc['docID']);
+
+    // String temp = image?.path ?? "https://handong.edu/site/handong/res/img/logo.png";
+    //String temp = image?.path ?? widget.post.data()['imgurl'];
+
+    // create map
+    //print("imgurl");
+    //print(temp);
+
+    String field_name = "like_user" + (doc['likeNum'] + 1).toString();
+    print(field_name);
+
+    int likeNum = doc['likeNum'] + 1;
+
+    // Map<String, dynamic> tempp =  widget.data.data();
+    // tempp[field_name] = doc['uid'];
+    // tempp["likeNum"] = doc['likeNum'] + 1;
+
+    FirebaseFirestore.instance.collection('posts').doc(doc['docID']).update({
+      field_name : currentUID,
+      'likeNum' : likeNum,
+    }).whenComplete(() => print('완료!!'));
+
+
+
+    // Map<String, dynamic> products = {
+    //   "name": widget.data.data()['name'],
+    //   "price": widget.post.data()['price'],
+    //   "description": widget.post.data()['description'],
+    //   "imgurl": widget.post.data()['imgurl'],
+    //   "like": widget.post.data()['like'] + 1,
+    //   "created": widget.post.data()['created'],
+    //   "modified": widget.post.data()['modified'],
+    //   field_name : like_user
+    // };
+
+    // String temp2 = widget.post.data()['imgurl'];
+
+    // documentReference.set(tempp).whenComplete(() {
+    //   print("like updated 완료");
+    // });
   }
 }
 
