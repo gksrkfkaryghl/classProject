@@ -39,24 +39,22 @@ class _ListViewPageState extends State<ListViewPage> {
     // print('_currentUser: ${_currentUser}');
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.primary,),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+          title: Text('히 어', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),),
           // title: Center(child: Text('Detail')),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary,),
               onPressed: () {
                 print('on more check: ${currentUser}');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UploadPage(currentUser: currentUser),
-                  ),
-                );
+                Future.delayed(Duration(milliseconds: 500),(){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UploadPage(currentUser: currentUser),
+                    ),
+                  );
+                });
+
               },
             ),
             IconButton(

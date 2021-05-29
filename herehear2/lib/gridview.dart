@@ -144,78 +144,79 @@ class _GridViewPageState extends State<GridViewPage> {
                     child: GridView.count(
                         padding: EdgeInsets.all(16.0),
                         childAspectRatio: 8.0 / 9.0,
-                        crossAxisCount: 2,
+                        crossAxisCount: 3,
                         //shrinkWrap: true,
                         children: List.generate(snapshot.data.length, (index) {
                           //itemCount: snapshot.data.length, //조심하기
                           //itemBuilder: (_, index) {
-                          return Card(
-                            clipBehavior: Clip.antiAlias,
-                            // TODO: Adjust card heights (103)
-                            child: Column(
-                              // TODO: Center items on the card (103)
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                AspectRatio(
-                                  aspectRatio: 20 / 11,
-                                  child: Image.network(
-                                      snapshot.data[index].data()["imageURL"]),
-                                  // child: Image.asset(
-                                  //   product.assetName,
-                                  //   package: product.assetPackage,
-                                  //   fit: BoxFit.fitWidth,
-                                  // ),
-                                ),
-                                SingleChildScrollView(
-                                  child: Container(
-                                    padding: EdgeInsets.fromLTRB(
-                                        16.0, 12.0, 16.0, 8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          snapshot.data[index].data()["description"],
-                                          //style: theme.textTheme.headline6,
-                                          maxLines: 1,
-                                        ),
-                                        //SizedBox(height: 8.0),
-                                        // Text(
-                                        //   snapshot.data[index]
-                                        //       .data()["price"]
-                                        //       .toString(),
-                                        //   style: theme.textTheme.subtitle2,
-                                        // ),
-                                        Row(
-                                          //direction: Axis.vertical,
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                            children: <Widget>[
-                                              MaterialButton(
-                                                  child: Text("more",
-                                                      style: TextStyle(
-                                                          color: Colors.blue)),
-                                                  onPressed: () => print("here button")
-                                                // navigateToDetail(
-                                                //     snapshot.data[index], widget.target2),
-                                              )
-                                            ]),
-                                        //SizedBox(height: 50.0),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
+                          return listItem(snapshot.data[index]);
                           // );
                         })))
               ]);
             }
           }
+      ),
+    );
+  }
 
-
-
+  Widget listItem(AsyncSnapshot snapshot) {
+    Card(
+      clipBehavior: Clip.antiAlias,
+      // TODO: Adjust card heights (103)
+      child: Column(
+        // TODO: Center items on the card (103)
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          AspectRatio(
+            aspectRatio: 20 / 11,
+            child: Image.network(
+                snapshot.data()["imageURL"]),
+            // child: Image.asset(
+            //   product.assetName,
+            //   package: product.assetPackage,
+            //   fit: BoxFit.fitWidth,
+            // ),
+          ),
+          SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(
+                  16.0, 12.0, 16.0, 8.0),
+              child: Column(
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    snapshot.data()["description"],
+                    //style: theme.textTheme.headline6,
+                    maxLines: 1,
+                  ),
+                  //SizedBox(height: 8.0),
+                  // Text(
+                  //   snapshot.data[index]
+                  //       .data()["price"]
+                  //       .toString(),
+                  //   style: theme.textTheme.subtitle2,
+                  // ),
+                  Row(
+                    //direction: Axis.vertical,
+                      mainAxisAlignment:
+                      MainAxisAlignment.end,
+                      children: <Widget>[
+                        MaterialButton(
+                            child: Text("more",
+                                style: TextStyle(
+                                    color: Colors.blue)),
+                            onPressed: () => print("here button")
+                          // navigateToDetail(
+                          //     snapshot.data[index], widget.target2),
+                        )
+                      ]),
+                  //SizedBox(height: 50.0),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

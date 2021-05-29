@@ -40,7 +40,6 @@ class _UploadPageState extends State<UploadPage> {
   String downloadURL;
   List tagList = [];
 
-
   Future uploadToFirebase(File image) async {
     String docID = Timestamp.now().seconds.toString();
     final Position position = await Location().getCurrentLocation();
