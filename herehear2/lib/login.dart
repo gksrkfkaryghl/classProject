@@ -108,12 +108,14 @@ class _LoginPageState extends State<LoginPage> {
     print('?: $_currentUser}');
     if(_currentUser != null) {
       print('????: $user');
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(currentUser: _currentUser),
-        ),
-      );
+      Future.delayed(Duration(milliseconds: 500),(){
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(currentUser: _currentUser),
+          ),
+        );
+      });
     }
     print('!!!!: $user');
     return Scaffold(
