@@ -35,7 +35,7 @@ class _ListViewPageState extends State<ListViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('currentUser?!!: ${currentUser}');
+    // print('currentUser?!!: ${currentUser}');
     // print('_currentUser: ${_currentUser}');
     return Scaffold(
         appBar: AppBar(
@@ -46,15 +46,14 @@ class _ListViewPageState extends State<ListViewPage> {
               icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary,),
               onPressed: () {
                 print('on more check: ${currentUser}');
-                Future.delayed(Duration(milliseconds: 500),(){
-                  Navigator.push(
-                    context,
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => UploadPage(currentUser: currentUser),
+                      builder: (context) =>
+                          UploadPage(currentUser: currentUser),
                     ),
                   );
                 });
-
               },
             ),
             IconButton(
@@ -193,12 +192,13 @@ class _ListViewPageState extends State<ListViewPage> {
                         }
                       }),
                       IconButton(icon: Icon(Icons.question_answer), onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CommentPage(doc: doc, currentUser: currentUser),
-                          ),
-                        );
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => CommentPage(doc: doc, currentUser: currentUser),
+                            ),
+                          );
+                        });
                       }),
                       Expanded(
                         child: Container(),
@@ -243,7 +243,7 @@ class _ListViewPageState extends State<ListViewPage> {
         if (keyList[i] == "uid"){
           continue;
         }
-        print('~~');
+        // print('~~');
         return Icon(Icons.favorite, color: Colors.red);
       }
     }
@@ -512,9 +512,6 @@ class _ListViewPageState extends State<ListViewPage> {
 //               ]);
 //             }
 //           }
-
-
-
 //       ),
 //     );
 //   }

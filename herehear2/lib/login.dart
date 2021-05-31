@@ -35,7 +35,13 @@ class _LoginPageState extends State<LoginPage> {
         _currentUser = account;
       });
       if(_currentUser != null) {
-        Navigator.pushNamed(context, '/home');
+        print('here!');
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(currentUser: _currentUser),
+            ),
+          );
       }
     });
     _googleSignIn.signInSilently();
@@ -106,54 +112,74 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     // GoogleSignInAccount user = _currentUser;
     print('?: $_currentUser}');
-    if(_currentUser != null) {
-      print('????: $user');
-      // Future.delayed(Duration(milliseconds: 500),(){
-      //   Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) => HomePage(currentUser: _currentUser),
-      //     ),
-      //   );
-      // });
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(currentUser: _currentUser),
-        ),
-      );
-    }
-    print('!!!!: $user');
-    return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          children: <Widget>[
-            SizedBox(height: 80.0),
-            Column(
-              children: <Widget>[
-                SizedBox(height: 16.0),
-                Image.asset('assets/images/logo.png', width: MediaQuery.of(context).size.width*0.3,),
-                SizedBox(height: 16.0),
-                Text('히얼', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.blue),),
-              ],
-            ),
-            SizedBox(height: 120.0),
-            _buildBody(),
-            RaisedButton(
-              color: Colors.grey,
-              child: Row(
-                children: [
-                  Container(child: Text('?', style: TextStyle(color: Colors.white, fontSize: 24))),
-                  SizedBox(width: 20),
-                  Text('Guest', style: TextStyle(color: Colors.white, fontSize: 14)),
+    // if(user != null) {
+    //   print('????: $user');
+    //   // Future.delayed(Duration(milliseconds: 500),(){
+    //   //   Navigator.push(
+    //   //     context,
+    //   //     MaterialPageRoute(
+    //   //       builder: (context) => HomePage(currentUser: _currentUser),
+    //   //     ),
+    //   //   );
+    //   // });
+    //   //이렇게 하면 reload시, 'Failed assertion: line 5253 pos 12: '!_debugLocked': is not true.' 에러가 납니다
+    //   Navigator.of(context).push(
+    //         MaterialPageRoute(
+    //           builder: (context) => HomePage(currentUser: _currentUser),
+    //         ),
+    //       );
+    //   //이렇게 하면 'Failed assertion: line 5253 pos 12: '!_debugLocked': is not true.' 에러는 안나지만
+    //   //TextFormField 들어간 페이지들이 튕깁니다.
+    //   // WidgetsBinding.instance.addPostFrameCallback((_){
+    //   //   Navigator.push(
+    //   //     context,
+    //   //     MaterialPageRoute(
+    //   //       builder: (context) => HomePage(currentUser: _currentUser),
+    //   //     ),
+    //   //   );
+    //   // });
+    //   // return Center(
+    //   //   child: SizedBox(
+    //   //     child: CircularProgressIndicator(
+    //   //       valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.primary),
+    //   //     ),
+    //   //     height: 40.0,
+    //   //     width: 40.0,
+    //   //   ),
+    //   // );
+    // }
+    // else {
+      return Scaffold(
+        body: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            children: <Widget>[
+              SizedBox(height: 80.0),
+              Column(
+                children: <Widget>[
+                  SizedBox(height: 16.0),
+                  Image.asset('assets/images/logo.png', width: MediaQuery.of(context).size.width*0.3,),
+                  SizedBox(height: 16.0),
+                  Text('히얼', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.blue),),
                 ],
               ),
-              onPressed: _handleGuestSignIn,
-            ),
-          ],
+              SizedBox(height: 120.0),
+              _buildBody(),
+              RaisedButton(
+                color: Colors.grey,
+                child: Row(
+                  children: [
+                    Container(child: Text('?', style: TextStyle(color: Colors.white, fontSize: 24))),
+                    SizedBox(width: 20),
+                    Text('Guest', style: TextStyle(color: Colors.white, fontSize: 14)),
+                  ],
+                ),
+                onPressed: () => _handleGuestSignIn(),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    // }
   }
 }
