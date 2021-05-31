@@ -122,6 +122,7 @@ class _LoginPageState extends State<LoginPage> {
     //   //     ),
     //   //   );
     //   // });
+
     //   //이렇게 하면 'Failed assertion: line 5253 pos 12: '!_debugLocked': is not true.' 에러는 안나지만
     //   //TextFormField 들어간 페이지들이 튕깁니다.
     //   // WidgetsBinding.instance.addPostFrameCallback((_){
@@ -174,5 +175,9 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       );
+<<<<<<< HEAD
+=======
+    // }
+>>>>>>> cc960a2531e037a6c501d9e7630336092a194f8a
   }
 }
