@@ -12,6 +12,9 @@ import 'package:flutter_tags/flutter_tags.dart';
 import 'data/location.dart';
 // import 'package:firebase_analytics/firebase_analytics.dart';
 
+// GlobalKey<TagsState> _globalKey = GlobalKey<TagsState>();
+// GlobalKey<FormState> _globalFormKey = GlobalKey<FormState>();
+
 class UploadPage extends StatefulWidget {
   GoogleSignInAccount currentUser;
 
@@ -24,13 +27,11 @@ class UploadPage extends StatefulWidget {
 class _UploadPageState extends State<UploadPage> {
   final _picker = ImagePicker();
   GoogleSignInAccount currentUser;
-
   _UploadPageState({this.currentUser});
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  final GlobalKey<TagsState> _globalKey = GlobalKey<TagsState>();
 
   File _imageFile;
 
@@ -39,7 +40,6 @@ class _UploadPageState extends State<UploadPage> {
   bool is_default = true;
   String downloadURL;
   List tagList = [];
-
 
   Future uploadToFirebase(File image) async {
     String docID = Timestamp.now().seconds.toString();
@@ -190,6 +190,7 @@ class _UploadPageState extends State<UploadPage> {
               child: Column(
                 children: [
                   TextField(
+                    autofocus: true,
                     controller: descriptionController,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
@@ -202,7 +203,7 @@ class _UploadPageState extends State<UploadPage> {
                   ),
                   Divider(),
                   Tags(
-                    key: _globalKey,
+                    // key: _globalKey,
                     textField: TagsTextField(
                       textStyle: TextStyle(fontSize: 14),
                       // constraintSuggestion: true, suggestions: [],

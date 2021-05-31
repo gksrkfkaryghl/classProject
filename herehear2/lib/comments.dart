@@ -20,7 +20,7 @@ class _CommentPageState extends State<CommentPage> {
   var doc;
   GoogleSignInAccount currentUser;
   final String currentUID = FirebaseAuth.instance.currentUser.uid;
-  final formKey = GlobalKey<FormState>();
+  // final formKey = GlobalKey<FormState>();
   final TextEditingController commentController = TextEditingController();
   QueryDocumentSnapshot<Map<String, dynamic>> docComment;
 
@@ -28,6 +28,8 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration(milliseconds: 500),(){
+    });
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -35,7 +37,9 @@ class _CommentPageState extends State<CommentPage> {
               .of(context)
               .colorScheme
               .primary,),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: Container(
@@ -90,15 +94,15 @@ class _CommentPageState extends State<CommentPage> {
                   Divider(),
                 ],
               ),
-              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: FirebaseFirestore.instance.collection("posts").doc(
-                      doc['docID']).collection('comments').snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+              StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("posts")
+                      .doc(doc['docID']).collection('comments').snapshots(),
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) return Text("There is no expense");
                     return ListView(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                      children: commentList(snapshot),
+                      children: commentList(context, snapshot),
                     );
                   }
               ),
@@ -108,38 +112,64 @@ class _CommentPageState extends State<CommentPage> {
           withBorder: false,
           errorText: 'Comment cannot be blank',
           sendButtonMethod: () {
-            if (formKey.currentState.validate()) {
-              print(commentController.text);
-              final now = FieldValue.serverTimestamp();
-              String docID = Timestamp.now().seconds.toString();
+            print(commentController.text);
+            final now = FieldValue.serverTimestamp();
+            String docID = Timestamp.now().seconds.toString();
 
-              Map<String, dynamic> data = {
-                // 'type': _results.first["label"],
-                'message' : commentController.text,
-                'uid' : currentUID,
-                'userDisplayName' : currentUser.displayName,
-                'userPhotoURL' : currentUser.photoUrl,
-                'likeNum' : 0,
-                'docID': docID,
-                'generatedTime': now,
-                'updatedTime': '',
-                'nestedComments': [],
-              };
+            Map<String, dynamic> data = {
+              // 'type': _results.first["label"],
+              'message' : commentController.text,
+              'uid' : currentUID,
+              'userDisplayName' : currentUser.displayName,
+              'userPhotoURL' : currentUser.photoUrl,
+              'likeNum' : 0,
+              'docID': docID,
+              'generatedTime': now,
+              'updatedTime': '',
+              'nestedComments': [],
+            };
 
-              FirebaseFirestore.instance
-                  .collection('posts')
-                  .doc(doc['docID'])
-                  .collection('comments')
-                  .doc(docID)
-                  .set(data);
+            FirebaseFirestore.instance
+                .collection('posts')
+                .doc(doc['docID'])
+                .collection('comments')
+                .doc(docID)
+                .set(data);
 
-              commentController.clear();
-              FocusScope.of(context).unfocus();
-            } else {
-              print("Not validated");
-            }
+            commentController.clear();
+            FocusScope.of(context).unfocus();
+            // if (formKey.currentState.validate()) {
+            //   print(commentController.text);
+            //   final now = FieldValue.serverTimestamp();
+            //   String docID = Timestamp.now().seconds.toString();
+            //
+            //   Map<String, dynamic> data = {
+            //     // 'type': _results.first["label"],
+            //     'message' : commentController.text,
+            //     'uid' : currentUID,
+            //     'userDisplayName' : currentUser.displayName,
+            //     'userPhotoURL' : currentUser.photoUrl,
+            //     'likeNum' : 0,
+            //     'docID': docID,
+            //     'generatedTime': now,
+            //     'updatedTime': '',
+            //     'nestedComments': [],
+            //   };
+            //
+            //   FirebaseFirestore.instance
+            //       .collection('posts')
+            //       .doc(doc['docID'])
+            //       .collection('comments')
+            //       .doc(docID)
+            //       .set(data);
+            //
+            //   commentController.clear();
+            //   FocusScope.of(context).unfocus();
+            // } else {
+            //   print("Not validated");
+            // }
           },
-          formKey: formKey,
+          // formKey: formKey,
           commentController: commentController,
           backgroundColor: Colors.black,
           textColor: Colors.white,
@@ -149,57 +179,56 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 
-  commentList(AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-    // print('what??: ${snapshot.data.docs[]}');
+  commentList(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
     try{
-      return snapshot.data.docs
-          .map((doc2) {
-        if(snapshot.hasData) {
-          return ListTile(
-            leading: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                    image: NetworkImage(doc2['userPhotoURL']),
-                    fit: BoxFit.fill
-                ),
-              ),
-            ),
-            title: Column(
-              children: <Widget>[
-            Row(
-            children: <Widget>[
-            Text(doc2['userDisplayName'], style: TextStyle(fontWeight: FontWeight.bold),),
-            Text(' ${doc2['message']}'),
-            ],
-          ),
-            Row(
-              children: <Widget>[
-                Text('좋아요 ${doc2['likeNum']}개', style: TextStyle(color: Colors.grey),),
-                SizedBox(width: 20,),
-                TextButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ReCommentsPage(doc: doc2, currentUser: currentUser, ancestorDoc: doc),
+        return snapshot.data.docs
+            .map((doc2) {
+            return ListTile(
+              leading: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      image: NetworkImage(doc2['userPhotoURL']),
+                      fit: BoxFit.fill
                   ),
                 ),
-                child: Text('답글 달기', style: TextStyle(color: Colors.grey),))
-              ],
-            ),
-          ],
-          ),
-        );
-      }
-      }).toList();
-      return ListTile(
-        leading: Icon(Icons.account_circle),
+              ),
+              title: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Text(doc2['userDisplayName'], style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(' ${doc2['message']}'),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text('좋아요 ${doc2['likeNum']}개', style: TextStyle(color: Colors.grey),),
+                      SizedBox(width: 20,),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ReCommentsPage(doc: doc2, currentUser: currentUser, ancestorDoc: doc),
+                              ),
+                            );
+                          },
+                          child: Text('답글 달기', style: TextStyle(color: Colors.grey),))
+                    ],
+                  ),
+                ],
+              ),
+            );
+        }).toList();
+        //     return ListTile(
+        // leading: Icon(Icons.account_circle),
         // title: Text(
         //
         // ),
-      );
+      // );
     } catch(error) {
       print(error);
     }

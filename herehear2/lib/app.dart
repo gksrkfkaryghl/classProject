@@ -8,23 +8,23 @@ import 'mypage.dart';
 import 'upload.dart';
 
 class HeHeApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     print('a');
     return MaterialApp(
+      // home: LoginPage()
       title: 'HereHear',
-      home: HomePage(),
+      home: LoginPage(),
       initialRoute: '/login',
       routes: {
         '/home': (context) => HomePage(),
-        '/listview': (context) => ListViewPage(),
-        '/upload': (context) => UploadPage(),
+        // '/listview': (context) => ListViewPage(),
+        // '/upload': (context) => UploadPage(),
         '/mypage': (context) => MyPage(),
         '/login': (context) => LoginPage(),
-        '/comment': (context) => CommentPage(),
+        // '/comment': (context) => CommentPage(),
       },
-      onGenerateRoute: _getRoute,
+      // onGenerateRoute: _getRoute
     );
   }
 
