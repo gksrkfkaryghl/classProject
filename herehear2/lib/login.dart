@@ -122,12 +122,6 @@ class _LoginPageState extends State<LoginPage> {
     //   //     ),
     //   //   );
     //   // });
-    //   //이렇게 하면 reload시, 'Failed assertion: line 5253 pos 12: '!_debugLocked': is not true.' 에러가 납니다
-    //   Navigator.of(context).push(
-    //         MaterialPageRoute(
-    //           builder: (context) => HomePage(currentUser: _currentUser),
-    //         ),
-    //       );
     //   //이렇게 하면 'Failed assertion: line 5253 pos 12: '!_debugLocked': is not true.' 에러는 안나지만
     //   //TextFormField 들어간 페이지들이 튕깁니다.
     //   // WidgetsBinding.instance.addPostFrameCallback((_){
@@ -180,6 +174,5 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       );
-    // }
   }
 }
