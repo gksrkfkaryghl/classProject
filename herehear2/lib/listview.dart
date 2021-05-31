@@ -130,84 +130,85 @@ class _ListViewPageState extends State<ListViewPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: <Widget>[
-                      IconButton(
-                          icon: likeIcon(data),
-                          onPressed: () {
-                            bool flag = true;
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(0),
+                          child: IconButton(
+                              icon: likeIcon(data),
+                              iconSize: 35,
+                              onPressed: () {
+                                bool flag = true;
 
-                            //print(target);
+                                //print(target);
 
-                            // 중복되는지 체크.
-                            print('?!?!?!: $data');
-                            var dataList = data.values.toList();
-                            var keyList = data.keys.toList();
-                            int tempLength = data.length;
-                            print('?????: $tempLength');
-                            for (int i = 0; i < tempLength; i++){
-                              print(dataList[i]);
+                                // 중복되는지 체크.
+                                var dataList = data.values.toList();
+                                var keyList = data.keys.toList();
+                                int tempLength = data.length;
+                                for (int i = 0; i < tempLength; i++){
+                                  print(dataList[i]);
 
-                              if (currentUID == dataList[i].toString()){
-                                if (keyList[i] == "uid"){
-                                  continue;
+                                  if (currentUID == dataList[i].toString()){
+                                    if (keyList[i] == "uid"){
+                                      continue;
+                                    }
+                                    flag = false;
+                                    print("같음");
+                                    break;
+                                  }
                                 }
-                                flag = false;
-                                print("같음");
-                                break;
-                              }
+
+                                // 변경가능.
+                                if (flag == true){
+                                  print("변경가능");
+
+                                  // LikeData(widget.target3, widget.post.data()['like'] + 1);
+                                  likeData(doc);
+
+                                  setState(() {
+                                    n++;
+                                  });
+
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content : Text("I Like it !!"),
+                                    duration: const Duration(seconds: 2),
+                                  )
+                                  );
+                                }
+                                //변경불가
+                                else{
+                                  print("변경불가");
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content : Text("You can only do it once !!"),
+                                    duration: const Duration(seconds: 2),
+                                  )
+                                  );
                             }
-
-                            // 변경가능.
-                            if (flag == true){
-                              print("변경가능");
-
-                              // LikeData(widget.target3, widget.post.data()['like'] + 1);
-                              likeData(doc);
-
-                              setState(() {
-                                n++;
-                              });
-
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content : Text("I Like it !!"),
-                                duration: const Duration(seconds: 2),
-                              )
-                              );
-
-
-                              // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                              //   return Wrapper(target: widget.target3,);
-                              // }));
-
-                            }
-                            //변경불가
-                            else{
-                              print("변경불가");
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content : Text("You can only do it once !!"),
-                                duration: const Duration(seconds: 2),
-                              )
-                              );
-                        }
-                      }),
-                      IconButton(icon: Icon(Icons.question_answer), onPressed: () {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => CommentPage(doc: doc, currentUser: currentUser),
-                            ),
-                          );
-                        });
-                      }),
-                      Expanded(
-                        child: Container(),
-                      ),
-                      IconButton(icon: Icon(Icons.star_border, color: Colors.yellow), onPressed: () {
-                        setState(() {
-                        });
-                      }),
-                    ],
+                          }),
+                        ),
+                        Text(doc['likeNum'].toString(), style: TextStyle(fontSize: 18, color: Colors.grey),),
+                        SizedBox(width: 10,),
+                        IconButton(icon: Icon(Icons.question_answer), iconSize: 35, onPressed: () {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => CommentPage(doc: doc, currentUser: currentUser),
+                              ),
+                            );
+                          });
+                        }),
+                        Expanded(
+                          child: Container(),
+                        ),
+                        IconButton(icon: Icon(Icons.star_border, color: Colors.yellow), iconSize: 35, onPressed: () {
+                          setState(() {
+                          });
+                        }),
+                      ],
+                    ),
                   ),
                   SizedBox(height: 10),
                   Divider(

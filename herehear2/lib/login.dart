@@ -175,9 +175,5 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       );
-<<<<<<< HEAD
-=======
-    // }
->>>>>>> cc960a2531e037a6c501d9e7630336092a194f8a
   }
 }
