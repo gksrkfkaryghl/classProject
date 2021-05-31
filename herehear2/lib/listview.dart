@@ -76,18 +76,52 @@ class _ListViewPageState extends State<ListViewPage> {
             ),
           ],
         ),
-        body: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection("posts").snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) return Text("There is no expense");
-              // List<Widget> imageCards = getExpenseItems(context, snapshot);
-              // List<String> l = getImageURL(snapshot);
-              // print("@@@@: ${l}");
-              return ListView(
-                children: postList(context, snapshot),
+        // title: Center(child: Text('Detail')),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary,),
+            onPressed: () {
+              print('on more check: ${currentUser}');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UploadPage(currentUser: currentUser),
+                ),
               );
-            }
-        ),
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.notifications_none_outlined, color: Theme.of(context).colorScheme.primary,),
+            onPressed: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => UpdatePage(doc: data),
+              //   ),
+              // );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.mail_outline, color: Theme.of(context).colorScheme.primary,),
+            // onPressed: () {
+            //   deleteDoc(data['docID']);
+            //   Navigator.pop(context);
+            // },
+          ),
+        ],
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection("posts").snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) return Text("There is no expense");
+            // List<Widget> imageCards = getExpenseItems(context, snapshot);
+            // List<String> l = getImageURL(snapshot);
+            // print("@@@@: ${l}");
+            return ListView(
+              children: postList(context, snapshot),
+            );
+          }
+      ),
     );
   }
 
@@ -189,8 +223,8 @@ class _ListViewPageState extends State<ListViewPage> {
                                 duration: const Duration(seconds: 2),
                               )
                               );
-                        }
-                      }),
+                            }
+                          }),
                       IconButton(icon: Icon(Icons.question_answer), onPressed: () {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           Navigator.of(context).push(
@@ -203,10 +237,13 @@ class _ListViewPageState extends State<ListViewPage> {
                       Expanded(
                         child: Container(),
                       ),
-                      IconButton(icon: Icon(Icons.star_border, color: Colors.yellow), onPressed: () {
-                        setState(() {
-                        });
-                      }),
+                      IconButton(
+                          icon: Icon(Icons.star_border, color: Colors.yellow),
+                          onPressed: () {
+                            ScrapData(doc);
+                            setState(() {
+                            });
+                          }),
                     ],
                   ),
                   SizedBox(height: 10),
@@ -294,6 +331,16 @@ class _ListViewPageState extends State<ListViewPage> {
     //   print("like updated 완료");
     // });
   }
+
+  ScrapData(QueryDocumentSnapshot<Object> doc) async{
+    // uid가 안잡혀서 임의로 잡았음.
+    FirebaseFirestore.instance.collection("users")
+        .doc("Qz2LP0sw9DMP2XDqtyKzECs9J0q2").update({
+      'Scrap' : FieldValue.arrayUnion([doc.id]) // doc.id는 게시글의 id를 잡아줌.
+    });
+  }
+
+
 }
 
 

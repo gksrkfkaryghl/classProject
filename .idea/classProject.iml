@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/herehear/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/herehear/build" />
+      <excludeFolder url="file://$MODULE_DIR$/herehear/lib/final_21500468_lgs/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/herehear/lib/final_21500468_lgs/build" />
+      <excludeFolder url="file://$MODULE_DIR$/herehear2/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/herehear2/build" />
+      <excludeFolder url="file://$MODULE_DIR$/herehear2/lib/final_21500468_lgs/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/herehear2/lib/final_21500468_lgs/build" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
