@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e00b2b-5b55-4063-8293-0557546586ca" name="Default Changelist" comment="" />
+    <list default="true" id="48e00b2b-5b55-4063-8293-0557546586ca" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/herehear2/lib/listview.dart" beforeDir="false" afterPath="$PROJECT_DIR$/herehear2/lib/listview.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/herehear2/lib/mypage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/herehear2/lib/mypage.dart" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

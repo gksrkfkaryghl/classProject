@@ -35,59 +35,62 @@ class _ListViewPageState extends State<ListViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    // print('currentUser?!!: ${currentUser}');
+    print('currentUser?!!: ${currentUser}');
     // print('_currentUser: ${_currentUser}');
     return Scaffold(
-        appBar: AppBar(
-          title: Text('히 어', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),),
-          // title: Center(child: Text('Detail')),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary,),
-              onPressed: () {
-                print('on more check: ${currentUser}');
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          UploadPage(currentUser: currentUser),
-                    ),
-                  );
-                });
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.notifications_none_outlined, color: Theme.of(context).colorScheme.primary,),
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => UpdatePage(doc: data),
-                //   ),
-                // );
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.mail_outline, color: Theme.of(context).colorScheme.primary,),
-              // onPressed: () {
-              //   deleteDoc(data['docID']);
-              //   Navigator.pop(context);
-              // },
-            ),
-          ],
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.primary,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-        body: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection("posts").snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) return Text("There is no expense");
-              // List<Widget> imageCards = getExpenseItems(context, snapshot);
-              // List<String> l = getImageURL(snapshot);
-              // print("@@@@: ${l}");
-              return ListView(
-                children: postList(context, snapshot),
+        // title: Center(child: Text('Detail')),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary,),
+            onPressed: () {
+              print('on more check: ${currentUser}');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UploadPage(currentUser: currentUser),
+                ),
               );
-            }
-        ),
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.notifications_none_outlined, color: Theme.of(context).colorScheme.primary,),
+            onPressed: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => UpdatePage(doc: data),
+              //   ),
+              // );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.mail_outline, color: Theme.of(context).colorScheme.primary,),
+            // onPressed: () {
+            //   deleteDoc(data['docID']);
+            //   Navigator.pop(context);
+            // },
+          ),
+        ],
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection("posts").snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) return Text("There is no expense");
+            // List<Widget> imageCards = getExpenseItems(context, snapshot);
+            // List<String> l = getImageURL(snapshot);
+            // print("@@@@: ${l}");
+            return ListView(
+              children: postList(context, snapshot),
+            );
+          }
+      ),
     );
   }
 
@@ -130,85 +133,86 @@ class _ListViewPageState extends State<ListViewPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(0),
-                          child: IconButton(
-                              icon: likeIcon(data),
-                              iconSize: 35,
-                              onPressed: () {
-                                bool flag = true;
+                  Row(
+                    children: <Widget>[
+                      IconButton(
+                          icon: likeIcon(data),
+                          onPressed: () {
+                            bool flag = true;
 
-                                //print(target);
+                            //print(target);
 
-                                // 중복되는지 체크.
-                                var dataList = data.values.toList();
-                                var keyList = data.keys.toList();
-                                int tempLength = data.length;
-                                for (int i = 0; i < tempLength; i++){
-                                  print(dataList[i]);
+                            // 중복되는지 체크.
+                            print('?!?!?!: $data');
+                            var dataList = data.values.toList();
+                            var keyList = data.keys.toList();
+                            int tempLength = data.length;
+                            print('?????: $tempLength');
+                            for (int i = 0; i < tempLength; i++){
+                              print(dataList[i]);
 
-                                  if (currentUID == dataList[i].toString()){
-                                    if (keyList[i] == "uid"){
-                                      continue;
-                                    }
-                                    flag = false;
-                                    print("같음");
-                                    break;
-                                  }
+                              if (currentUID == dataList[i].toString()){
+                                if (keyList[i] == "uid"){
+                                  continue;
                                 }
+                                flag = false;
+                                print("같음");
+                                break;
+                              }
+                            }
 
-                                // 변경가능.
-                                if (flag == true){
-                                  print("변경가능");
+                            // 변경가능.
+                            if (flag == true){
+                              print("변경가능");
 
-                                  // LikeData(widget.target3, widget.post.data()['like'] + 1);
-                                  likeData(doc);
+                              // LikeData(widget.target3, widget.post.data()['like'] + 1);
+                              likeData(doc);
 
-                                  setState(() {
-                                    n++;
-                                  });
+                              setState(() {
+                                n++;
+                              });
 
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content : Text("I Like it !!"),
-                                    duration: const Duration(seconds: 2),
-                                  )
-                                  );
-                                }
-                                //변경불가
-                                else{
-                                  print("변경불가");
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content : Text("You can only do it once !!"),
-                                    duration: const Duration(seconds: 2),
-                                  )
-                                  );
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content : Text("I Like it !!"),
+                                duration: const Duration(seconds: 2),
+                              )
+                              );
+
+
+                              // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              //   return Wrapper(target: widget.target3,);
+                              // }));
+
+                            }
+                            //변경불가
+                            else{
+                              print("변경불가");
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content : Text("You can only do it once !!"),
+                                duration: const Duration(seconds: 2),
+                              )
+                              );
                             }
                           }),
-                        ),
-                        Text(doc['likeNum'].toString(), style: TextStyle(fontSize: 18, color: Colors.grey),),
-                        SizedBox(width: 10,),
-                        IconButton(icon: Icon(Icons.question_answer), iconSize: 35, onPressed: () {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => CommentPage(doc: doc, currentUser: currentUser),
-                              ),
-                            );
-                          });
-                        }),
-                        Expanded(
-                          child: Container(),
-                        ),
-                        IconButton(icon: Icon(Icons.star_border, color: Colors.yellow), iconSize: 35, onPressed: () {
-                          setState(() {
-                          });
-                        }),
-                      ],
-                    ),
+                      IconButton(icon: Icon(Icons.question_answer), onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CommentPage(doc: doc, currentUser: currentUser),
+                          ),
+                        );
+                      }),
+                      Expanded(
+                        child: Container(),
+                      ),
+                      IconButton(
+                          icon: Icon(Icons.star_border, color: Colors.yellow),
+                          onPressed: () {
+                            ScrapData(doc);
+                            setState(() {
+                            });
+                          }),
+                    ],
                   ),
                   SizedBox(height: 10),
                   Divider(
@@ -244,7 +248,7 @@ class _ListViewPageState extends State<ListViewPage> {
         if (keyList[i] == "uid"){
           continue;
         }
-        // print('~~');
+        print('~~');
         return Icon(Icons.favorite, color: Colors.red);
       }
     }
@@ -295,6 +299,16 @@ class _ListViewPageState extends State<ListViewPage> {
     //   print("like updated 완료");
     // });
   }
+
+  ScrapData(QueryDocumentSnapshot<Object> doc) async{
+    // uid가 안잡혀서 임의로 잡았음.
+    FirebaseFirestore.instance.collection("users")
+        .doc("Qz2LP0sw9DMP2XDqtyKzECs9J0q2").update({
+      'Scrap' : FieldValue.arrayUnion([doc.id]) // doc.id는 게시글의 id를 잡아줌.
+    });
+  }
+
+
 }
 
 
@@ -513,6 +527,9 @@ class _ListViewPageState extends State<ListViewPage> {
 //               ]);
 //             }
 //           }
+
+
+
 //       ),
 //     );
 //   }
