@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:herehear/listview.dart';
 import 'package:herehear/upload.dart';
 
 class GridViewPage extends StatefulWidget {
@@ -31,6 +32,8 @@ class _GridViewPageState extends State<GridViewPage> {
   String category = "Personalize";
   FocusNode focus = FocusNode();
   final TextEditingController _filter = TextEditingController();
+  List<String> tags = [];
+  List favoritePosts = [];
 
   Future _data;
   @override
@@ -39,12 +42,17 @@ class _GridViewPageState extends State<GridViewPage> {
     _data = getPosts();
     _addNameController = TextEditingController();
     focus.addListener(_onFocusChange);
+
   }
 
   @override
   void dispose() {
     super.dispose();
-    // focus.dispose();
+    focus.dispose();
+  }
+
+  Stream<DocumentSnapshot> getUserTaglist() {
+    return FirebaseFirestore.instance.collection('users').doc(currentUser.id).snapshots();
   }
 
   void _onFocusChange(){
@@ -187,42 +195,8 @@ class _GridViewPageState extends State<GridViewPage> {
 
                 ////
                 searchField(),
-
                 searchString != ""
-                    ? Expanded(child: StreamBuilder<QuerySnapshot>(
-                  stream: (searchString == null || searchString.trim() == "")
-                      ? FirebaseFirestore.instance.collection("posts")
-                      .snapshots()
-                      : FirebaseFirestore.instance.collection("posts")
-                      .where("searchIndex", arrayContains: searchString)
-                      .snapshots(),
-                  builder: (context, snapshot){
-                    if (snapshot.hasError)
-                      return Text('Error: ${snapshot.error}');
-                    switch (snapshot.connectionState){
-                      case ConnectionState.waiting:
-                        return Center(child: CircularProgressIndicator());
-                      default:
-                        return new ListView(
-                          children: snapshot.data.docs.map((DocumentSnapshot document){
-                            return new ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    document["imageURL"]
-                                ),
-                              ),
-                              title: new Text(document['description']),
-                              onTap: (){
-                                print("Tap here");
-                              },
-                            );
-                          }).toList(),
-                        );
-                    }
-                  },
-                )
-                )
-
+                    ? searchWidget()
                     : Expanded(
                     child: GridView.count(
                         // padding: EdgeInsets.all(16.0),
@@ -273,54 +247,34 @@ class _GridViewPageState extends State<GridViewPage> {
                 //   ],
                 // ),
                 searchField(),
-
                 searchString != ""
-                    ? Expanded(child: StreamBuilder<QuerySnapshot>(
-                  stream: (searchString == null || searchString.trim() == "")
-                      ? FirebaseFirestore.instance.collection("posts")
-                      .snapshots()
-                      : FirebaseFirestore.instance.collection("posts")
-                      .where("searchIndex", arrayContains: searchString)
-                      .snapshots(),
-                  builder: (context, snapshot){
-                    if (snapshot.hasError)
-                      return Text('Error: ${snapshot.error}');
-                    switch (snapshot.connectionState){
-                      case ConnectionState.waiting:
-                        return Center(child: CircularProgressIndicator());
-                      default:
-                        return new ListView(
-                          children: snapshot.data.docs.map((DocumentSnapshot document){
-                            return new ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    document["imageURL"]
-                                ),
-                              ),
-                              title: new Text(document['description']),
-                              onTap: (){
-                                print("Tap here");
-                              },
-                            );
-                          }).toList(),
-                        );
-                    }
-                  },
-                )
-                )
-
+                    ? searchWidget()
                     : Expanded(
-                    child: GridView.count(
-                      // padding: EdgeInsets.all(16.0),
-                        childAspectRatio: 8.0 / 9.0,
-                        crossAxisCount: 3,
-                        //shrinkWrap: true,
-                        children: List.generate(snapshot.data.length, (index) {
-                          //itemCount: snapshot.data.length, //조심하기
-                          //itemBuilder: (_, index) {
-                          return listItem(snapshot.data[index]);
-                          // );
-                        })))
+                    child: StreamBuilder<DocumentSnapshot<Object>>(
+                        stream: getUserTaglist(),
+                        builder: (context, userData) {
+                          tags = userData.data['tags'];
+                          for(int index; index < snapshot.data.length; index++) {
+                            List<String> templist = snapshot.data[index]['tags'];
+                            for(int i = 0; i < tags.length; i++) {
+                              for(int j = 0; j < templist.length; j++) {
+                                if(tags[i] == templist[j])
+                                  favoritePosts.add(snapshot.data[index]);
+                              }
+                            }
+                          }
+                          return GridView.count(
+                            // padding: EdgeInsets.all(16.0),
+                              childAspectRatio: 8.0 / 9.0,
+                              crossAxisCount: 3,
+                              //shrinkWrap: true,
+                              children: List.generate(favoritePosts.length, (index) {
+                                //itemCount: snapshot.data.length, //조심하기
+                                //itemBuilder: (_, index) {
+                                return listItem(favoritePosts[index]);
+                              }));
+                      }
+                    ))
               ]);
             }
           }
@@ -401,11 +355,62 @@ class _GridViewPageState extends State<GridViewPage> {
     );
   }
 
+  Widget searchWidget() {
+    return  Expanded(child: StreamBuilder<QuerySnapshot>(
+      stream: (searchString == null || searchString.trim() == "")
+          ? FirebaseFirestore.instance.collection("posts")
+          .snapshots()
+          : FirebaseFirestore.instance.collection("posts")
+          .where("searchIndex", arrayContains: searchString)
+          .snapshots(),
+      builder: (context, snapshot){
+        if (snapshot.hasError)
+          return Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState){
+          case ConnectionState.waiting:
+            return Center(child: CircularProgressIndicator());
+          default:
+            return new ListView(
+              children: snapshot.data.docs.map((DocumentSnapshot document){
+                return new ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        document["imageURL"]
+                    ),
+                  ),
+                  title: new Text(document['description']),
+                  onTap: (){
+                    print("Tap here");
+                  },
+                );
+              }).toList(),
+            );
+        }
+      },
+    )
+    );
+  }
+
   Widget listItem(dynamic snapshot) {
     return snapshot["imageURL"] != "" ?
         Padding(
           padding: const EdgeInsets.all(1.0),
-          child: Container(child: Image.network(snapshot["imageURL"], fit: BoxFit.cover,)),
+          child: InkWell(
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => ListViewPage(doc: doc, currentUser: currentUser),
+              //   ),
+              // );
+            },
+            child: Container(
+                child: Image.network(
+                  snapshot["imageURL"],
+                  fit: BoxFit.cover,
+
+                )),
+          ),
         )
         : Padding(
           padding: const EdgeInsets.all(1.0),
