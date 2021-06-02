@@ -199,7 +199,6 @@ class _GridViewPageState extends State<GridViewPage> {
                     ? searchWidget()
                     : Expanded(
                     child: GridView.count(
-                      // padding: EdgeInsets.all(16.0),
                         childAspectRatio: 8.0 / 9.0,
                         crossAxisCount: 3,
                         //shrinkWrap: true,
@@ -273,7 +272,7 @@ class _GridViewPageState extends State<GridViewPage> {
                                 //itemBuilder: (_, index) {
                                 return listItem(favoritePosts[index]);
                               }));
-                        }
+                      }
                     ))
               ]);
             }

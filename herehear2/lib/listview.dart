@@ -42,11 +42,9 @@ class _ListViewPageState extends State<ListViewPage> {
     // print('_currentUser: ${_currentUser}');
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.primary,),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: Center(child: Text('히 어', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),)),
         ),
         // title: Center(child: Text('Detail')),
         actions: <Widget>[
@@ -197,6 +195,8 @@ class _ListViewPageState extends State<ListViewPage> {
                               );
                             }
                           }),
+                      Text(doc['likeNum'].toString(), style: TextStyle(fontSize: 18, color: Colors.grey),),
+                      SizedBox(width: 10,),
                       IconButton(icon: Icon(Icons.question_answer), onPressed: () {
                         Navigator.push(
                           context,
