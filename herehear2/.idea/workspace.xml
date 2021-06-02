@@ -1,7 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f591d55-568d-4a1e-ae86-8275d15ba883" name="Default Changelist" comment="" />
+    <list default="true" id="30ff6c27-584d-4e29-b7e3-97722687bb72" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/app.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/comments.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/data/location.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/final_21500468_lgs/add.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/final_21500468_lgs/main.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/final_21500468_lgs/pubspec.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/final_21500468_lgs/pubspec.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/final_21500468_lgs/wrapper.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/gridview.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/home.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/listview.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/login.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/main.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/mypage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/recomments.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/theme/colors.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/theme/theme.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/update.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/참고자료/upload.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../step_09/lib/hw9/generated_plugin_registrant.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../step_09/lib/hw9/globals.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../step_09/lib/hw9/main.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../step_09/lib/hw9/src/authentication.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../step_09/lib/hw9/src/widgets.dart" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,97 +61,101 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="ProjectId" id="1sx3Gny7bCeQNm6yUJ6WYAFluTb" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectId" id="1tDPr2uLc5aqxLBqTyngDeYBsti" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/참고자료" />
     <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib/참고자료" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
-      <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
+      <option name="filePath" value="$PROJECT_DIR$/lib/참고자료/main.dart" />
       <method v="2" />
     </configuration>
   </component>
-  <component name="SvnConfiguration">
-    <configuration />
-  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="5b8d8c3f-9c4c-4ddc-96f9-5bf4bd0f70c3" name="Default Changelist" comment="" />
-      <created>1621800319407</created>
+      <changelist id="30ff6c27-584d-4e29-b7e3-97722687bb72" name="Default Changelist" comment="" />
+      <created>1622300881768</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1621800319407</updated>
+      <updated>1622300881768</updated>
     </task>
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="100" y="100" width="1336" height="624" key="AVDManager" timestamp="1622468207776">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="184" y="99" width="1071" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1622617059906">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="100" y="100" width="1336" height="624" key="AVDManager/0.0.1536.824@0.0.1536.824" timestamp="1622468207776" />
-    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1622471231554">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="184" y="99" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1622617059906" />
+    <state x="184" y="121" width="1071" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.25.1440.875@0.25.1440.875" timestamp="1622588714106" />
+    <state x="457" y="256" key="#com.intellij.ide.util.TreeFileChooserDialog" timestamp="1622588712019">
+      <screen x="0" y="25" width="1440" height="875" />
     </state>
-    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1622471231554" />
-    <state width="1140" height="238" key="GridCell.Tab.0.bottom" timestamp="1622479051958">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="457" y="256" key="#com.intellij.ide.util.TreeFileChooserDialog/0.25.1440.875@0.25.1440.875" timestamp="1622588712019" />
+    <state x="186" y="157" width="919" height="675" key="AVDManager" timestamp="1622561506367">
+      <screen x="0" y="25" width="1440" height="875" />
     </state>
-    <state width="1140" height="238" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1622479051958" />
-    <state width="1140" height="238" key="GridCell.Tab.0.center" timestamp="1622479051958">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="186" y="157" width="919" height="675" key="AVDManager/0.25.1440.875@0.25.1440.875" timestamp="1622561506367" />
+    <state x="516" y="213" key="AndroidProcessChooserDialog" timestamp="1622306666089">
+      <screen x="0" y="25" width="1440" height="875" />
     </state>
-    <state width="1140" height="238" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1622479051958" />
-    <state width="1140" height="238" key="GridCell.Tab.0.left" timestamp="1622479051958">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="516" y="213" key="AndroidProcessChooserDialog/0.25.1440.875@0.25.1440.875" timestamp="1622306666088" />
+    <state width="1398" height="297" key="GridCell.Tab.0.bottom" timestamp="1622611631789">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1140" height="238" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1622479051958" />
-    <state width="1140" height="238" key="GridCell.Tab.0.right" timestamp="1622479051958">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1398" height="297" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1622611631789" />
+    <state width="1398" height="253" key="GridCell.Tab.0.bottom/0.25.1440.875@0.25.1440.875" timestamp="1622593984671" />
+    <state width="1398" height="297" key="GridCell.Tab.0.center" timestamp="1622611631788">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1140" height="238" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1622479051958" />
-    <state x="406" y="27" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1621872494113">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1398" height="297" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1622611631788" />
+    <state width="1398" height="253" key="GridCell.Tab.0.center/0.25.1440.875@0.25.1440.875" timestamp="1622593984671" />
+    <state width="1398" height="297" key="GridCell.Tab.0.left" timestamp="1622611631787">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="406" y="27" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1536.824@0.0.1536.824" timestamp="1621872494113" />
-    <state x="570" y="325" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1622405487732">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1398" height="297" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1622611631787" />
+    <state width="1398" height="253" key="GridCell.Tab.0.left/0.25.1440.875@0.25.1440.875" timestamp="1622593984670" />
+    <state width="1398" height="297" key="GridCell.Tab.0.right" timestamp="1622611631789">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="570" y="325" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.824@0.0.1536.824" timestamp="1622405487732" />
-    <state x="41" y="189" key="run.anything.popup" timestamp="1622026766796">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1398" height="297" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1622611631789" />
+    <state width="1398" height="253" key="GridCell.Tab.0.right/0.25.1440.875@0.25.1440.875" timestamp="1622593984671" />
+    <state x="227" y="214" width="670" height="676" key="search.everywhere.popup" timestamp="1622587949517">
+      <screen x="0" y="25" width="1440" height="875" />
     </state>
-    <state x="41" y="189" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1622026766796" />
-    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1621880671418">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1621880671418" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/app.dart</url>
-          <line>9</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <state x="227" y="214" width="670" height="676" key="search.everywhere.popup/0.25.1440.875@0.25.1440.875" timestamp="1622587949517" />
   </component>
 </project>

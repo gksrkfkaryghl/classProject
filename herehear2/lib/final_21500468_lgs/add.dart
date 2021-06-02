@@ -5,7 +5,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'wrapper.dart';
+import 'wrapper.dart';   TextStyle(
+fontWeight: FontWeight.w600,
+fontSize: 20,
+color: Colors.white,
+)
+:TextStyle(
+//fontWeight: FontWeight.w600,
+fontSize: 15,
+color: Colors.grey,
+),
 
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/src/services/asset_bundle.dart';
