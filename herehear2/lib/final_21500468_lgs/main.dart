@@ -58,7 +58,7 @@ class AuthService2 {
 
   Future signOut() async{
     try{
-      print("sign out");
+      print("signout ");
       return await _auth.signOut();
     } catch(e){
       print(e.toString());
@@ -333,3 +333,5 @@ class SignInDemoState extends State<SignInDemo> {
         ));
   }
 }
+
+
