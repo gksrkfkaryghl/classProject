@@ -121,7 +121,6 @@ class _MyPageState extends State<MyPage> {
                     setState(() {
                       flag = false;
                       _data = getScrap();
-
                     });
                   },
                   style: flag == false

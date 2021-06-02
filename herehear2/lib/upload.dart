@@ -53,7 +53,7 @@ class _UploadPageState extends State<UploadPage> {
 
     await firebaseStorageRef.putString(nameController.text);
     if(is_default)
-      downloadURL = 'http://handong.edu/site/handong/res/img/logo.png';
+      downloadURL = '';
     else {
       // UploadTask uploadTask = firebaseStorageRef.putFile(image);
       await firebaseStorageRef.putFile(image);
@@ -63,6 +63,12 @@ class _UploadPageState extends State<UploadPage> {
     for (int i = 0; i < splitList.length; i++){
       for (int y = 1; y < splitList[i].length + 1; y++) {
         indexList.add(splitList[i].substring(0,y).toLowerCase());
+      }
+    }
+
+    for (int i = 0; i < tagList.length; i++){
+      for (int y = 1; y < tagList[i].length + 1; y++) {
+        indexList.add(tagList[i].substring(0,y).toLowerCase());
       }
     }
 
