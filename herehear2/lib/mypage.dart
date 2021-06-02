@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:herehear/%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C/Fixmypage.dart';
-import 'package:herehear/%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C/SignUp.dart';
+// import 'package:herehear/%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C/Fixmypage.dart';
+// import 'package:herehear/%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C/SignUp.dart';
 
+import 'Fixmypage.dart';
 import 'login.dart';
 
 class MyPage extends StatefulWidget {

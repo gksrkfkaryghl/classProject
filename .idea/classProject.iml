@@ -7,6 +7,7 @@
       <excludeFolder url="file://$MODULE_DIR$/herehear/build" />
       <excludeFolder url="file://$MODULE_DIR$/herehear/lib/final_21500468_lgs/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/herehear/lib/final_21500468_lgs/build" />
+      <excludeFolder url="file://$MODULE_DIR$/herehear2/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/herehear2/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/herehear2/build" />
       <excludeFolder url="file://$MODULE_DIR$/herehear2/lib/final_21500468_lgs/.pub" />
@@ -14,5 +15,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Dart SDK" level="project" />
+    <orderEntry type="library" name="Dart Packages" level="project" />
   </component>
 </module>

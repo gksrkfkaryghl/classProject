@@ -7,8 +7,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 
-import '../methods/validators.dart';
-import '../methods/toast.dart';
+import './methods/validators.dart';
+import './methods/toast.dart';
 import 'home.dart';
 import 'listview.dart';
 

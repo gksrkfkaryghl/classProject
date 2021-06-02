@@ -29,8 +29,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> _children = [
-      ListViewPage(currentUser: currentUser),
       GridViewPage(),
+      ListViewPage(currentUser: currentUser),
       // UploadPage(),
       //GridViewPage(),
       // CalendarPage(),
