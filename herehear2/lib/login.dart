@@ -7,6 +7,9 @@ import "package:http/http.dart" as http;
 import 'dart:convert' show json;
 import 'package:google_sign_in/google_sign_in.dart';
 
+import 'SignUp.dart';
+import 'Signin.dart';
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -161,16 +164,58 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 120.0),
               _buildBody(),
               RaisedButton(
+                color: Colors.green,
+                child: Row(
+                  children: [
+                    Container(child: Text('?', style: TextStyle(color: Colors.white, fontSize: 24))),
+                    SizedBox(width: 20),
+                    Text('Sign In', style: TextStyle(color: Colors.white, fontSize: 14)),
+                  ],
+                ),
+                //onPressed: _handleGuestSignIn,
+                onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SignInPage(),
+                    ),
+                  );
+                },
+              ),
+
+              RaisedButton(
                 color: Colors.grey,
                 child: Row(
                   children: [
                     Container(child: Text('?', style: TextStyle(color: Colors.white, fontSize: 24))),
                     SizedBox(width: 20),
-                    Text('Guest', style: TextStyle(color: Colors.white, fontSize: 14)),
+                    Text('Sign Up', style: TextStyle(color: Colors.white, fontSize: 14)),
                   ],
                 ),
-                onPressed: () => _handleGuestSignIn(),
+                //onPressed: _handleGuestSignIn,
+                onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SignUpPage(),
+                    ),
+                  );
+                },
               ),
+
+
+
+              // RaisedButton(
+              //   color: Colors.grey,
+              //   child: Row(
+              //     children: [
+              //       Container(child: Text('?', style: TextStyle(color: Colors.white, fontSize: 24))),
+              //       SizedBox(width: 20),
+              //       Text('Guest', style: TextStyle(color: Colors.white, fontSize: 14)),
+              //     ],
+              //   ),
+              //   onPressed: () => _handleGuestSignIn(),
+              // ),
             ],
           ),
         ),

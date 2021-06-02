@@ -9,8 +9,8 @@ import 'update.dart';
 
 class ListViewPage extends StatefulWidget {
   GoogleSignInAccount currentUser;
-
-  ListViewPage({this.currentUser});
+  final String target;
+  ListViewPage({this.currentUser, this.target});
 
   @override
   _ListViewPageState createState() => _ListViewPageState(currentUser: currentUser);
@@ -35,6 +35,9 @@ class _ListViewPageState extends State<ListViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("here it is");
+    print(widget.target);
+
     print('currentUser?!!: ${currentUser}');
     // print('_currentUser: ${_currentUser}');
     return Scaffold(
