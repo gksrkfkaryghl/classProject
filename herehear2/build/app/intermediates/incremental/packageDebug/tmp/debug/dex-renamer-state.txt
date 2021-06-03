@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-#Thu Jun 03 00:36:37 KST 2021
-=======
-#Wed Jun 02 18:10:03 KST 2021
->>>>>>> c12e6295ed0c5d847f54296de66684f7549468f3
+#Thu Jun 03 19:32:44 KST 2021
 path.1=classes.dex
 path.0=classes.dex
 renamed.10=classes11.dex

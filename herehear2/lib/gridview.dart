@@ -153,8 +153,8 @@ class _GridViewPageState extends State<GridViewPage> {
             ),
             body: TabBarView(
               children: <Widget>[
-                all(),
                 personalize(),
+                all(),
               ],
             )
         )
@@ -396,12 +396,12 @@ class _GridViewPageState extends State<GridViewPage> {
       padding: const EdgeInsets.all(1.0),
       child: InkWell(
         onTap: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => ListViewPage(doc: doc, currentUser: currentUser),
-          //   ),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ListViewPage(doc: snapshot, currentUser: currentUser),
+            ),
+          );
         },
         child: Container(
             child: Image.network(
