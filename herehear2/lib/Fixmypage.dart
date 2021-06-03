@@ -11,15 +11,20 @@ import 'home.dart';
 import 'listview.dart';
 
 class FixPage extends StatefulWidget {
-  const FixPage({Key key, this.target}) : super(key: key);
-  final String target;
+  final String currentUser;
+  FixPage({this.currentUser});
+
   static const routeName = '/signup';
 
   @override
-  _FixPageState createState() => _FixPageState();
+  _FixPageState createState() => _FixPageState(currentUser: currentUser);
 }
 
 class _FixPageState extends State<FixPage> {
+  String currentUser;
+  _FixPageState({this.currentUser});
+
+
   bool _loading = false;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
@@ -81,12 +86,12 @@ class _FixPageState extends State<FixPage> {
   final AuthService2 _auth = AuthService2(); // 새로추가.
 
   _buildBody() {
-    print("widget.target");
-    print(widget.target);
+    print("[FixmyPage]currentUser");
+    print(currentUser);
 
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     return FutureBuilder<DocumentSnapshot>(
-      future: users.doc(widget.target).get(),
+      future: users.doc(currentUser).get(),
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
@@ -216,7 +221,8 @@ class _FixPageState extends State<FixPage> {
                             // 이전에 로그인 되어있던 내용이 있다면, signout 시키고 새롭게 로그인.
                             //await _auth.signOut();
                             //dynamic result = await _auth.signInAnon();
-                            UID = widget.target;
+                            //UID = widget.target;
+                            UID = currentUser;
                             print("UID");
                             print(UID);
 

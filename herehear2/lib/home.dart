@@ -6,35 +6,44 @@ import 'package:herehear/upload.dart';
 import 'package:provider/provider.dart';
 import 'gridview.dart';
 import 'listview.dart';
-import 'myPage.dart';
+import 'mypage.dart';
 import 'theme/colors.dart';
 
 class HomePage extends StatefulWidget {
-  // User currentUser;
-  GoogleSignInAccount currentUser;
+  HomePage({Key key, this.currentUser}) : super(key: key);
+  final String currentUser;
 
-  HomePage({this.currentUser});
+  // // User currentUser;
+  // GoogleSignInAccount currentUser;
+
 
 
   @override
-  _HomePageState createState() => _HomePageState(currentUser);
+  //_HomePageState createState() => new _HomePageState();
+  _HomePageState createState() => new _HomePageState(currentUser: currentUser);
 }
 
 class _HomePageState extends State<HomePage> {
-  GoogleSignInAccount currentUser;
+  _HomePageState({this.currentUser});
+  String currentUser;
+
   int _currentIndex = 0;
   //List<Widget> _children;
-  _HomePageState(this.currentUser);
+  //_HomePageState(this.currentUser);
 
   @override
   Widget build(BuildContext context) {
+    print("[HomePage] current user");
+    print(currentUser);
+
     List<Widget> _children = [
-      GridViewPage(),
-      ListViewPage(currentUser: currentUser),
+      GridViewPage(currentUser: currentUser),
+      ListViewPage(doc: null, currentUser: currentUser),
       // UploadPage(),
       //GridViewPage(),
       // CalendarPage(),
-      MyPage(),
+      MyPage(currentUser : currentUser),
+
     ];
     return ChangeNotifierProvider(
       create: (_) => ThemeNotifier(),

@@ -16,7 +16,7 @@ import 'data/location.dart';
 // GlobalKey<FormState> _globalFormKey = GlobalKey<FormState>();
 
 class UploadPage extends StatefulWidget {
-  GoogleSignInAccount currentUser;
+  String currentUser;
 
   UploadPage({this.currentUser});
 
@@ -26,7 +26,7 @@ class UploadPage extends StatefulWidget {
 
 class _UploadPageState extends State<UploadPage> {
   final _picker = ImagePicker();
-  GoogleSignInAccount currentUser;
+  String currentUser;
   _UploadPageState({this.currentUser});
 
   final TextEditingController nameController = TextEditingController();
@@ -77,8 +77,8 @@ class _UploadPageState extends State<UploadPage> {
       'description' : descriptionController.text,
       "imageURL": downloadURL,
       'uid' : currentUID,
-      'userDisplayName' : currentUser.displayName,
-      'userPhotoURL' : currentUser.photoUrl,
+      // 'userDisplayName' : currentUser.displayName,
+      // 'userPhotoURL' : currentUser.photoUrl,
       'likeNum' : 0,
       'docID': docID,
       'generatedTime': now,

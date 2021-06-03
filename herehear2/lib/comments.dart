@@ -8,7 +8,7 @@ import 'package:herehear/recomments.dart';
 
 class CommentPage extends StatefulWidget {
   var doc;
-  GoogleSignInAccount currentUser;
+  String currentUser;
 
   CommentPage({this.doc, this.currentUser});
 
@@ -18,7 +18,7 @@ class CommentPage extends StatefulWidget {
 
 class _CommentPageState extends State<CommentPage> {
   var doc;
-  GoogleSignInAccount currentUser;
+  String currentUser;
   final String currentUID = FirebaseAuth.instance.currentUser.uid;
   // final formKey = GlobalKey<FormState>();
   final TextEditingController commentController = TextEditingController();
@@ -44,8 +44,8 @@ class _CommentPageState extends State<CommentPage> {
       ),
       body: Container(
         child: CommentBox(
-          userImage:
-          currentUser.photoUrl,
+          userImage: null,
+          //currentUser.photoUrl,
           child: ListView(
             children: [
               Column(
@@ -120,8 +120,8 @@ class _CommentPageState extends State<CommentPage> {
               // 'type': _results.first["label"],
               'message' : commentController.text,
               'uid' : currentUID,
-              'userDisplayName' : currentUser.displayName,
-              'userPhotoURL' : currentUser.photoUrl,
+              // 'userDisplayName' : currentUser.displayName,
+              // 'userPhotoURL' : currentUser.photoUrl,
               'likeNum' : 0,
               'docID': docID,
               'generatedTime': now,

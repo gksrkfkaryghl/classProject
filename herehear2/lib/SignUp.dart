@@ -195,11 +195,13 @@ class _SignUpPageState extends State<SignUpPage> {
                       dynamic result = await _auth.signInAnon();
                       UID = result.uid.toString();
                       addUser();
-                      print("Sign up Sccess");
+                      print("Sign up");
+                      print(UID);
+
                       Navigator.push(
                         context,
                         //MaterialPageRoute(builder: (context) => ListViewPage(currentUser: null, target: UID,)),
-                        MaterialPageRoute(builder: (context) => HomePage(currentUser: null)),
+                        MaterialPageRoute(builder: (context) => HomePage(currentUser: UID)),
 
                       );
 
@@ -222,10 +224,11 @@ class _SignUpPageState extends State<SignUpPage> {
                     UID = result.uid.toString();
                     addUser();
 
+
                     Navigator.push(
                       context,
                       // MaterialPageRoute(builder: (context) => ListViewPage(currentUser: null,target: UID,)),
-                      MaterialPageRoute(builder: (context) => HomePage(currentUser: null)),
+                      MaterialPageRoute(builder: (context) => HomePage(currentUser: UID)),
 
                     );
 

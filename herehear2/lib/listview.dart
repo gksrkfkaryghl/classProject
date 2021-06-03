@@ -8,10 +8,10 @@ import 'comments.dart';
 import 'update.dart';
 
 class ListViewPage extends StatefulWidget {
+  ListViewPage({this.doc, this.currentUser});
+
   var doc;
-  GoogleSignInAccount currentUser;
-  final String target;
-  ListViewPage({this.doc, this.currentUser, this.target});
+  final String currentUser;
 
   @override
   _ListViewPageState createState() => _ListViewPageState(doc: doc, currentUser: currentUser);
@@ -21,7 +21,7 @@ class _ListViewPageState extends State<ListViewPage> {
   var doc;
   Map<String, dynamic>  data;
   // User currentUser;
-  GoogleSignInAccount currentUser;
+  String currentUser;
   final snackBar1 = SnackBar(content: Text('I LIKE IT!'));
   final snackBar2 = SnackBar(content: Text('You can only do it once!!'));
   final String currentUID = FirebaseAuth.instance.currentUser.uid;
@@ -46,10 +46,11 @@ class _ListViewPageState extends State<ListViewPage> {
   @override
   Widget build(BuildContext context) {
     print("here it is: ${doc["description"]}");
-    print(widget.target);
-
     print('currentUser?!!: ${currentUser}');
-    // print('_currentUser: ${_currentUser}');
+
+    print("[Listview] current user");
+    print(currentUser);
+
     return Scaffold(
       appBar: AppBar(
         leading: Padding(

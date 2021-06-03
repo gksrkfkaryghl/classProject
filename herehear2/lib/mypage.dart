@@ -8,11 +8,19 @@ import 'Fixmypage.dart';
 import 'login.dart';
 
 class MyPage extends StatefulWidget {
+
+  final String currentUser;
+  MyPage({this.currentUser});
+
+
   @override
-  _MyPageState createState() => _MyPageState();
+  _MyPageState createState() => _MyPageState(currentUser: currentUser);
 }
 
 class _MyPageState extends State<MyPage> {
+  String currentUser;
+  _MyPageState({this.currentUser});
+
 
   Future getPosts() async {
     QuerySnapshot qn;
@@ -48,11 +56,6 @@ class _MyPageState extends State<MyPage> {
         displayname = documentData["displayname"];
         location = documentData["location"];
 
-        print("Userinfo here");
-        print("displayname");
-        print(displayname);
-        print("location");
-        print(location);
       }
     });
   }
@@ -73,6 +76,9 @@ class _MyPageState extends State<MyPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("[myPage]current user");
+    print(currentUser);
+
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     return FutureBuilder<DocumentSnapshot>(
       future: users.doc(UID).get(),
@@ -98,7 +104,7 @@ class _MyPageState extends State<MyPage> {
                   onPressed: (){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => FixPage(target: data["uid"], )),
+                      MaterialPageRoute(builder: (context) => FixPage(currentUser: currentUser, )),
                     );
                   },
                   icon: Icon(Icons.create),

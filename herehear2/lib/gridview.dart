@@ -5,7 +5,7 @@ import 'package:herehear/listview.dart';
 import 'package:herehear/upload.dart';
 
 class GridViewPage extends StatefulWidget {
-  GoogleSignInAccount currentUser;
+  String currentUser;
 
   GridViewPage({this.currentUser});
 
@@ -14,7 +14,7 @@ class GridViewPage extends StatefulWidget {
 }
 
 class _GridViewPageState extends State<GridViewPage> {
-  GoogleSignInAccount currentUser;
+  String currentUser;
 
   _GridViewPageState({this.currentUser});
 
@@ -51,9 +51,9 @@ class _GridViewPageState extends State<GridViewPage> {
     focus.dispose();
   }
 
-  Stream<DocumentSnapshot> getUserTaglist() {
-    return FirebaseFirestore.instance.collection('users').doc(currentUser.id).snapshots();
-  }
+  // Stream<DocumentSnapshot> getUserTaglist() {
+  //   return FirebaseFirestore.instance.collection('users').doc(currentUser.id).snapshots();
+  // }
 
   void _onFocusChange(){
     debugPrint("Focus: "+focus.hasFocus.toString());
@@ -92,6 +92,9 @@ class _GridViewPageState extends State<GridViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("[GridVeiw] current user");
+    print(currentUser);
+
 
     return DefaultTabController(
         length: 2,
@@ -250,7 +253,7 @@ class _GridViewPageState extends State<GridViewPage> {
                     ? searchWidget()
                     : Expanded(
                     child: StreamBuilder<DocumentSnapshot<Object>>(
-                        stream: getUserTaglist(),
+                        // stream: getUserTaglist(),
                         builder: (context, userData) {
                           tags = userData.data['tags'];
                           for(int index; index < snapshot.data.length; index++) {

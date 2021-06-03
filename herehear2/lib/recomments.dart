@@ -6,7 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class ReCommentsPage extends StatefulWidget {
   var doc;
   var ancestorDoc;
-  GoogleSignInAccount currentUser;
+  String currentUser;
 
   ReCommentsPage({this.doc, this.currentUser, this.ancestorDoc});
 
@@ -17,7 +17,7 @@ class ReCommentsPage extends StatefulWidget {
 class _ReCommentsPageState extends State<ReCommentsPage> {
   var doc;
   var ancestorDoc;
-  GoogleSignInAccount currentUser;
+  String currentUser;
 
   _ReCommentsPageState({this.doc, this.currentUser, this.ancestorDoc});
 
