@@ -35,6 +35,9 @@ dependencies:
   comment_box: ^0.0.16
   flutter_mentions: ^2.0.1
   flutter_signin_button: ^2.0.0
+  weather: ^2.0.1
+  syncfusion_flutter_charts: ^18.4.41
+  swipeable_page_route: ^0.2.1
 
 
   flutter:
@@ -64,6 +67,45 @@ flutter:
   assets:
     - assets/images/logo.png
 #     - images/a_dot_ham.jpeg
+    - assets/images/sunny.png
+    - assets/images/cloudy.png
+    - assets/images/few_clouds.png
+    - assets/images/few_clouds_night.png
+    - assets/images/broken_clouds.png
+    - assets/images/cloudy_night.png
+    - assets/images/moon.png
+    - assets/images/rain.png
+    - assets/images/rain_night.png
+    - assets/images/snow.png
+    - assets/images/background_rain.png
+    - assets/images/background_snow.png
+    - assets/images/background_sunny.png
+    - assets/images/background_night.png
+    - assets/images/background_cloudy.png
+    - assets/images/detail_sunny.png
+    - assets/images/detail_cloudy.png
+    - assets/images/detail_night.png
+    - assets/images/detail_rain.png
+    - assets/images/feelLike.png
+    - assets/images/humidityLevel/humidity1.png
+    - assets/images/humidityLevel/humidity2.png
+    - assets/images/humidityLevel/humidity3.png
+    - assets/images/humidityLevel/humidity4.png
+    - assets/images/humidityLevel/humidity5.png
+    - assets/images/humidityLevel/humidity6.png
+    - assets/images/humidityLevel/humidity7.png
+    - assets/images/humidityLevel/humidity8.png
+    - assets/images/humidityLevel/humidity9.png
+    - assets/images/humidityLevel/humidity10.png
+    - assets/images/dustLevel/dust_good.png
+    - assets/images/dustLevel/dust_notBad.png
+    - assets/images/dustLevel/dust_bad.png
+    - assets/images/dustLevel/dust_worst.png
+    - assets/images/feelLike/feelLike_high.png
+    - assets/images/feelLike/feelLike_middle.png
+    - assets/images/feelLike/feelLike_low.png
+    - assets/images/UV.png
+    - assets/images/umbrella.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

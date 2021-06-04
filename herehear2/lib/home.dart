@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:herehear/theme/theme.dart';
 import 'package:herehear/upload.dart';
+import 'package:herehear/weatherPage.dart';
 import 'package:provider/provider.dart';
 import 'gridview.dart';
 import 'listview.dart';
@@ -42,6 +43,7 @@ class _HomePageState extends State<HomePage> {
       // UploadPage(),
       //GridViewPage(),
       // CalendarPage(),
+      weatherPage(),
       MyPage(currentUser : currentUser),
 
     ];

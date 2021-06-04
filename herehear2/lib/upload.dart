@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:herehear/gridview.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -166,7 +167,12 @@ class _UploadPageState extends State<UploadPage> {
                   uploadToFirebase(_imageFile).then((value) {
                     if(!is_default)
                       is_default = true;
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => GridViewPage(currentUser: currentUser)
+                      )
+                    );
                   });
                 }
             )
