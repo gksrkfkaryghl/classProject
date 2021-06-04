@@ -105,18 +105,17 @@ class _ListViewPageState extends State<ListViewPage> {
             // print("@@@@: ${l}");
             selectedItemData(context, snapshot);
             print('selectedItemData: ${data}');
-            return ListView(
-              children: [
-                Column(
-                  children: [
-                    postItem(data, doc),
-                    ListView(
-                      shrinkWrap: true,
-                      children: postList(context, snapshot),
-                    ),
-                  ],
-                ),
-              ],
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  postItem(data, doc),
+                  ListView(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    children: postList(context, snapshot),
+                  ),
+                ],
+              ),
             );
           }
       ),
@@ -245,6 +244,7 @@ class _ListViewPageState extends State<ListViewPage> {
                 Text(doc['likeNum'].toString(), style: TextStyle(fontSize: 18, color: Colors.grey),),
                 SizedBox(width: 10,),
                 IconButton(icon: Icon(Icons.question_answer), onPressed: () {
+                  print("ch??: $currentUser");
                   Navigator.push(
                     context,
                     MaterialPageRoute(

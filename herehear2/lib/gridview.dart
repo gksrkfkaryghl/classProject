@@ -32,7 +32,7 @@ class _GridViewPageState extends State<GridViewPage> {
   String category = "Personalize";
   FocusNode focus = FocusNode();
   final TextEditingController _filter = TextEditingController();
-  List<String> tags = [];
+  List<dynamic> tags = [];
   List favoritePosts = [];
 
   Future _data;
@@ -42,7 +42,7 @@ class _GridViewPageState extends State<GridViewPage> {
     _data = getPosts();
     _addNameController = TextEditingController();
     focus.addListener(_onFocusChange);
-
+    getUserTaglist();
   }
 
   @override
@@ -51,9 +51,9 @@ class _GridViewPageState extends State<GridViewPage> {
     focus.dispose();
   }
 
-  // Stream<DocumentSnapshot> getUserTaglist() {
-  //   return FirebaseFirestore.instance.collection('users').doc(currentUser.id).snapshots();
-  // }
+  Stream<DocumentSnapshot> getUserTaglist() {
+    return FirebaseFirestore.instance.collection('users').doc(currentUser).snapshots();
+  }
 
   void _onFocusChange(){
     debugPrint("Focus: "+focus.hasFocus.toString());
@@ -253,15 +253,17 @@ class _GridViewPageState extends State<GridViewPage> {
                     ? searchWidget()
                     : Expanded(
                     child: StreamBuilder<DocumentSnapshot<Object>>(
-                        // stream: getUserTaglist(),
+                        stream: getUserTaglist(),
                         builder: (context, userData) {
                           tags = userData.data['tags'];
-                          for(int index; index < snapshot.data.length; index++) {
-                            List<String> templist = snapshot.data[index]['tags'];
+                          for(int index = 0; index < snapshot.data.length; index++) {
+                            List<dynamic> templist = snapshot.data[index]['tags'];
                             for(int i = 0; i < tags.length; i++) {
                               for(int j = 0; j < templist.length; j++) {
-                                if(tags[i] == templist[j])
+                                if((tags[i] != null) && (tags[i] == templist[j])) {
                                   favoritePosts.add(snapshot.data[index]);
+                                  print('tag: ${tags[i].toString()}');
+                                }
                               }
                             }
                           }
