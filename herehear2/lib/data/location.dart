@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:geocoder/geocoder.dart';
+import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geolocator_platform_interface/geolocator_platform_interface.dart';
 import 'dart:async';
@@ -37,5 +39,21 @@ class Location {
       print(e);
     }
     // return position;
+  }
+
+  Future<String> getLocation() async {
+    // LocationPermission permission = await Geolocator.requestPermission();
+    String location = '';
+
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    debugPrint('location: ${position.latitude}');
+    final coordinates = new Coordinates(position.latitude, position.longitude);
+    var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    var first = addresses.first;
+    print("detail address : ${first.addressLine}");
+    print("needed address data : ${first.locality} ${first.subLocality}");
+    location = '${first.locality} ${first.subLocality}';
+    print('location: $location');
+    return location;
   }
 }

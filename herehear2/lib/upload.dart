@@ -42,8 +42,8 @@ class _UploadPageState extends State<UploadPage> {
   List tagList = [];
 
   Future uploadToFirebase(File image) async {
+    final String currentLocation = await Location().getLocation();
     String docID = Timestamp.now().seconds.toString();
-    final Position position = await Location().getCurrentLocation();
     final now = FieldValue.serverTimestamp();
     Reference firebaseStorageRef =
     FirebaseStorage.instance.ref().child('posts/$docID');
@@ -84,7 +84,8 @@ class _UploadPageState extends State<UploadPage> {
       'generatedTime': now,
       'updatedTime': '',
       'tags' : tagList,
-      'searchIndex' : indexList
+      'location' : currentLocation,
+      'searchIndex' : indexList,
     };
 
 

@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:herehear/data/location.dart';
 import 'package:herehear/listview.dart';
 import 'package:herehear/upload.dart';
 
@@ -32,8 +35,8 @@ class _GridViewPageState extends State<GridViewPage> {
   String category = "Personalize";
   FocusNode focus = FocusNode();
   final TextEditingController _filter = TextEditingController();
-  List<dynamic> tags = [];
-  List favoritePosts = [];
+    String currentLocation = '';
+  int reload = 0;
 
   Future _data;
   @override
@@ -43,12 +46,17 @@ class _GridViewPageState extends State<GridViewPage> {
     _addNameController = TextEditingController();
     focus.addListener(_onFocusChange);
     getUserTaglist();
+    getCurrentLocation();
   }
 
   @override
   void dispose() {
     super.dispose();
     focus.dispose();
+  }
+
+  void getCurrentLocation() async {
+    currentLocation= await Location().getLocation();
   }
 
   Stream<DocumentSnapshot> getUserTaglist() {
@@ -94,7 +102,6 @@ class _GridViewPageState extends State<GridViewPage> {
   Widget build(BuildContext context) {
     print("[GridVeiw] current user");
     print(currentUser);
-
 
     return DefaultTabController(
         length: 2,
@@ -255,14 +262,18 @@ class _GridViewPageState extends State<GridViewPage> {
                     child: StreamBuilder<DocumentSnapshot<Object>>(
                         stream: getUserTaglist(),
                         builder: (context, userData) {
-                          tags = userData.data['tags'];
+                          List favoritePosts = [];
+                          if(!userData.hasData) return Text('No post yet.');
+                          List tags = userData.data['tags'];
                           for(int index = 0; index < snapshot.data.length; index++) {
-                            List<dynamic> templist = snapshot.data[index]['tags'];
-                            for(int i = 0; i < tags.length; i++) {
-                              for(int j = 0; j < templist.length; j++) {
-                                if((tags[i] != null) && (tags[i] == templist[j])) {
-                                  favoritePosts.add(snapshot.data[index]);
-                                  print('tag: ${tags[i].toString()}');
+                            if(currentLocation == snapshot.data[index]['location']) {
+                              List<dynamic> tempList = snapshot.data[index]['tags'];
+                              for(int i = 0; i < tags.length; i++) {
+                                for(int j = 0; j < tempList.length; j++) {
+                                  if((tags[i] != null) && (tags[i] == tempList[j])) {
+                                    favoritePosts.add(snapshot.data[index]);
+                                    print('tag: ${tags[i].toString()}');
+                                  }
                                 }
                               }
                             }

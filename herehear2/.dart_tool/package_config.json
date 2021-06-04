@@ -182,6 +182,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "geocoder",
+      "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/geocoder-0.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "geolocator",
       "rootUri": "file:///C:/flutter/.pub-cache/hosted/pub.dartlang.org/geolocator-7.0.3",
       "packageUri": "lib/",
@@ -374,7 +380,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2021-06-04T03:56:38.954311Z",
+  "generated": "2021-06-04T11:51:09.015159Z",
   "generator": "pub",
   "generatorVersion": "2.12.1"
 }
