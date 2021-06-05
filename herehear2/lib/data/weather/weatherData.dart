@@ -176,7 +176,7 @@ class WeatherData {
         : weather.weatherMain == 'Snow'
         ? AssetImage("assets/weather/detail_snow.png")
         : weather.weatherConditionCode < 600
-        ? AssetImage("assets/weather/detail_cloudy.png")
+        ? AssetImage("assets/weathqer/detail_cloudy.png")
         : DateTime.now().hour >= 15
         ? AssetImage("assets/weather/detail_night.png")
         : AssetImage("assets/weather/detail_sunny.png");

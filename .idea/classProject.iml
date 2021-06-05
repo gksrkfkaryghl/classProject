@@ -13,6 +13,9 @@
       <excludeFolder url="file://$MODULE_DIR$/herehear2/lib/final_21500468_lgs/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/herehear2/lib/final_21500468_lgs/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/herehear2/lib/final_21500468_lgs/build" />
+      <excludeFolder url="file://$MODULE_DIR$/multistream_practice/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/multistream_practice/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/multistream_practice/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

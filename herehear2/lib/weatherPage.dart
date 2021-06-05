@@ -216,7 +216,7 @@ class _weatherPageState extends State<weatherPage> {
           // codiRecommend(size),
           subTitle("시간대별 기온", size),
           forecastChart(size),
-
+          SizedBox(height: 10,),
           subTitle("상세날씨", size),
           detailWeatherInformation(feelLike),
           Divider(),
@@ -478,78 +478,107 @@ class _weatherPageState extends State<weatherPage> {
 
 
   Widget detailWeatherInformation(int feelLike) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Column(
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-              child: Image(
-                image: WeatherData().feelLikeIcon(weather),
-                height: 40,
-              ),
+            Column(
+              children: <Widget>[
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+                //   child: Image(
+                //     image: WeatherData().feelLikeIcon(weather),
+                //     height: 40,
+                //   ),
+                // ),
+                SizedBox(
+                  height: 13,
+                ),
+                Text("체감온도"),
+                SizedBox(
+                  height: 7,
+                ),
+                WeatherData().feelLikeTempLevel(weather),
+                SizedBox(
+                  height: 7,
+                ),
+                Text("$feelLike°"),
+              ],
             ),
-            Text("$feelLike°"),
-            SizedBox(
-              height: 15,
+            Column(
+              children: <Widget>[
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+                //   child: Image(
+                //     image: WeatherData().humidityIcon(weather.humidity),
+                //     height: 40,
+                //   ),
+                // ),
+                SizedBox(
+                  height: 13,
+                ),
+                Text("습도"),
+                SizedBox(
+                  height: 7,
+                ),
+                WeatherData().humidityLevel(weather),
+                SizedBox(
+                  height: 7,
+                ),
+                Text("${weather.humidity}%"),
+              ],
             ),
-            Text("체감온도"),
-            Text(""),
-            WeatherData().feelLikeTempLevel(weather),
+            Column(
+              children: <Widget>[
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+                //   child: Image(
+                //     image: AssetImage('assets/weather/UV.png'),
+                //     height: 40,
+                //   ),
+                // ),
+                SizedBox(
+                  height: 13,
+                ),
+                Text("자외선"),
+                SizedBox(
+                  height: 7,
+                ),
+                // uvLevel,
+                SizedBox(
+                  height: 7,
+                ),
+                // Text("${uvData}"),
+              ],
+            ),
+            Column(
+              children: <Widget>[
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+                //   child: Image(
+                //     image: DustData().DustIcon(dustData),
+                //     height: 40,
+                //   ),
+                // ),
+                SizedBox(
+                  height: 13,
+                ),
+                Text("미세먼지"),
+                SizedBox(
+                  height: 7,
+                ),
+                dustLevel,
+                SizedBox(
+                  height: 7,
+                ),
+                Text("${dustData}"),
+              ],
+            ),
           ],
         ),
-        Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-              child: Image(
-                image: WeatherData().humidityIcon(weather.humidity),
-                height: 40,
-              ),
-            ),
-            Text("${weather.humidity}%"),
-            SizedBox(
-              height: 15,
-            ),
-            Text("습도"),
-            Text(""),
-            WeatherData().humidityLevel(weather),
-          ],
-        ),
-        Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-              child: Image(
-                image: AssetImage('assets/weather/UV.png'),
-                height: 40,
-              ),
-            ),
-            // Text("${uvData}"),
-            SizedBox(
-              height: 15,
-            ),
-            Text("자외선\n"),
-            // uvLevel,
-          ],
-        ),
-        Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-              child: Image(
-                image: DustData().DustIcon(dustData),
-                height: 40,
-              ),
-            ),
-            Text("${dustData}"),
-            SizedBox(
-              height: 15,
-            ),
-            Text("미세먼지\n"),
-            dustLevel,
-          ],
+        SizedBox(
+          height: 15,
         ),
       ],
     );

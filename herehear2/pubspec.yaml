@@ -38,6 +38,7 @@ dependencies:
   weather: ^2.0.1
   syncfusion_flutter_charts: ^18.4.41
   swipeable_page_route: ^0.2.1
+  multiple_stream_builder: ^2.0.0
 
 
   flutter:

@@ -81,8 +81,8 @@ class _HomePageState extends State<HomePage> {
                       // icon: ImageIcon(AssetImage('assets/closet.png'), size: 24,)
                       icon: Icon(Icons.search)),
                   BottomNavigationBarItem(
-                      title: Text('일정'),
-                      icon: Icon(Icons.date_range)),
+                      title: Text('날씨'),
+                      icon: Icon(Icons.cloud_queue)),
                   BottomNavigationBarItem(
                       title: Text('마이 페이지'), icon: Icon(Icons.perm_identity)),
                 ],
