@@ -5,6 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="48e00b2b-5b55-4063-8293-0557546586ca" name="Default Changelist" comment="">
+<<<<<<< HEAD
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/classProject.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/classProject.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+=======
+>>>>>>> 7adc2c23a8bb26f9eb8310bd9b92570eff85da38
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/herehear2/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/herehear2/.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/herehear2/android/.gradle/6.7/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/herehear2/android/.gradle/6.7/executionHistory/executionHistory.bin" afterDir="false" />
