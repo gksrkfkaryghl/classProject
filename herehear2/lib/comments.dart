@@ -9,25 +9,34 @@ import 'package:herehear/recomments.dart';
 class CommentPage extends StatefulWidget {
   var doc;
   String currentUser;
+  String docUserName;
+  String docUserPhotoURL;
 
-  CommentPage({this.doc, this.currentUser});
+  CommentPage({this.doc, this.currentUser, this.docUserName, this.docUserPhotoURL});
 
   @override
-  _CommentPageState createState() => _CommentPageState(doc, currentUser);
+  _CommentPageState createState() => _CommentPageState(doc, currentUser, docUserName, docUserPhotoURL);
 }
 
 class _CommentPageState extends State<CommentPage> {
   var doc;
   String currentUser;
+  String docUserName;
+  String docUserPhotoURL;
+
   final String currentUID = FirebaseAuth.instance.currentUser.uid;
   // final formKey = GlobalKey<FormState>();
   final TextEditingController commentController = TextEditingController();
   QueryDocumentSnapshot<Map<String, dynamic>> docComment;
+  String displayName = '';
+  String userPhotoURL = '';
+  var userDoc;
 
-  _CommentPageState(this.doc, this.currentUser);
+  _CommentPageState(this.doc, this.currentUser, this.docUserName, this.docUserPhotoURL);
 
   @override
   Widget build(BuildContext context) {
+    print("docUserName: ${docUserName}, docUserPhotoURL: ${docUserPhotoURL}");
     Future.delayed(Duration(milliseconds: 500),(){
     });
     return Scaffold(
@@ -44,7 +53,7 @@ class _CommentPageState extends State<CommentPage> {
       ),
       body: Container(
         child: CommentBox(
-          userImage: null,
+          userImage: 'assets/images/profile.jpg',
           //currentUser.photoUrl,
           child: ListView(
             children: [
@@ -60,13 +69,13 @@ class _CommentPageState extends State<CommentPage> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             image: DecorationImage(
-                                image: NetworkImage(doc['userPhotoURL']),
+                                image: AssetImage('assets/images/profile.jpg'),
                                 fit: BoxFit.fill
                             ),
                           ),
                         ),
                       ),
-                      Text('${doc['userDisplayName']}',
+                      Text('$docUserName',
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
                       Expanded(child: Container()),
                       IconButton(
@@ -99,11 +108,33 @@ class _CommentPageState extends State<CommentPage> {
                       .doc(doc['docID']).collection('comments').snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (!snapshot.hasData) return Text("There is no expense");
-                    return ListView(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      children: commentList(context, snapshot),
+                    return FutureBuilder(
+                        future: FirebaseFirestore.instance.collection("users").get(),
+                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot2) {
+                          if(!snapshot2.hasData) return Container();
+                          userDoc = snapshot2.data.docs.where((element) => element['uid'] == doc['uid']);
+                          print('userDoc : ${userDoc.first.get('displayname')}');
+                          // selectedPostID = doc['docID'];
+                          displayName = userDoc.first.get('displayname');
+                          userPhotoURL = userDoc.first.get('userPhotoURL');
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: [
+                              ListView(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  children: commentList(context, snapshot, snapshot2),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                     );
+                    //   ListView(
+                    //   scrollDirection: Axis.vertical,
+                    //   shrinkWrap: true,
+                    //   children: commentList(context, snapshot),
+                    // );
                   }
               ),
             ],
@@ -120,7 +151,7 @@ class _CommentPageState extends State<CommentPage> {
               // 'type': _results.first["label"],
               'message' : commentController.text,
               'uid' : currentUID,
-              // 'userDisplayName' : currentUser.displayName,
+              // 'displayname' : currentUser.displayName,
               // 'userPhotoURL' : currentUser.photoUrl,
               'likeNum' : 0,
               'docID': docID,
@@ -179,10 +210,14 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 
-  commentList(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+  commentList(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot1, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot2) {
     try{
-        return snapshot.data.docs
+        return snapshot1.data.docs
             .map((doc2) {
+            userDoc = snapshot2.data.docs.toList().where((element) => element['uid'] == doc2['uid']).single.data();
+            print('userDoc!!!: ${userDoc['displayname']}');
+            displayName = userDoc['displayname'];
+            // userPhotoURL = userDoc['userPhotoURL'];
             return ListTile(
               leading: Container(
                 width: 40,
@@ -190,7 +225,7 @@ class _CommentPageState extends State<CommentPage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: NetworkImage(doc2['userPhotoURL']),
+                      image: AssetImage('assets/images/profile.jpg'),
                       fit: BoxFit.fill
                   ),
                 ),
@@ -199,7 +234,7 @@ class _CommentPageState extends State<CommentPage> {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Text(doc2['userDisplayName'], style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(displayName, style: TextStyle(fontWeight: FontWeight.bold),),
                       Text(' ${doc2['message']}'),
                     ],
                   ),

@@ -282,11 +282,10 @@ class _ListViewPageState extends State<ListViewPage> {
                   Text(doc2['likeNum'].toString(), style: TextStyle(fontSize: 18, color: Colors.grey),),
                   SizedBox(width: 10,),
                   IconButton(icon: Icon(Icons.question_answer), onPressed: () {
-                    print("ch??: $currentUser");
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CommentPage(doc: doc2, currentUser: currentUser),
+                        builder: (context) => CommentPage(doc: doc2, currentUser: currentUser, docUserName: displayName, docUserPhotoURL: userPhotoURL),
                       ),
                     );
                   }),
@@ -423,7 +422,7 @@ class _ListViewPageState extends State<ListViewPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CommentPage(doc: doc2, currentUser: currentUser),
+                        builder: (context) => CommentPage(doc: doc2, currentUser: currentUser, docUserName: displayName, docUserPhotoURL: userPhotoURL),
                       ),
                     );
                   }),
