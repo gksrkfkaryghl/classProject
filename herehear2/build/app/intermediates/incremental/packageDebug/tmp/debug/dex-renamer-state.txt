@@ -1,8 +1,18 @@
+<<<<<<< HEAD
 #Sun Jun 06 01:59:49 KST 2021
 base.2=C\:\\Users\\82106\\Desktop\\gitFlutter\\classProject\\herehear2\\build\\app\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
 base.1=C\:\\Users\\82106\\Desktop\\gitFlutter\\classProject\\herehear2\\build\\app\\intermediates\\dex\\debug\\mergeProjectDexDebug\\classes.dex
 base.0=C\:\\Users\\82106\\Desktop\\gitFlutter\\classProject\\herehear2\\build\\app\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 path.9=classes_6.dex
+=======
+#Sat Jun 05 20:43:15 YAKT 2021
+path.4=classes_1.dex
+path.3=classes_0.dex
+path.2=classes2.dex
+renamed.9=classes10.dex
+path.1=classes.dex
+renamed.8=classes9.dex
+>>>>>>> fa1aef7cfc733150ce76ee40b906ff373d0984e4
 path.8=classes_5.dex
 path.7=classes_4.dex
 renamed.9=classes10.dex

@@ -122,7 +122,6 @@ class _MyPageState extends State<MyPage> {
                           width: double.infinity,
                           height: MediaQuery.of(context).size.height / 3,
                           image: NetworkImage(
-                              // "https://images.theconversation.com/files/229443/original/file-20180726-106508-fdvuja.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=675.0&fit=crop"
                           "https://i.pinimg.com/originals/22/4e/69/224e694ee3a37f176cd039a672027e21.jpg"
                           )),
                       Positioned(
@@ -131,8 +130,7 @@ class _MyPageState extends State<MyPage> {
                               radius: 80,
                               backgroundColor: Colors.white,
                               backgroundImage: NetworkImage(
-                                  // "https://spnimage.edaily.co.kr/images/Photo/files/NP/P/2008/05/PP08050700004.JPG"
-                              "https://mblogthumb-phinf.pstatic.net/MjAyMDA5MDRfMjY4/MDAxNTk5MjE0NDI2NDAy.gkRJXXcdwFhzSkOlfP7bUrblSmKJeJ-238-zSN1KgFIg.OYTyylQ4SdOE181Wc_Gu7LpVoZAKysnNw4YAiZgF6xIg.JPEG.goodplant78/1.jpg?type=w800"
+                                  data["userPhotoURL"]
                               )))
                     ],
                   ),
