@@ -21,11 +21,43 @@ class _GridViewPageState extends State<GridViewPage> {
 
   _GridViewPageState({this.currentUser});
 
+  String docID;
+  String description;
+  var doc_tags;
+
+  getdocID(docID){
+    this.docID = docID;
+  }
+
+  getdescription(description){
+    this.description = description;
+  }
+
+  getdoctags(getdoctags){
+    this.doc_tags = getdoctags;
+  }
+
+
+  CreateNotification() async {
+
+    DocumentReference documentReference = FirebaseFirestore.instance
+                                          .collection("notification").doc(currentUser);
+    documentReference.set({ // update가 아니라 set으로 기본적으로 잡혀야 하는구나.. 그러면 로그인하는 동시에 만들어줘야겠군.
+    'alarm' :  FieldValue.arrayUnion([description]), // doc.id는 게시글의 id를 잡아줌.
+    'docID' : FieldValue.arrayUnion([docID])
+    });
+
+  }
+
+
+
+
   Future getPosts() async {
     var firestore = FirebaseFirestore.instance;
     //firestore.collection("posts").get();
     firestore.collection("posts").get();
     QuerySnapshot qn = await firestore.collection("posts").get();
+
 
     return qn.docs;
   }
@@ -61,6 +93,7 @@ class _GridViewPageState extends State<GridViewPage> {
 
   Stream<DocumentSnapshot> getUserTaglist() {
     return FirebaseFirestore.instance.collection('users').doc(currentUser).snapshots();
+
   }
 
   void _onFocusChange(){
@@ -172,10 +205,16 @@ class _GridViewPageState extends State<GridViewPage> {
   }
 
   Widget all() {
+    final Stream <QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('posts').snapshots();
+
+
     return Container(
-      child: FutureBuilder(
-          future: _data,
-          builder: (_, snapshot) {
+      //child: FutureBuilder(
+      child: StreamBuilder<QuerySnapshot>(
+          //future: _data,
+          stream: _usersStream,
+          //builder: (_, snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 child: Text("Loading..."),
@@ -212,12 +251,41 @@ class _GridViewPageState extends State<GridViewPage> {
                         childAspectRatio: 8.0 / 9.0,
                         crossAxisCount: 3,
                         //shrinkWrap: true,
-                        children: List.generate(snapshot.data.length, (index) {
+                        //children: List.generate(snapshot.data.length, (index) {
+                        children: snapshot.data.docs.map((DocumentSnapshot document) {
+
+                          // list 형태로 만들기 위해서는 필요함.
+                          String doc_tags = document["tags"].toString();
+                          // 임의의 값으로 정해놨는데, sign in이나 sign up하는 동시에 인자로 줘야할듯?
+                          if (doc_tags.contains('money')){
+                            print(doc_tags);
+
+                            getdocID(document["docID"]);
+                            getdescription(document["description"]);
+                            getdoctags(document["tags"]);
+                            CreateNotification();
+                            WidgetsBinding.instance.addPostFrameCallback((_){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content : Text("Tag하신 게시글이 생성되었습니다."),
+                                // duration: const Duration(seconds: 2),
+                              ));
+                            });
+                          }
+                          else{
+                          }
+
+
+
+
                           //itemCount: snapshot.data.length, //조심하기
                           //itemBuilder: (_, index) {
-                          return listItem(snapshot.data[index]);
+                          // return listItem(snapshot.data[index]);
+                          return listItem(document);
                           // );
-                        })))
+                        }
+                        ).toList()
+                    )
+                )
               ]);
             }
           }
@@ -371,7 +439,8 @@ class _GridViewPageState extends State<GridViewPage> {
   }
 
   Widget searchWidget() {
-    return  Expanded(child: StreamBuilder<QuerySnapshot>(
+    return  Expanded(
+        child: StreamBuilder<QuerySnapshot>(
       stream: (searchString == null || searchString.trim() == "")
           ? FirebaseFirestore.instance.collection("posts")
           .snapshots()
@@ -590,3 +659,4 @@ class _GridViewPageState extends State<GridViewPage> {
 // }
 // ),
 // );
+
