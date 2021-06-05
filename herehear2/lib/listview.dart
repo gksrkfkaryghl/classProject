@@ -20,7 +20,6 @@ class ListViewPage extends StatefulWidget {
 class _ListViewPageState extends State<ListViewPage> {
   var doc;
   Map<String, dynamic>  data;
-  // User currentUser;
   String currentUser;
   final snackBar1 = SnackBar(content: Text('I LIKE IT!'));
   final snackBar2 = SnackBar(content: Text('You can only do it once!!'));
@@ -111,6 +110,7 @@ class _ListViewPageState extends State<ListViewPage> {
             return FutureBuilder(
               future: FirebaseFirestore.instance.collection("users").get(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot2) {
+                if(!snapshot2.hasData) return Container();
                 userDoc = snapshot2.data.docs.where((element) => element['uid'] == doc['uid']);
                 print('userDoc : ${userDoc.first.get('displayname')}');
                 selectedPostID = doc['docID'];
@@ -159,16 +159,21 @@ class _ListViewPageState extends State<ListViewPage> {
 
   List<Widget> postList (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot1, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot2) {
     try {
-      return snapshot1.data.docs.where((element) => element['docID'] != selectedPostID)
-          .map((doc) {
+      return snapshot1.data.docs
+          // .where((element) => element['docID'] != selectedPostID)
+          .map((doc2) {
         if(snapshot1.hasData) {
+          if(doc['docID'] == doc2['docID']) {
+            doc = doc2;
+            return Container();
+          }
           // print(snapshot1.data.docs.single.toString());
-          userDoc = snapshot2.data.docs.toList().where((element) => element['uid'] == doc['uid']).single.data();
+          userDoc = snapshot2.data.docs.toList().where((element) => element['uid'] == doc2['uid']).single.data();
           print('userDoc!!!: ${userDoc['displayname']}');
           displayName = userDoc['displayname'];
           userPhotoURL = userDoc['userPhotoURL'];
-          Map<String, dynamic> dataMap = doc.data();
-          return postItem(dataMap, doc, displayName);
+          Map<String, dynamic> dataMap = doc2.data();
+          return postItem(dataMap, doc2, displayName);
         }
       }).toList();
     } catch(error) {
@@ -176,142 +181,283 @@ class _ListViewPageState extends State<ListViewPage> {
     }
   }
 
-  Widget postItem(Map<String, dynamic> data, QueryDocumentSnapshot<Object> doc, String displayName) {
-    return Column(
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      image: NetworkImage(userPhotoURL),
-                      fit: BoxFit.fill
+  Widget postItem(Map<String, dynamic> data, QueryDocumentSnapshot<Object> doc2, String displayName) {
+    if(doc2['imageURL'] == '') {
+      return Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: NetworkImage(userPhotoURL),
+                        fit: BoxFit.fill
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(width: 8,),
-            Text(displayName, style: TextStyle(fontSize: 17),),
-            Expanded(child: Container()),
-            IconButton(
-                icon: Icon(Icons.more_horiz),
-                onPressed: null)
-          ],
-        ),
-        Image.network(
-          doc['imageURL'],
-          width: MediaQuery.of(context).size.width,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: <Widget>[
-                IconButton(
-                    icon: likeIcon(data),
-                    onPressed: () {
-                      bool flag = true;
-
-                      //print(target);
-
-                      // 중복되는지 체크.
-                      print('?!?!?!: $data');
-                      var dataList = data.values.toList();
-                      var keyList = data.keys.toList();
-                      int tempLength = data.length;
-                      print('?????: $tempLength');
-                      for (int i = 0; i < tempLength; i++){
-                        print(dataList[i]);
-
-                        if (currentUID == dataList[i].toString()){
-                          if (keyList[i] == "uid"){
-                            continue;
-                          }
-                          flag = false;
-                          print("같음");
-                          break;
-                        }
-                      }
-
-                      // 변경가능.
-                      if (flag == true){
-                        print("변경가능");
-
-                        // LikeData(widget.target3, widget.post.data()['like'] + 1);
-                        likeData(doc);
-
-                        setState(() {
-                          n++;
-                        });
-
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content : Text("I Like it !!"),
-                          duration: const Duration(seconds: 2),
-                        )
-                        );
-
-
-                        // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        //   return Wrapper(target: widget.target3,);
-                        // }));
-
-                      }
-                      //변경불가
-                      else{
-                        print("변경불가");
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content : Text("You can only do it once !!"),
-                          duration: const Duration(seconds: 2),
-                        )
-                        );
-                      }
-                    }),
-                Text(doc['likeNum'].toString(), style: TextStyle(fontSize: 18, color: Colors.grey),),
-                SizedBox(width: 10,),
-                IconButton(icon: Icon(Icons.question_answer), onPressed: () {
-                  print("ch??: $currentUser");
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CommentPage(doc: doc, currentUser: currentUser),
-                    ),
-                  );
-                }),
-                Expanded(
-                  child: Container(),
+              SizedBox(width: 8,),
+              Text(displayName, style: TextStyle(fontSize: 17),),
+              Expanded(child: Container()),
+              IconButton(
+                  icon: Icon(Icons.more_horiz),
+                  onPressed: null)
+            ],
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.5,
+            color: Theme.of(context).colorScheme.surface,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                  child: Text(
+                    doc2['description'],
+                style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.black87
+                  // color: Theme.of(context).colorScheme.onSurface,
                 ),
-                IconButton(
-                    icon: Icon(Icons.star_border, color: Colors.yellow),
-                    onPressed: () {
-                      ScrapData(doc);
-                      setState(() {
-                      });
-                    }),
-              ],
-            ),
-            SizedBox(height: 10),
-            Divider(
-              height: 5,
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Text(
-                doc['description'],
-                style: TextStyle(fontSize: 15),
+                textAlign: TextAlign.center,
+                maxLines: 5,
+              )),
+            )),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: <Widget>[
+                  IconButton(
+                      icon: likeIcon(data),
+                      onPressed: () {
+                        bool flag = true;
+
+                        print('?!?!?!: $data');
+                        var dataList = data.values.toList();
+                        var keyList = data.keys.toList();
+                        int tempLength = data.length;
+                        print('?????: $tempLength');
+                        for (int i = 0; i < tempLength; i++){
+                          print(dataList[i]);
+
+                          if (currentUID == dataList[i].toString()){
+                            if ((keyList[i] == "uid") || (keyList[i].contains('scraped_user'))){
+                              continue;
+                            }
+                            flag = false;
+                            print("같음");
+                            break;
+                          }
+                        }
+
+                        // 변경가능.
+                        if (flag == true){
+                          print("변경가능");
+
+                          likeData(doc2);
+
+                          setState(() async {
+                            n++;
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content : Text("I Like it !!"),
+                            duration: const Duration(seconds: 2),
+                          )
+                          );
+                        }
+                        else{
+                          print("변경불가");
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content : Text("You can only do it once !!"),
+                            duration: const Duration(seconds: 2),
+                          )
+                          );
+                        }
+                      }),
+                  Text(doc2['likeNum'].toString(), style: TextStyle(fontSize: 18, color: Colors.grey),),
+                  SizedBox(width: 10,),
+                  IconButton(icon: Icon(Icons.question_answer), onPressed: () {
+                    print("ch??: $currentUser");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CommentPage(doc: doc2, currentUser: currentUser),
+                      ),
+                    );
+                  }),
+                  Expanded(
+                    child: Container(),
+                  ),
+                  IconButton(
+                      icon: Icon(Icons.star_border, color: Colors.yellow),
+                      onPressed: () {
+                        ScrapData(doc2);
+                        setState(() {
+                        });
+                      }),
+                ],
               ),
-            ),
-            SizedBox(height: 30,),
-            Divider(),
-          ],
-        ),
-      ],
-    );
+              SizedBox(height: 10),
+              Divider(
+                height: 5,
+              ),
+              SizedBox(height: 10),
+              // Padding(
+              //   padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              //   child: Text(
+              //     doc2['description'],
+              //     style: TextStyle(fontSize: 15),
+              //   ),
+              // ),
+              SizedBox(height: 30,),
+              Divider(),
+            ],
+          ),
+        ],
+      );
+    } else {
+      return Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: NetworkImage(userPhotoURL),
+                        fit: BoxFit.fill
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 8,),
+              Text(displayName, style: TextStyle(fontSize: 17),),
+              Expanded(child: Container()),
+              IconButton(
+                  icon: Icon(Icons.more_horiz),
+                  onPressed: null)
+            ],
+          ),
+          Image.network(
+            doc2['imageURL'],
+            width: MediaQuery.of(context).size.width,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: <Widget>[
+                  IconButton(
+                      icon: likeIcon(data),
+                      onPressed: () {
+                        bool flag = true;
+
+                        //print(target);
+
+                        // 중복되는지 체크.
+                        print('?!?!?!: $data');
+                        var dataList = data.values.toList();
+                        var keyList = data.keys.toList();
+                        int tempLength = data.length;
+                        print('?????: $tempLength');
+                        for (int i = 0; i < tempLength; i++){
+                          print(dataList[i]);
+
+                          if (currentUID == dataList[i].toString()){
+                            if ((keyList[i] == "uid") || (keyList[i].contains('scraped_user'))){
+                              continue;
+                            }
+                            flag = false;
+                            print("같음");
+                            break;
+                          }
+                        }
+
+                        // 변경가능.
+                        if (flag == true){
+                          print("변경가능");
+
+                          // LikeData(widget.target3, widget.post.data()['like'] + 1);
+                          likeData(doc2);
+
+                          setState(() async {
+                            // doc = await FirebaseFirestore.instance.collection('posts').doc(doc['docID']);
+                            n++;
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content : Text("I Like it !!"),
+                            duration: const Duration(seconds: 2),
+                          )
+                          );
+
+
+                          // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                          //   return Wrapper(target: widget.target3,);
+                          // }));
+
+                        }
+                        //변경불가
+                        else{
+                          print("변경불가");
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content : Text("You can only do it once !!"),
+                            duration: const Duration(seconds: 2),
+                          )
+                          );
+                        }
+                      }),
+                  Text(doc2['likeNum'].toString(), style: TextStyle(fontSize: 18, color: Colors.grey),),
+                  SizedBox(width: 10,),
+                  IconButton(icon: Icon(Icons.question_answer), onPressed: () {
+                    print("ch??: $currentUser");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CommentPage(doc: doc2, currentUser: currentUser),
+                      ),
+                    );
+                  }),
+                  Expanded(
+                    child: Container(),
+                  ),
+                  IconButton(
+                      icon: Icon(Icons.star_border, color: Colors.yellow),
+                      onPressed: () {
+                        ScrapData(doc2);
+                        setState(() {
+                        });
+                      }),
+                ],
+              ),
+              SizedBox(height: 10),
+              Divider(
+                height: 5,
+              ),
+              SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                child: Text(
+                  doc2['description'],
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
+              SizedBox(height: 30,),
+              Divider(thickness: 1.5,),
+            ],
+          ),
+        ],
+      );
+    }
   }
 
   Widget likeIcon(Map<String, dynamic> data){
@@ -321,7 +467,7 @@ class _ListViewPageState extends State<ListViewPage> {
     for (int i = 0; i < tempLength; i++){
 
       if (currentUID == dataList[i].toString()){
-        if (keyList[i] == "uid"){
+        if ((keyList[i] == "uid") || (keyList[i].contains('scraped_user'))){
           continue;
         }
         print('~~');
@@ -378,10 +524,63 @@ class _ListViewPageState extends State<ListViewPage> {
 
   ScrapData(QueryDocumentSnapshot<Object> doc) async{
     // uid가 안잡혀서 임의로 잡았음.
+    bool flag = true;
+
+    // print('?!?!?!: $data');
+    // var dataList = data.values.toList();
+    // var keyList = data.keys.toList();
+    // int tempLength = data.length;
+    // print('?????: $tempLength');
+    // for (int i = 0; i < tempLength; i++){
+    //   print(dataList[i]);
+    //
+    //   if (currentUID == dataList[i].toString()){
+    //     if ((keyList[i] == "uid") || (keyList[i].contains('like_user'))){
+    //       continue;
+    //     }
+    //     flag = false;
+    //     print("같음");
+    //     break;
+    //   }
+    // }
+    //
+    // // 변경가능.
+    // if (flag == true){
+    //   print("변경가능");
+    //
+    //   ScrapData(doc);
+    //
+    //   setState(() async {
+    //     n++;
+    //   });
+    // }
+    // else{
+    //   print("변경불가");
+    // }
+
     FirebaseFirestore.instance.collection("users")
         .doc(currentUser).update({
       'Scrap' : FieldValue.arrayUnion([doc.id]) // doc.id는 게시글의 id를 잡아줌.
     });
+  }
+
+  Widget ScrapIcon(Map<String, dynamic> data){
+    var dataList = data.values.toList();
+    var keyList = data.keys.toList();
+    int tempLength = data.length;
+    for (int i = 0; i < tempLength; i++){
+      if (currentUID == dataList[i].toString()){
+        if (keyList[i] == "uid"){
+          continue;
+        }
+        if (keyList[i].contains('like_user')){
+          continue;
+        }
+        print('~~');
+        return Icon(Icons.star, color: Colors.yellow);
+      }
+    }
+    return Icon(Icons.star_outline, color: Colors.yellow);
   }
 
 

@@ -492,25 +492,34 @@ class _GridViewPageState extends State<GridViewPage> {
             child: Image.network(
               snapshot["imageURL"],
               fit: BoxFit.cover,
-
             )),
       ),
     )
         : Padding(
       padding: const EdgeInsets.all(1.0),
-      child: Container(
-          color: Theme.of(context).colorScheme.surface,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-                child: Text(
-                  snapshot['description'],
-                  style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface,),
-                  textAlign: TextAlign.center,
-                  maxLines: 5,
-                )
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ListViewPage(doc: snapshot, currentUser: currentUser),
             ),
-          )
+          );
+        },
+        child: Container(
+            color: Theme.of(context).colorScheme.surface,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                  child: Text(
+                    snapshot['description'],
+                    style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface,),
+                    textAlign: TextAlign.center,
+                    maxLines: 5,
+                  )
+              ),
+            )
+        ),
       ),
     );
     Column(
