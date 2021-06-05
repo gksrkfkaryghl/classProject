@@ -26,6 +26,10 @@ class _ListViewPageState extends State<ListViewPage> {
   final snackBar2 = SnackBar(content: Text('You can only do it once!!'));
   final String currentUID = FirebaseAuth.instance.currentUser.uid;
   int likeNum;
+  String selectedPostID = '';
+  String displayName = '';
+  String userPhotoURL = '';
+  var userDoc;
 
   int n = 0;
 
@@ -67,7 +71,6 @@ class _ListViewPageState extends State<ListViewPage> {
           IconButton(
             icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary,),
             onPressed: () {
-              print('on more check: ${currentUser}');
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -76,24 +79,24 @@ class _ListViewPageState extends State<ListViewPage> {
               );
             },
           ),
-          IconButton(
-            icon: Icon(Icons.notifications_none_outlined, color: Theme.of(context).colorScheme.primary,),
-            onPressed: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => UpdatePage(doc: data),
-              //   ),
-              // );
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.mail_outline, color: Theme.of(context).colorScheme.primary,),
-            // onPressed: () {
-            //   deleteDoc(data['docID']);
-            //   Navigator.pop(context);
-            // },
-          ),
+          // IconButton(
+          //   icon: Icon(Icons.notifications_none_outlined, color: Theme.of(context).colorScheme.primary,),
+          //   onPressed: () {
+          //     // Navigator.push(
+          //     //   context,
+          //     //   MaterialPageRoute(
+          //     //     builder: (context) => UpdatePage(doc: data),
+          //     //   ),
+          //     // );
+          //   },
+          // ),
+          // IconButton(
+          //   icon: Icon(Icons.mail_outline, color: Theme.of(context).colorScheme.primary,),
+          //   // onPressed: () {
+          //   //   deleteDoc(data['docID']);
+          //   //   Navigator.pop(context);
+          //   // },
+          // ),
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -105,18 +108,40 @@ class _ListViewPageState extends State<ListViewPage> {
             // print("@@@@: ${l}");
             selectedItemData(context, snapshot);
             print('selectedItemData: ${data}');
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  postItem(data, doc),
-                  ListView(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    children: postList(context, snapshot),
+            return FutureBuilder(
+              future: FirebaseFirestore.instance.collection("users").get(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot2) {
+                userDoc = snapshot2.data.docs.where((element) => element['uid'] == doc['uid']);
+                print('userDoc : ${userDoc.first.get('displayname')}');
+                selectedPostID = doc['docID'];
+                displayName = userDoc.first.get('displayname');
+                userPhotoURL = userDoc.first.get('userPhotoURL');
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      postItem(data, doc, displayName),
+                      ListView(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        children: postList(context, snapshot, snapshot2),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              }
             );
+            // return SingleChildScrollView(
+            //   child: Column(
+            //     children: [
+            //       postItem(data, doc),
+            //       ListView(
+            //         physics: NeverScrollableScrollPhysics(),
+            //         shrinkWrap: true,
+            //         children: postList(context, snapshot),
+            //       ),
+            //     ],
+            //   ),
+            // );
           }
       ),
     );
@@ -132,13 +157,18 @@ class _ListViewPageState extends State<ListViewPage> {
     }
   }
 
-  List<Widget> postList (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+  List<Widget> postList (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot1, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot2) {
     try {
-      return snapshot.data.docs
+      return snapshot1.data.docs.where((element) => element['docID'] != selectedPostID)
           .map((doc) {
-        if(snapshot.hasData) {
+        if(snapshot1.hasData) {
+          // print(snapshot1.data.docs.single.toString());
+          userDoc = snapshot2.data.docs.toList().where((element) => element['uid'] == doc['uid']).single.data();
+          print('userDoc!!!: ${userDoc['displayname']}');
+          displayName = userDoc['displayname'];
+          userPhotoURL = userDoc['userPhotoURL'];
           Map<String, dynamic> dataMap = doc.data();
-          return postItem(dataMap, doc);
+          return postItem(dataMap, doc, displayName);
         }
       }).toList();
     } catch(error) {
@@ -146,7 +176,7 @@ class _ListViewPageState extends State<ListViewPage> {
     }
   }
 
-  Widget postItem(Map<String, dynamic> data, QueryDocumentSnapshot<Object> doc) {
+  Widget postItem(Map<String, dynamic> data, QueryDocumentSnapshot<Object> doc, String displayName) {
     return Column(
       children: <Widget>[
         Row(
@@ -159,14 +189,14 @@ class _ListViewPageState extends State<ListViewPage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: NetworkImage(doc['userPhotoURL']),
+                      image: NetworkImage(userPhotoURL),
                       fit: BoxFit.fill
                   ),
                 ),
               ),
             ),
             SizedBox(width: 8,),
-            Text('${doc['userDisplayName']}', style: TextStyle(fontSize: 17),),
+            Text(displayName, style: TextStyle(fontSize: 17),),
             Expanded(child: Container()),
             IconButton(
                 icon: Icon(Icons.more_horiz),
@@ -349,7 +379,7 @@ class _ListViewPageState extends State<ListViewPage> {
   ScrapData(QueryDocumentSnapshot<Object> doc) async{
     // uid가 안잡혀서 임의로 잡았음.
     FirebaseFirestore.instance.collection("users")
-        .doc("Qz2LP0sw9DMP2XDqtyKzECs9J0q2").update({
+        .doc(currentUser).update({
       'Scrap' : FieldValue.arrayUnion([doc.id]) // doc.id는 게시글의 id를 잡아줌.
     });
   }

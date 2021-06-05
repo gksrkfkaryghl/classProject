@@ -53,6 +53,8 @@ class _UploadPageState extends State<UploadPage> {
     List <String> indexList = [];
 
     await firebaseStorageRef.putString(nameController.text);
+    
+    
     if(is_default)
       downloadURL = '';
     else {
