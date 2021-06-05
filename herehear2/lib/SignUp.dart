@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:image_picker/image_picker.dart';
 import './methods/validators.dart';
 import './methods/toast.dart';
 import 'home.dart';
@@ -39,17 +43,33 @@ class _SignUpPageState extends State<SignUpPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // User Firebase에 넣는 함수
+  String downloadURL =
+      "https://lh3.googleusercontent.com/proxy/tAP7ZNiWW27xXuL1cgLxMxP3NxCC6Pv07Gcle-MSH2EgRg2lpJXzSEinJr64w3_hfGACB3LtkiFPp8JbxvoKqpEZT-oLDEHgIOi3HmsmchzPlxRpzUSETCMwnvUC7wOU2_cBBvMVVMlvrHoTUZ8_VcpIzde1Bsnf94kzvlIkNaUP4sg";
+
   Future addUser() async {
+    Reference firebaseStorageRef =
+    FirebaseStorage.instance.ref().child('users/$UID');
+
+    if (_imageFile != null){
+      await firebaseStorageRef.putFile(_imageFile);
+      downloadURL = await firebaseStorageRef.getDownloadURL();
+    }
+
+
     Map <String, dynamic> data = {
       "email": emailController.text,
       "password": passwordController.text,
       "displayname" : displayController.text,
-      "Scrap": [],
+      "Scrap": [''],
       "tags" : tagList,
       "location" : locationController.text,
       "uid":UID,
+      "userPhotoURL" : downloadURL,
     };
+
     FirebaseFirestore.instance.collection('users').doc(UID).set(data);
+
+
   }
 
 
@@ -84,6 +104,35 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   final AuthService2 _auth = AuthService2(); // 새로추가.
+
+  // 이미지 파트
+  bool is_default = true;
+  File _imageFile;
+
+  Widget loadImage() {
+    if(_imageFile == null)
+      return Container();
+    else
+      return Column(
+          children: <Widget>[
+            Image.file(_imageFile),
+            Divider(
+              indent: 20,
+              endIndent: 20,
+              thickness: 1,
+            )
+          ]
+      );
+  }
+
+  final _picker = ImagePicker();
+  Future<String> pickAnImageFromGallery() async {
+    var image = await _picker.getImage(source: ImageSource.gallery);
+    _imageFile = File(image.path);
+    return image.path;
+  }
+
+
 
   _buildBody() {
     return SingleChildScrollView(
@@ -178,6 +227,22 @@ class _SignUpPageState extends State<SignUpPage> {
                   )
               ),
               SizedBox(height: 10,),
+              loadImage(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.photo_camera),
+                    iconSize: 25,
+                    onPressed: () {
+                      pickAnImageFromGallery().then((value){
+                        setState(() {
+                        });
+                      });
+                    },
+                  )
+                ],
+              ),
               Center(
                 child: FlatButton(
                   child: Text(
@@ -197,14 +262,10 @@ class _SignUpPageState extends State<SignUpPage> {
                       addUser();
                       print("Sign up");
                       print(UID);
-
                       Navigator.push(
                         context,
-                        //MaterialPageRoute(builder: (context) => ListViewPage(currentUser: null, target: UID,)),
                         MaterialPageRoute(builder: (context) => HomePage(currentUser: UID)),
-
                       );
-
                     } catch(e){
                       toastError(_scaffoldKey, e);
                     } finally{
@@ -223,20 +284,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     dynamic result = await _auth.signInWithGoogle();
                     UID = result.uid.toString();
                     addUser();
-
-
                     Navigator.push(
                       context,
-                      // MaterialPageRoute(builder: (context) => ListViewPage(currentUser: null,target: UID,)),
                       MaterialPageRoute(builder: (context) => HomePage(currentUser: UID)),
-
                     );
-
-
-                    // await _googleSignIn();
-                    // Navigator.pushReplacementNamed(context, '/');
-                    // Navigator.pushReplacementNamed(context, '/auth');
-                    // Navigator.pushReplacementNamed(context, '/home');
                   } catch (e) {
                     print('Error: Goggle sign in');
                     toastError(_scaffoldKey, e);
@@ -245,14 +296,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   }
                 },
               ),
-              // SizedBox(height: 20,),
-              // Text("Don't have an account yet?"),
-              // FlatButton(
-              //   child: Text('Sign up'),
-              //   onPressed: () {
-              //     Navigator.pushNamed(context, '/signup');
-              //   },
-              // )
             ],
           ),
         ),
@@ -265,7 +308,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(title: Text('Sign Up'),),
+        appBar: AppBar(title: Text('Sign Up')),
         body: _loading? _buildLoading() : _buildBody()
     );
   }

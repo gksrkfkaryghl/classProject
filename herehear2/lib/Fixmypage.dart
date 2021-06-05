@@ -1,12 +1,16 @@
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:herehear/mypage.dart';
+import 'package:image_picker/image_picker.dart';
 import './methods/validators.dart';
 import './methods/toast.dart';
 import 'home.dart';
@@ -51,9 +55,20 @@ class _FixPageState extends State<FixPage> {
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  String downloadURL;
+
   var Scrap_list;
   // User Firebase에 넣는 함수
   Future addUser() async {
+    Reference firebaseStorageRef =
+    FirebaseStorage.instance.ref().child('users/$UID');
+
+    if (_imageFile != null){
+      await firebaseStorageRef.putFile(_imageFile);
+      downloadURL = await firebaseStorageRef.getDownloadURL();
+    }
+
+
     Map<String, dynamic> data = {
       "email": emailController.text,
       "password": passwordController.text,
@@ -62,32 +77,11 @@ class _FixPageState extends State<FixPage> {
       "tags": tagList,
       "location": locationController.text,
       "uid": UID,
+      "userPhotoURL" : downloadURL,
     };
     FirebaseFirestore.instance.collection('users').doc(currentUser).set(data);
   }
 
-  _googleSignIn() async {
-    final bool isSignedIn = await GoogleSignIn().isSignedIn();
-    GoogleSignInAccount googleUser;
-    if (isSignedIn)
-      googleUser = await GoogleSignIn().signInSilently();
-    else
-      googleUser = await GoogleSignIn().signIn();
-    // await GoogleSignIn().signOut();
-    // GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    final User user =
-        (await FirebaseAuth.instance.signInWithCredential(credential)).user;
-    // print("signed in " + user.displayName);
-    return user;
-  }
 
   _buildLoading() {
     return Center(
@@ -96,6 +90,35 @@ class _FixPageState extends State<FixPage> {
   }
 
   final AuthService2 _auth = AuthService2(); // 새로추가.
+  // 이미지 파트
+  bool is_default = true;
+  File _imageFile;
+
+  Widget loadImage() {
+    if(_imageFile == null)
+      return Container();
+    else
+      return Column(
+          children: <Widget>[
+            Image.file(_imageFile),
+            Divider(
+              indent: 20,
+              endIndent: 20,
+              thickness: 1,
+            )
+          ]
+      );
+  }
+
+  final _picker = ImagePicker();
+  Future<String> pickAnImageFromGallery() async {
+    var image = await _picker.getImage(source: ImageSource.gallery);
+    _imageFile = File(image.path);
+    return image.path;
+  }
+
+
+
 
   _buildBody() {
     print("[FixmyPage]currentUser");
@@ -117,6 +140,7 @@ class _FixPageState extends State<FixPage> {
         if (snapshot.connectionState == ConnectionState.done) {
           Map<String, dynamic> data = snapshot.data.data();
           Scrap_list = data["Scrap"];
+          downloadURL = data["userPhotoURL"];
           if (tag_flag == false) {
             tagList = data["tags"];
             tag_flag = true;
@@ -230,8 +254,22 @@ class _FixPageState extends State<FixPage> {
                             )
                           ],
                         )),
-                    SizedBox(
-                      height: 10,
+                    SizedBox(height: 10),
+                    loadImage(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.photo_camera),
+                          iconSize: 25,
+                          onPressed: () {
+                            pickAnImageFromGallery().then((value){
+                              setState(() {
+                              });
+                            });
+                          },
+                        )
+                      ],
                     ),
                     Center(
                       child: FlatButton(
@@ -249,9 +287,7 @@ class _FixPageState extends State<FixPage> {
                             print("Fix up Sccess");
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      MyPage(currentUser: currentUser)),
+                              MaterialPageRoute(builder: (context) => HomePage(currentUser: currentUser)),
                             );
                           } catch (e) {
                             toastError(_scaffoldKey, e);
