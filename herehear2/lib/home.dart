@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:herehear/main.dart';
 import 'package:herehear/theme/theme.dart';
 import 'package:herehear/upload.dart';
 import 'package:herehear/weatherPage.dart';
@@ -11,8 +12,9 @@ import 'mypage.dart';
 import 'theme/colors.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.currentUser}) : super(key: key);
+  HomePage({Key key, this.currentUser, this.user_tag}) : super(key: key);
   final String currentUser;
+  var user_tag;
 
   // // User currentUser;
   // GoogleSignInAccount currentUser;
@@ -21,12 +23,13 @@ class HomePage extends StatefulWidget {
 
   @override
   //_HomePageState createState() => new _HomePageState();
-  _HomePageState createState() => new _HomePageState(currentUser: currentUser);
+  _HomePageState createState() => new _HomePageState(currentUser: currentUser, user_tag: user_tag);
 }
 
 class _HomePageState extends State<HomePage> {
-  _HomePageState({this.currentUser});
+  _HomePageState({this.currentUser,this.user_tag});
   String currentUser;
+  var user_tag;
 
   int _currentIndex = 0;
   //List<Widget> _children;
@@ -36,9 +39,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     print("[HomePage] current user");
     print(currentUser);
+    print(user_tag);
+
+    print("home Provider");
+    print(Provider.of<Favorites>(context).fruit);
+
 
     List<Widget> _children = [
-      GridViewPage(currentUser: currentUser),
+      GridViewPage(currentUser: currentUser, user_tag: user_tag),
       ListViewPage(doc: null, currentUser: currentUser),
       // UploadPage(),
       //GridViewPage(),

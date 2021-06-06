@@ -287,7 +287,7 @@ class _FixPageState extends State<FixPage> {
                             print("Fix up Sccess");
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => HomePage(currentUser: currentUser)),
+                              MaterialPageRoute(builder: (context) => HomePage(currentUser: currentUser, user_tag: tagList)),
                             );
                           } catch (e) {
                             toastError(_scaffoldKey, e);
