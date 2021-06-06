@@ -31,7 +31,6 @@ class _GridViewPageState extends State<GridViewPage> {
   getdocID(docID){
     this.docID = docID;
   }
-
   getdescription(description){
     this.description = description;
   }
@@ -39,7 +38,6 @@ class _GridViewPageState extends State<GridViewPage> {
   getdoctags(getdoctags){
     this.doc_tags = getdoctags;
   }
-
 
 
   static var flag_snack = false;
@@ -66,22 +64,11 @@ class _GridViewPageState extends State<GridViewPage> {
               // 'tags' : FieldValue.arrayUnion(t_tags),
             }).then((value){
               print("User updated");
-
-              // print("Provider here");
-              // print(Provider.of<Favorites>(context, listen: false).fruit);
               Provider.of<Favorites>(context, listen: false).changeFruit(true);
-
-              // setState(() {
-              //   flag_snack = true;
-              //   print("flag change");
-              //   print(flag_snack);
-              // });
-
             })
             .catchError((error){
               print("Failed to update user: $error");
             });
-
           }
       }
       else {

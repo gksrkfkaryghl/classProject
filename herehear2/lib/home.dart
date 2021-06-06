@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
     List<Widget> _children = [
       GridViewPage(currentUser: currentUser, user_tag: user_tag),
       //ListViewPage(doc: null, currentUser: currentUser),
-      NotificationPage(),
+      NotificationPage(currentUser: currentUser),
       // UploadPage(),
       //GridViewPage(),
       // CalendarPage(),
