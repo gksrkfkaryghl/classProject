@@ -91,9 +91,10 @@ class _HomePageState extends State<HomePage> {
                       icon:
                        Provider.of<Favorites>(context).fruit
                           ? Icon(
-                           Icons.notification_add,
+                           Icons.notifications_active,
                            color: Colors.red)
-                          : Icon(
+                          :
+                       Icon(
                            Icons.notifications)
                   ),
 

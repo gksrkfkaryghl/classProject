@@ -43,9 +43,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // User Firebase에 넣는 함수
-  String downloadURL =
-      "https://lh3.googleusercontent.com/proxy/tAP7ZNiWW27xXuL1cgLxMxP3NxCC6Pv07Gcle-MSH2EgRg2lpJXzSEinJr64w3_hfGACB3LtkiFPp8JbxvoKqpEZT-oLDEHgIOi3HmsmchzPlxRpzUSETCMwnvUC7wOU2_cBBvMVVMlvrHoTUZ8_VcpIzde1Bsnf94kzvlIkNaUP4sg";
-
+  String downloadURL = "assets/images/profile.jpg";
   Future addUser() async {
     Reference firebaseStorageRef =
     FirebaseStorage.instance.ref().child('users/$UID');

@@ -23,7 +23,6 @@ class _ListViewPageState extends State<ListViewPage> {
   String currentUser;
   final snackBar1 = SnackBar(content: Text('I LIKE IT!'));
   final snackBar2 = SnackBar(content: Text('You can only do it once!!'));
-  final String currentUID = FirebaseAuth.instance.currentUser.uid;
   int likeNum;
   String selectedPostID = '';
   String displayName = '';
@@ -169,7 +168,7 @@ class _ListViewPageState extends State<ListViewPage> {
           }
           // print(snapshot1.data.docs.single.toString());
           userDoc = snapshot2.data.docs.toList().where((element) => element['uid'] == doc2['uid']).single.data();
-          print('userDoc!!!: ${userDoc['displayname']}');
+          // print('userDoc!!!: ${userDoc['displayname']}');
           displayName = userDoc['displayname'];
           userPhotoURL = userDoc['userPhotoURL'];
           Map<String, dynamic> dataMap = doc2.data();
@@ -195,7 +194,7 @@ class _ListViewPageState extends State<ListViewPage> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: NetworkImage(userPhotoURL),
+                        image: userPhotoURL != '' ? NetworkImage(userPhotoURL) : AssetImage('assets/images/profile.jpg'),
                         fit: BoxFit.fill
                     ),
                   ),
@@ -206,7 +205,14 @@ class _ListViewPageState extends State<ListViewPage> {
               Expanded(child: Container()),
               IconButton(
                   icon: Icon(Icons.more_horiz),
-                  onPressed: null)
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UpdatePage(doc: doc, currentUser: currentUser),
+                        ),
+                      );
+                  })
             ],
           ),
           Container(
@@ -244,8 +250,8 @@ class _ListViewPageState extends State<ListViewPage> {
                         for (int i = 0; i < tempLength; i++){
                           print(dataList[i]);
 
-                          if (currentUID == dataList[i].toString()){
-                            if ((keyList[i] == "uid") || (keyList[i].contains('scraped_user'))){
+                          if (currentUser == dataList[i].toString()){
+                            if ((keyList[i] == "uid") || (keyList[i].contains('scrap_user'))){
                               continue;
                             }
                             flag = false;
@@ -293,7 +299,7 @@ class _ListViewPageState extends State<ListViewPage> {
                     child: Container(),
                   ),
                   IconButton(
-                      icon: Icon(Icons.star_border, color: Colors.yellow),
+                      icon: ScrapIcon(data),
                       onPressed: () {
                         ScrapData(doc2);
                         setState(() {
@@ -343,7 +349,14 @@ class _ListViewPageState extends State<ListViewPage> {
               Expanded(child: Container()),
               IconButton(
                   icon: Icon(Icons.more_horiz),
-                  onPressed: null)
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UpdatePage(doc: doc, currentUser: currentUser),
+                      ),
+                    );
+                  })
             ],
           ),
           Image.network(
@@ -371,7 +384,7 @@ class _ListViewPageState extends State<ListViewPage> {
                         for (int i = 0; i < tempLength; i++){
                           print(dataList[i]);
 
-                          if (currentUID == dataList[i].toString()){
+                          if (currentUser == dataList[i].toString()){
                             if ((keyList[i] == "uid") || (keyList[i].contains('scraped_user'))){
                               continue;
                             }
@@ -432,9 +445,39 @@ class _ListViewPageState extends State<ListViewPage> {
                   IconButton(
                       icon: Icon(Icons.star_border, color: Colors.yellow),
                       onPressed: () {
-                        ScrapData(doc2);
-                        setState(() {
-                        });
+                        bool flag = true;
+
+                        print('?!?!?!: $data');
+                        var dataList = data.values.toList();
+                        var keyList = data.keys.toList();
+                        int tempLength = data.length;
+                        print('?????: $tempLength');
+                        for (int i = 0; i < tempLength; i++){
+                          print(dataList[i]);
+
+                          if (currentUser == dataList[i].toString()){
+                            if ((keyList[i] == "uid") || (keyList[i].contains('like_user'))){
+                              continue;
+                            }
+                            flag = false;
+                            print("같음");
+                            break;
+                          }
+                        }
+
+                        // 변경가능.
+                        if (flag == true){
+                          print("변경가능");
+
+                          ScrapData(doc2);
+
+                          setState(() async {
+                            n++;
+                          });
+                        }
+                        else{
+                          print("변경불가");
+                        }
                       }),
                 ],
               ),
@@ -465,11 +508,10 @@ class _ListViewPageState extends State<ListViewPage> {
     int tempLength = data.length;
     for (int i = 0; i < tempLength; i++){
 
-      if (currentUID == dataList[i].toString()){
-        if ((keyList[i] == "uid") || (keyList[i].contains('scraped_user'))){
+      if (currentUser == dataList[i].toString()){
+        if ((keyList[i] == "uid") || (keyList[i].contains('scrap_user'))){
           continue;
         }
-        print('~~');
         return Icon(Icons.favorite, color: Colors.red);
       }
     }
@@ -477,27 +519,13 @@ class _ListViewPageState extends State<ListViewPage> {
   }
 
   likeData(QueryDocumentSnapshot<Object> doc) async {
-    DocumentReference documentReference =
-    FirebaseFirestore.instance.collection("posts").doc(doc['docID']);
-
-    // String temp = image?.path ?? "https://handong.edu/site/handong/res/img/logo.png";
-    //String temp = image?.path ?? widget.post.data()['imgurl'];
-
-    // create map
-    //print("imgurl");
-    //print(temp);
-
     String field_name = "like_user" + (doc['likeNum'] + 1).toString();
     print(field_name);
 
     int likeNum = doc['likeNum'] + 1;
 
-    // Map<String, dynamic> tempp =  widget.data.data();
-    // tempp[field_name] = doc['uid'];
-    // tempp["likeNum"] = doc['likeNum'] + 1;
-
     FirebaseFirestore.instance.collection('posts').doc(doc['docID']).update({
-      field_name : currentUID,
+      field_name : currentUser,
       'likeNum' : likeNum,
     }).whenComplete(() => print('완료!!'));
 
@@ -522,40 +550,15 @@ class _ListViewPageState extends State<ListViewPage> {
   }
 
   ScrapData(QueryDocumentSnapshot<Object> doc) async{
-    // uid가 안잡혀서 임의로 잡았음.
-    bool flag = true;
+    String field_name = "scrap_user" + (doc['scrapNum'] + 1).toString();
+    print(field_name);
 
-    // print('?!?!?!: $data');
-    // var dataList = data.values.toList();
-    // var keyList = data.keys.toList();
-    // int tempLength = data.length;
-    // print('?????: $tempLength');
-    // for (int i = 0; i < tempLength; i++){
-    //   print(dataList[i]);
-    //
-    //   if (currentUID == dataList[i].toString()){
-    //     if ((keyList[i] == "uid") || (keyList[i].contains('like_user'))){
-    //       continue;
-    //     }
-    //     flag = false;
-    //     print("같음");
-    //     break;
-    //   }
-    // }
-    //
-    // // 변경가능.
-    // if (flag == true){
-    //   print("변경가능");
-    //
-    //   ScrapData(doc);
-    //
-    //   setState(() async {
-    //     n++;
-    //   });
-    // }
-    // else{
-    //   print("변경불가");
-    // }
+    int scrapNum = doc['scrapNum'] + 1;
+
+    FirebaseFirestore.instance.collection('posts').doc(doc['docID']).update({
+      field_name : currentUser,
+      'scrapNum' : scrapNum,
+    }).whenComplete(() => print('완료!!'));
 
     FirebaseFirestore.instance.collection("users")
         .doc(currentUser).update({
@@ -568,17 +571,18 @@ class _ListViewPageState extends State<ListViewPage> {
     var keyList = data.keys.toList();
     int tempLength = data.length;
     for (int i = 0; i < tempLength; i++){
-      if (currentUID == dataList[i].toString()){
+      if (currentUser == dataList[i].toString()){
         if (keyList[i] == "uid"){
           continue;
         }
         if (keyList[i].contains('like_user')){
           continue;
         }
-        print('~~');
+        print('star!!!!');
         return Icon(Icons.star, color: Colors.yellow);
       }
     }
+    print('star_outline!!!!');
     return Icon(Icons.star_outline, color: Colors.yellow);
   }
 

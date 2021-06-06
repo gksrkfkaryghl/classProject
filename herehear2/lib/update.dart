@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tags/flutter_tags.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,69 +11,105 @@ import 'package:path/path.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
-class UpdatePage extends StatefulWidget {
-  var doc;
+import 'data/location.dart';
+import 'gridview.dart';
+import 'listview.dart';
 
-  UpdatePage({this.doc});
+class UpdatePage extends StatefulWidget {
+  UpdatePage({this.doc, this.currentUser});
+
+  var doc;
+  final String currentUser;
 
   @override
-  _UpdatePageState createState() => _UpdatePageState(doc);
+  _UpdatePageState createState() => _UpdatePageState(doc, currentUser);
 }
 
 class _UpdatePageState extends State<UpdatePage> {
   var doc;
+  final String currentUser;
 
-  _UpdatePageState(this.doc);
+  _UpdatePageState(this.doc, this.currentUser);
 
   final _picker = ImagePicker();
+  final GlobalKey<TagsState> _globalKey = GlobalKey<TagsState>();
+  List tagList = [];
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController()..text = widget.doc['name'];
-    priceController = TextEditingController()..text = widget.doc['price'];
     descriptionController = TextEditingController()..text = widget.doc['description'];
+    tagList = doc['tags'];
   }
 
 
   File _imageFile;
 
-  final String UserEmail = FirebaseAuth.instance.currentUser.email;
-
-  final String currentUID = FirebaseAuth.instance.currentUser.uid;
-
   bool is_default = true;
+  String downloadURL;
 
   Future updateToFirebase(File image, String docID) async {
-    // await FirebaseStorage.instance.ref().child('images/$docID').getDownloadURL().then((value) => print('RRRRRRRRRRRR: $value'));
-    // await FirebaseStorage.instance.ref().child('images/$docID').delete();
-    Reference firebaseStorageRef =
-    FirebaseStorage.instance.ref().child('images/$docID');
+    final String currentLocation = await Location().getLocation();
+    String docID = Timestamp.now().seconds.toString();
     final now = FieldValue.serverTimestamp();
+    Reference firebaseStorageRef =
+    FirebaseStorage.instance.ref().child('posts/$docID');
+
+    List <String> splitList = descriptionController.text.split(" ");
+    List <String> indexList = [];
+
+    // await firebaseStorageRef.putString(nameController.text);
+
+
+
+    if(is_default)
+      downloadURL = '';
+    else {
+      // UploadTask uploadTask = firebaseStorageRef.putFile(image);
+      await firebaseStorageRef.putFile(image);
+      downloadURL = await firebaseStorageRef.getDownloadURL();
+    }
+
+    for (int i = 0; i < splitList.length; i++){
+      for (int y = 1; y < splitList[i].length + 1; y++) {
+        indexList.add(splitList[i].substring(0,y).toLowerCase());
+      }
+    }
+
+    for (int i = 0; i < tagList.length; i++){
+      for (int y = 1; y < tagList[i].length + 1; y++) {
+        indexList.add(tagList[i].substring(0,y).toLowerCase());
+      }
+    }
 
     // await firebaseStorageRef.putString(nameController.text);
     if(is_default) {
-      FirebaseFirestore.instance.collection('images').doc(docID).update({
-        'name': nameController.text,
-        'price': priceController.text,
-        'description': descriptionController.text,
+      FirebaseFirestore.instance.collection('posts').doc(docID).update({
+        'description' : descriptionController.text,
+        "imageURL": downloadURL,
+        'uid' : currentUser,
+        'docID': docID,
         'updatedTime': now,
+        'tags' : tagList,
+        'location' : currentLocation,
+        'searchIndex' : indexList,
       });
       return;
     }
     await firebaseStorageRef.putFile(image);
-    String downloadURL = await firebaseStorageRef.getDownloadURL();
+    downloadURL = await firebaseStorageRef.getDownloadURL();
 
-    FirebaseFirestore.instance.collection('images').doc(docID).update({
-      'name': nameController.text,
-      'price': priceController.text,
-      'description': descriptionController.text,
-      'imageURL': downloadURL,
+    FirebaseFirestore.instance.collection('posts').doc(docID).update({
+      'description' : descriptionController.text,
+      "imageURL": downloadURL,
+      'uid' : currentUser,
+      'docID': docID,
       'updatedTime': now,
+      'tags' : tagList,
+      'location' : currentLocation,
+      'searchIndex' : indexList,
     });
   }
 
@@ -87,22 +124,34 @@ class _UpdatePageState extends State<UpdatePage> {
   }
 
   Widget loadImage(BuildContext context) {
-    if(is_default) {
-      return Image.network(
-        widget.doc['imageURL'],
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
-        height: 250,
+    if(is_default)
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.network(
+              doc['imageURL'],
+              width: MediaQuery.of(context).size.width * 0.2,
+            ),
+          ),
+          Divider(height: 5, thickness: 1,),
+        ],
       );
-    } else {
-      return Image.file(
-        _imageFile,
-        width: 300,
-        height: 250,
+    else
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.file(
+              _imageFile,
+              width: MediaQuery.of(context).size.width * 0.2,
+            ),
+          ),
+          Divider(height: 5, thickness: 1,),
+        ],
       );
-    }
   }
 
   // void updateDoc(String docID, String name, int price, String description, String imgURL) {
@@ -116,26 +165,32 @@ class _UpdatePageState extends State<UpdatePage> {
 
   @override
   Widget build(BuildContext context) {
+    print('upload currentUser: ${currentUser}');
+    print('tag: ${tagList}');
     return Scaffold(
         appBar: AppBar(
-          leading: TextButton(
-            child: Text('Cancel', style: TextStyle(fontSize: 13, color: Colors.black),),
+          leading: IconButton(
+            icon: Icon(Icons.close, color: Colors.redAccent, size: 25,),
             onPressed: () {
-              Navigator.pop(context, doc);
+              Navigator.pop(context);
               is_default = true;
             },
           ),
-          title: Center(child: Text('Edit')),
+          title: Center(child: Text('Add')),
           actions: <Widget>[
-            TextButton(
-                child: Text('Save', style: TextStyle(color: Colors.white),),
+            IconButton(
+                icon: Icon(Icons.done, color: Theme.of(context).colorScheme.primary, size: 25,),
                 onPressed: () {
-                  updateToFirebase(_imageFile, widget.doc['docID']).then((value) {
+                  updateToFirebase(_imageFile, doc['docID']).then((value) {
                     if(!is_default)
                       is_default = true;
-                    Navigator.pushNamed(context, '/home');
-                  }
-                  );
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ListViewPage(doc: doc, currentUser: currentUser)
+                        )
+                    );
+                  });
                 }
             )
           ],
@@ -161,27 +216,71 @@ class _UpdatePageState extends State<UpdatePage> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: EdgeInsets.fromLTRB(24, 0, 24, 5),
               child: Column(
                 children: [
                   TextField(
-                    controller: nameController,
-                    keyboardType: TextInputType.text,
-                    decoration:
-                    InputDecoration(hintText: "Enter the name of this product.",),
-                  ),
-                  TextField(
-                    controller: priceController,
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
-                    decoration:
-                    InputDecoration(hintText: "Enter price."),
-                  ),
-                  TextField(
+                    autofocus: true,
                     controller: descriptionController,
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    minLines: 15,
                     decoration:
-                    InputDecoration(hintText: "Enter descirption."),
+                    InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "내용을 입력하세요."
+                    ),
                   ),
+                  Divider(),
+                  Tags(
+                    key: _globalKey,
+                    // textField: TagsTextField(
+                    //     textStyle: TextStyle(fontSize: 14),
+                    //     // constraintSuggestion: true, suggestions: [],
+                    //     onSubmitted: (value) {
+                    //       setState(() {
+                    //         tagList.add(value);
+                    //         print(tagList);
+                    //       });
+                    //     }),
+                    itemCount: tagList.length,
+                    itemBuilder: (index) {
+                      final Item currentItem =
+                      Item(title: tagList[index]);
+                      return ItemTags(
+                        index: index,
+                        title: currentItem.title,
+                        customData: currentItem.customData,
+                        textColor:
+                        Theme.of(context).colorScheme.onPrimary,
+                        color:
+                        Theme.of(context).colorScheme.secondary,
+                        activeColor:
+                        Theme.of(context).colorScheme.primary,
+                        textStyle: TextStyle(fontSize: 14),
+                        combine: ItemTagsCombine.withTextBefore,
+                        onPressed: (i) => print('asdfasdf: $i'),
+                        onLongPressed: (i) => print('asdfasdf: $i'),
+                        removeButton:
+                        ItemTagsRemoveButton(onRemoved: () {
+                          setState(() {
+                            tagList.removeAt(index);
+                          });
+                          return true;
+                        }),
+                      );
+                    },
+                    textField: TagsTextField(
+                        textStyle: TextStyle(fontSize: 14),
+                        // constraintSuggestion: true, suggestions: [],
+                        onSubmitted: (value) {
+                          setState(() {
+                            tagList.add(value);
+                            print(tagList);
+                          });
+                        }
+                    ),
+                  )
                 ],
               ),
             ),
@@ -193,8 +292,6 @@ class _UpdatePageState extends State<UpdatePage> {
   @override
   void dispose() {
     super.dispose();
-    nameController.dispose();
-    priceController.dispose();
     descriptionController.dispose();
   }
 }

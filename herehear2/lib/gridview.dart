@@ -186,24 +186,6 @@ class _GridViewPageState extends State<GridViewPage> {
                       );
                     },
                   ),
-                  IconButton(
-                    icon: Icon(Icons.notifications_none_outlined, color: Theme.of(context).colorScheme.primary,),
-                    onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => UpdatePage(doc: data),
-                      //   ),
-                      // );
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.mail_outline, color: Theme.of(context).colorScheme.primary,),
-                    // onPressed: () {
-                    //   deleteDoc(data['docID']);
-                    //   Navigator.pop(context);
-                    // },
-                  ),
                 ],
                 bottom: TabBar(
                   onTap: (index) {
@@ -233,8 +215,6 @@ class _GridViewPageState extends State<GridViewPage> {
 
   Widget all() {
     final Stream <QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('posts').snapshots();
-
-
     return Container(
       //child: FutureBuilder(
       child: StreamBuilder<QuerySnapshot>(

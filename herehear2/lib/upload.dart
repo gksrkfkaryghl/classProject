@@ -37,7 +37,6 @@ class _UploadPageState extends State<UploadPage> {
   File _imageFile;
 
   // final String UserEmail = FirebaseAuth.instance.currentUser.email;
-  final String currentUID = FirebaseAuth.instance.currentUser.uid;
   bool is_default = true;
   String downloadURL;
   List tagList = [];
@@ -79,10 +78,11 @@ class _UploadPageState extends State<UploadPage> {
       // 'type': _results.first["label"],
       'description' : descriptionController.text,
       "imageURL": downloadURL,
-      'uid' : currentUID,
+      'uid' : currentUser,
       // 'userDisplayName' : currentUser.displayName,
       // 'userPhotoURL' : currentUser.photoUrl,
       'likeNum' : 0,
+      'scrapNum' : 0,
       'docID': docID,
       'generatedTime': now,
       'updatedTime': '',

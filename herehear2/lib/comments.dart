@@ -24,7 +24,6 @@ class _CommentPageState extends State<CommentPage> {
   String docUserName;
   String docUserPhotoURL;
 
-  final String currentUID = FirebaseAuth.instance.currentUser.uid;
   // final formKey = GlobalKey<FormState>();
   final TextEditingController commentController = TextEditingController();
   QueryDocumentSnapshot<Map<String, dynamic>> docComment;
@@ -150,7 +149,7 @@ class _CommentPageState extends State<CommentPage> {
             Map<String, dynamic> data = {
               // 'type': _results.first["label"],
               'message' : commentController.text,
-              'uid' : currentUID,
+              'uid' : currentUser,
               // 'displayname' : currentUser.displayName,
               // 'userPhotoURL' : currentUser.photoUrl,
               'likeNum' : 0,
@@ -161,7 +160,7 @@ class _CommentPageState extends State<CommentPage> {
             };
 
             FirebaseFirestore.instance
-                .collection('posts')
+                .collection('posts')  
                 .doc(doc['docID'])
                 .collection('comments')
                 .doc(docID)
