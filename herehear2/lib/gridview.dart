@@ -6,20 +6,23 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:herehear/data/location.dart';
 import 'package:herehear/listview.dart';
 import 'package:herehear/upload.dart';
+import 'package:provider/provider.dart';
+
+import 'main.dart';
 
 class GridViewPage extends StatefulWidget {
   String currentUser;
-
-  GridViewPage({this.currentUser});
+  var user_tag;
+  GridViewPage({this.currentUser, this.user_tag});
 
   @override
-  _GridViewPageState createState() => _GridViewPageState(currentUser: currentUser);
+  _GridViewPageState createState() => _GridViewPageState(currentUser: currentUser, user_tag: user_tag);
 }
 
 class _GridViewPageState extends State<GridViewPage> {
   String currentUser;
-
-  _GridViewPageState({this.currentUser});
+  var user_tag;
+  _GridViewPageState({this.currentUser, this.user_tag});
 
   String docID;
   String description;
@@ -38,19 +41,55 @@ class _GridViewPageState extends State<GridViewPage> {
   }
 
 
-  CreateNotification() async {
+
+  static var flag_snack = false;
+  CreateNotification(String t_doc, String t_des, var t_tags ) async {
 
     DocumentReference documentReference = FirebaseFirestore.instance
                                           .collection("notification").doc(currentUser);
-    documentReference.set({ // update가 아니라 set으로 기본적으로 잡혀야 하는구나.. 그러면 로그인하는 동시에 만들어줘야겠군.
-    'alarm' :  FieldValue.arrayUnion([description]), // doc.id는 게시글의 id를 잡아줌.
-    'docID' : FieldValue.arrayUnion([docID])
-    });
+    // print("CreateNotification");
+    // print(t_doc);
+    // print(t_des);
+    // print(t_tags);
+    documentReference.get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
 
+        List <dynamic> noti_docID = documentSnapshot.get('docID');
+          if (noti_docID.contains(t_doc)){
+            print("이미 포함됌");
+          }
+          else{
+            print("포함되지 않음");
+            documentReference.update({ // update가 아니라 set으로 기본적으로 잡혀야 하는구나.. 그러면 로그인하는 동시에 만들어줘야겠군.
+              'description' :  FieldValue.arrayUnion([t_des]), // doc.id는 게시글의 id를 잡아줌.
+              'docID' : FieldValue.arrayUnion([t_doc]),
+              // 'tags' : FieldValue.arrayUnion(t_tags),
+            }).then((value){
+              print("User updated");
+
+              // print("Provider here");
+              // print(Provider.of<Favorites>(context, listen: false).fruit);
+              Provider.of<Favorites>(context, listen: false).changeFruit(true);
+
+              // setState(() {
+              //   flag_snack = true;
+              //   print("flag change");
+              //   print(flag_snack);
+              // });
+
+            })
+            .catchError((error){
+              print("Failed to update user: $error");
+            });
+
+          }
+      }
+      else {
+        print('Document does not exist on the database');
+      }
+    }
+    );
   }
-
-
-
 
   Future getPosts() async {
     var firestore = FirebaseFirestore.instance;
@@ -135,6 +174,7 @@ class _GridViewPageState extends State<GridViewPage> {
   Widget build(BuildContext context) {
     print("[GridVeiw] current user");
     print(currentUser);
+    print(user_tag);
 
     return DefaultTabController(
         length: 2,
@@ -222,27 +262,6 @@ class _GridViewPageState extends State<GridViewPage> {
             } else {
               // final ThemeData theme = Theme.of(context);
               return Column(children: <Widget>[
-                // Row(
-                //   children: <Widget> [
-                //     Expanded(child: Padding(
-                //       padding: const EdgeInsets.all(8.0),
-                //       child: TextField(
-                //         controller: _addNameController,
-                //       ),
-                //     )
-                //     ),
-                //     RaisedButton(
-                //         child: Text("Add to Database"),
-                //         onPressed: (){
-                //           _addToDatabase(_addNameController.text);
-                //         }
-                //         ),
-                //   ],
-                // ),
-                // Divider(),
-
-
-                ////
                 searchField(),
                 searchString != ""
                     ? searchWidget()
@@ -255,24 +274,77 @@ class _GridViewPageState extends State<GridViewPage> {
                         children: snapshot.data.docs.map((DocumentSnapshot document) {
 
                           // list 형태로 만들기 위해서는 필요함.
-                          String doc_tags = document["tags"].toString();
-                          // 임의의 값으로 정해놨는데, sign in이나 sign up하는 동시에 인자로 줘야할듯?
-                          if (doc_tags.contains('money')){
-                            print(doc_tags);
+                          List <dynamic> doc_tags = document["tags"];
 
-                            getdocID(document["docID"]);
-                            getdescription(document["description"]);
-                            getdoctags(document["tags"]);
-                            CreateNotification();
-                            WidgetsBinding.instance.addPostFrameCallback((_){
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content : Text("Tag하신 게시글이 생성되었습니다."),
-                                // duration: const Duration(seconds: 2),
-                              ));
-                            });
+
+                          final lists = [doc_tags, user_tag];
+
+                          // print("Lists error");
+                          // print(doc_tags);
+                          // print(user_tag); // Upload하고난뒤에 이 값을 못받고 있음.
+
+                          var commonElements;
+
+                          if (doc_tags.isEmpty){
+                            commonElements = {};
                           }
                           else{
+                            commonElements = lists.fold <Set>(
+                                lists.first.toSet(),
+                                    (a,b) => a.intersection(b.toSet()));
                           }
+
+                          // 공통이 있다면,
+                          if (commonElements.length != 0){
+                              getdocID(document["docID"]);
+                              getdescription(document["description"]);
+                              getdoctags(document["tags"]);
+
+                              CreateNotification(docID, description, doc_tags);
+
+                              // if (flag_snack){
+                              //   WidgetsBinding.instance.addPostFrameCallback((_){
+                              //     ScaffoldMessenger.of(context).showSnackBar(
+                              //         SnackBar(content : Text("Tag하신 게시글이 생성되었습니다."),
+                              //           // duration: const Duration(seconds: 2),
+                              //         ));
+                              //
+                              //     setState(() {
+                              //       flag_snack = false;
+                              //       print("Provider here");
+                              //       print(Provider.of<Favorites>(context, listen: false).fruit);
+                              //       Provider.of<Favorites>(context, listen: false).changeFruit(true);
+                              //       // print("flag screen");
+                              //       // print(flag_snack);
+                              //     });
+                              //
+                              //
+                              //   });
+                              // }
+                          }
+
+
+
+
+                          // 임의의 값으로 정해놨는데, sign in이나 sign up하는 동시에 인자로 줘야할듯?
+                          // if (doc_tags.contains("money")){
+                          //   print("doc_tags");
+                          //   print(doc_tags);
+                          //   getdocID(document["docID"]);
+                          //   getdescription(document["description"]);
+                          //   getdoctags(document["tags"]);
+                          //
+                          //   // 이제 비교해보기.
+                            // CreateNotification();
+                          //   WidgetsBinding.instance.addPostFrameCallback((_){
+                          //     ScaffoldMessenger.of(context).showSnackBar(
+                          //         SnackBar(content : Text("Tag하신 게시글이 생성되었습니다."),
+                          //       // duration: const Duration(seconds: 2),
+                          //     ));
+                          //   });
+                          // }
+                          // else{
+                          // }
 
 
 

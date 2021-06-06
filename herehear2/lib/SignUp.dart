@@ -67,8 +67,14 @@ class _SignUpPageState extends State<SignUpPage> {
       "userPhotoURL" : downloadURL,
     };
 
-    FirebaseFirestore.instance.collection('users').doc(UID).set(data);
+    Map <String, dynamic> data2 = {
+      "docID": [],
+      "description" : [],
+      // "tags": [],
+    };
 
+    FirebaseFirestore.instance.collection('users').doc(UID).set(data);
+    FirebaseFirestore.instance.collection('notification').doc(UID).set(data2);
 
   }
 
@@ -264,7 +270,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       print(UID);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomePage(currentUser: UID)),
+                        MaterialPageRoute(builder: (context) => HomePage(currentUser: UID, user_tag: tagList)),
                       );
                     } catch(e){
                       toastError(_scaffoldKey, e);
@@ -286,7 +292,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     addUser();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage(currentUser: UID)),
+                      MaterialPageRoute(builder: (context) => HomePage(currentUser: UID, user_tag: null)),
                     );
                   } catch (e) {
                     print('Error: Goggle sign in');

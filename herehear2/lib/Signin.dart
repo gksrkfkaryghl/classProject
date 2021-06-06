@@ -131,7 +131,7 @@ class _SignInPageState extends State<SignInPage> {
                               //MaterialPageRoute(builder: (context) => ListViewPage(currentUser: null,target: UID,)),
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      HomePage(currentUser: UID)),
+                                      HomePage(currentUser: UID, user_tag: documentData["tags"])),
                             );
                     } catch (e) {
                       print("error fetching data: $e");
@@ -142,6 +142,7 @@ class _SignInPageState extends State<SignInPage> {
                   },
                 ),
               ),
+
               Text('or'),
               SignInButton(
                 Buttons.Google,
@@ -156,9 +157,7 @@ class _SignInPageState extends State<SignInPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => HomePage(
-                                currentUser: UID,
-                              )),
+                          builder: (context) => HomePage(currentUser: UID, user_tag: null)),
                     );
                   } catch (e) {
                     print('Error: Goggle sign in');
