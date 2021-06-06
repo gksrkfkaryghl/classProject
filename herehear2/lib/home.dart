@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'gridview.dart';
 import 'listview.dart';
 import 'mypage.dart';
+import 'notification.dart';
 import 'theme/colors.dart';
 
 class HomePage extends StatefulWidget {
@@ -47,7 +48,8 @@ class _HomePageState extends State<HomePage> {
 
     List<Widget> _children = [
       GridViewPage(currentUser: currentUser, user_tag: user_tag),
-      ListViewPage(doc: null, currentUser: currentUser),
+      //ListViewPage(doc: null, currentUser: currentUser),
+      NotificationPage(),
       // UploadPage(),
       //GridViewPage(),
       // CalendarPage(),
@@ -86,8 +88,23 @@ class _HomePageState extends State<HomePage> {
                       icon: Icon(Icons.home)),
                   BottomNavigationBarItem(
                       title: Text('피드'),
-                      // icon: ImageIcon(AssetImage('assets/closet.png'), size: 24,)
-                      icon: Icon(Icons.search)),
+                      icon:
+                       Provider.of<Favorites>(context).fruit
+                          ? Icon(
+                           Icons.notification_add,
+                           color: Colors.red)
+                          : Icon(
+                           Icons.notifications)
+                  ),
+
+
+                      // if (Provider.of<Favorites>(context).fruit){
+                      //     Icon(Icons.search)
+                      // }
+                      // else{
+                      //     Icon(Icons.search)
+                      // }
+                      // ),
                   BottomNavigationBarItem(
                       title: Text('날씨'),
                       icon: Icon(Icons.cloud_queue)),
