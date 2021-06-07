@@ -8,16 +8,18 @@ import 'comments.dart';
 import 'update.dart';
 
 class ListViewPage extends StatefulWidget {
-  ListViewPage({this.doc, this.currentUser});
+  ListViewPage({this.doc, this.currentUser, this.user_tag});
 
   var doc;
   final String currentUser;
+  var user_tag;
 
   @override
-  _ListViewPageState createState() => _ListViewPageState(doc: doc, currentUser: currentUser);
+  _ListViewPageState createState() => _ListViewPageState(doc: doc, currentUser: currentUser, user_tag: user_tag);
 }
 
 class _ListViewPageState extends State<ListViewPage> {
+  var user_tag;
   var doc;
   Map<String, dynamic>  data;
   String currentUser;
@@ -31,7 +33,7 @@ class _ListViewPageState extends State<ListViewPage> {
 
   int n = 0;
 
-  _ListViewPageState({this.doc, this.currentUser});
+  _ListViewPageState({this.doc, this.currentUser, this.user_tag});
 
   @override
   void initState() {
@@ -47,11 +49,9 @@ class _ListViewPageState extends State<ListViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("here it is: ${doc["description"]}");
-    print('currentUser?!!: ${currentUser}');
-
-    print("[Listview] current user");
+    print("[Listview] current user & user tag");
     print(currentUser);
+    print(user_tag);
 
     return Scaffold(
       appBar: AppBar(
@@ -72,7 +72,7 @@ class _ListViewPageState extends State<ListViewPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => UploadPage(currentUser: currentUser),
+                  builder: (context) => UploadPage(currentUser: currentUser, user_tag: user_tag),
                 ),
               );
             },
@@ -209,7 +209,7 @@ class _ListViewPageState extends State<ListViewPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UpdatePage(doc: doc, currentUser: currentUser),
+                          builder: (context) => UpdatePage(doc: doc, currentUser: currentUser, ),
                         ),
                       );
                   })

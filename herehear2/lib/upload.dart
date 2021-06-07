@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:herehear/gridview.dart';
+import 'package:herehear/home.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,17 +19,20 @@ import 'data/location.dart';
 
 class UploadPage extends StatefulWidget {
   String currentUser;
+  var user_tag;
 
-  UploadPage({this.currentUser});
+
+  UploadPage({this.currentUser, this.user_tag});
 
   @override
-  _UploadPageState createState() => _UploadPageState(currentUser: currentUser);
+  _UploadPageState createState() => _UploadPageState(currentUser: currentUser, user_tag:user_tag);
 }
 
 class _UploadPageState extends State<UploadPage> {
   final _picker = ImagePicker();
   String currentUser;
-  _UploadPageState({this.currentUser});
+  var user_tag;
+  _UploadPageState({this.currentUser, this.user_tag});
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
@@ -151,7 +155,10 @@ class _UploadPageState extends State<UploadPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('upload currentUser: ${currentUser}');
+    print("[Upload] current user & user tag");
+    print(currentUser);
+    print(user_tag);
+
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -172,7 +179,7 @@ class _UploadPageState extends State<UploadPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => GridViewPage(currentUser: currentUser)
+                          builder: (context) => HomePage(currentUser: currentUser,user_tag: user_tag)
                       )
                     );
                   });

@@ -159,7 +159,7 @@ class _GridViewPageState extends State<GridViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("[GridVeiw] current user");
+    print("[GridVeiw] current user & user tag");
     print(currentUser);
     print(user_tag);
 
@@ -181,7 +181,7 @@ class _GridViewPageState extends State<GridViewPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UploadPage(currentUser: currentUser),
+                          builder: (context) => UploadPage(currentUser: currentUser, user_tag: user_tag),
                         ),
                       );
                     },
@@ -523,7 +523,7 @@ class _GridViewPageState extends State<GridViewPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ListViewPage(doc: snapshot, currentUser: currentUser),
+              builder: (context) => ListViewPage(doc: snapshot, currentUser: currentUser, ),
             ),
           );
         },

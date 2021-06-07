@@ -6,20 +6,25 @@ import 'package:flutter_tags/flutter_tags.dart';
 // import 'package:herehear/%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C/SignUp.dart';
 
 import 'Fixmypage.dart';
+import 'app.dart';
 import 'login.dart';
 
 class MyPage extends StatefulWidget {
 
   final String currentUser;
-  MyPage({this.currentUser});
+  var user_tag;
+  MyPage({this.currentUser, this.user_tag});
+
 
   @override
-  _MyPageState createState() => _MyPageState(currentUser: currentUser);
+  _MyPageState createState() => _MyPageState(currentUser: currentUser, user_tag: user_tag );
 }
 
 class _MyPageState extends State<MyPage> {
   String currentUser;
-  _MyPageState({this.currentUser});
+  var user_tag;
+
+  _MyPageState({this.currentUser, this.user_tag});
 
   Future getPosts() async {
     QuerySnapshot qn;
@@ -55,8 +60,9 @@ class _MyPageState extends State<MyPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("[myPage]current user");
+    print("[myPage]current user & user_tag");
     print(currentUser);
+    print(user_tag);
 
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     return FutureBuilder<DocumentSnapshot>(
@@ -99,7 +105,7 @@ class _MyPageState extends State<MyPage> {
                         print("Success to log out");
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          MaterialPageRoute(builder: (context) => HeHeApp()),
                         );
                       }catch(e){
                         print(e.toString());

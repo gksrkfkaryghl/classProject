@@ -38,13 +38,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("[HomePage] current user");
+    print("[HomePage] current user & user_tag");
     print(currentUser);
     print(user_tag);
-
-    print("home Provider");
-    print(Provider.of<Favorites>(context).fruit);
-
 
     List<Widget> _children = [
       GridViewPage(currentUser: currentUser, user_tag: user_tag),
@@ -54,7 +50,7 @@ class _HomePageState extends State<HomePage> {
       //GridViewPage(),
       // CalendarPage(),
       weatherPage(),
-      MyPage(currentUser : currentUser),
+      MyPage(currentUser : currentUser, user_tag: user_tag),
 
     ];
     return ChangeNotifierProvider(
