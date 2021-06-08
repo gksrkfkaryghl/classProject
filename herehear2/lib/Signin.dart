@@ -16,6 +16,7 @@ class SignInPage extends StatefulWidget {
   const SignInPage({Key key}) : super(key: key);
   static const routeName = '/signin';
 
+
   @override
   _SignInPageState createState() => _SignInPageState();
 }
@@ -117,8 +118,9 @@ class _SignInPageState extends State<SignInPage> {
                         if (event.docs.isNotEmpty) {
                           documentData = event.docs.single.data();
                           UID = documentData["uid"];
-                          print("[Sign In] current user");
+                          print("[Sign In] current user & tags");
                           print(UID);
+                          print(documentData["tags"]);
 
                         }
                       });
@@ -179,7 +181,8 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('Sign in'),
+          centerTitle: true,
+          title: Text('Sign in')
         ),
         body: _loading ? _buildLoading() : _buildBody());
   }

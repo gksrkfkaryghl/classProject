@@ -62,7 +62,30 @@ class _NotificationPageState extends State<NotificationPage> {
         }
 
         if (snapshot.hasData && !snapshot.data.exists) {
-          return Text("Document does not exist");
+          return Scaffold(
+              appBar: AppBar(
+                centerTitle: true,
+                title: Text(
+                  "Notification",
+                  style:
+                  TextStyle(color: Theme.of(context).colorScheme.primary),
+                ),
+                leading: IconButton(
+                  onPressed: () {
+                    // Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(
+                              currentUser: currentUser, user_tag: user_tag)),
+                    );
+                  },
+                  icon: Icon(Icons.arrow_back),
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            body: Center(child: Text("Notification does not exist"))
+          );
         }
 
         if (snapshot.connectionState == ConnectionState.done) {

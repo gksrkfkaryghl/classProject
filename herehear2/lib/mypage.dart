@@ -6,6 +6,7 @@ import 'package:flutter_tags/flutter_tags.dart';
 // import 'package:herehear/%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C/SignUp.dart';
 
 import 'Fixmypage.dart';
+import 'Scroll_test.dart';
 import 'app.dart';
 import 'login.dart';
 
@@ -91,7 +92,9 @@ class _MyPageState extends State<MyPage> {
                   onPressed: (){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => FixPage(currentUser: currentUser, )),
+                      // MaterialPageRoute(builder: (context) => FixPage(currentUser: currentUser, )),
+                        MaterialPageRoute(builder: (context) => Scroll_page()),
+
                     );
                   },
                   icon: Icon(Icons.create),
@@ -137,6 +140,7 @@ class _MyPageState extends State<MyPage> {
                               backgroundColor: Colors.white,
                               backgroundImage: NetworkImage(
                                   data["userPhotoURL"]
+                                // "https://pbs.twimg.com/media/EhIO_LyVoAA2szZ?format=jpg&name=medium"
                               )))
                     ],
                   ),

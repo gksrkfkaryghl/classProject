@@ -15,69 +15,69 @@ import 'main.dart';
 class GridViewPage extends StatefulWidget {
   String currentUser;
   var user_tag;
+
   GridViewPage({this.currentUser, this.user_tag});
 
   @override
-  _GridViewPageState createState() => _GridViewPageState(currentUser: currentUser, user_tag: user_tag);
+  _GridViewPageState createState() =>
+      _GridViewPageState(currentUser: currentUser, user_tag: user_tag);
 }
 
 class _GridViewPageState extends State<GridViewPage> {
   String currentUser;
   var user_tag;
+
   _GridViewPageState({this.currentUser, this.user_tag});
 
   String docID = '';
   String description = '';
   List<dynamic> doc_tags = [];
 
-  getdocID(docID){
+  getdocID(docID) {
     this.docID = docID;
   }
-  getdescription(description){
+
+  getdescription(description) {
     this.description = description;
   }
 
-  getdoctags(getdoctags){
+  getdoctags(getdoctags) {
     this.doc_tags = getdoctags;
   }
 
-
   static var flag_snack = false;
-  CreateNotification(String t_doc, String t_des, var t_tags ) async {
 
-    DocumentReference documentReference = FirebaseFirestore.instance
-                                          .collection("notification").doc(currentUser);
+  CreateNotification(String t_doc, String t_des, var t_tags) async {
+    DocumentReference documentReference =
+        FirebaseFirestore.instance.collection("notification").doc(currentUser);
     // print("CreateNotification");
     // print(t_doc);
     // print(t_des);
     // print(t_tags);
     documentReference.get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-
-        List <dynamic> noti_docID = documentSnapshot.get('docID');
-          if (noti_docID.contains(t_doc)){
-            print("이미 포함됌");
-          }
-          else{
-            print("포함되지 않음");
-            documentReference.update({ // update가 아니라 set으로 기본적으로 잡혀야 하는구나.. 그러면 로그인하는 동시에 만들어줘야겠군.
-              'description' :  FieldValue.arrayUnion([t_des]), // doc.id는 게시글의 id를 잡아줌.
-              'docID' : FieldValue.arrayUnion([t_doc]),
-              // 'tags' : FieldValue.arrayUnion(t_tags),
-            }).then((value){
-              print("User updated");
-              Provider.of<Favorites>(context, listen: false).changeFruit(true);
-            })
-            .catchError((error){
-              print("Failed to update user: $error");
-            });
-          }
-      }
-      else {
+        List<dynamic> noti_docID = documentSnapshot.get('docID');
+        if (noti_docID.contains(t_doc)) {
+          print("이미 포함됌");
+        } else {
+          print("포함되지 않음");
+          documentReference.update({
+            // update가 아니라 set으로 기본적으로 잡혀야 하는구나.. 그러면 로그인하는 동시에 만들어줘야겠군.
+            'description': FieldValue.arrayUnion([t_des]),
+            // doc.id는 게시글의 id를 잡아줌.
+            'docID': FieldValue.arrayUnion([t_doc]),
+            // 'tags' : FieldValue.arrayUnion(t_tags),
+          }).then((value) {
+            print("User updated");
+            Provider.of<Favorites>(context, listen: false).changeFruit(true);
+          }).catchError((error) {
+            print("Failed to update user: $error");
+          });
+        }
+      } else {
         print('Document does not exist on the database');
       }
-    }
-    );
+    });
   }
 
   Future getPosts() async {
@@ -86,19 +86,20 @@ class _GridViewPageState extends State<GridViewPage> {
     firestore.collection("posts").get();
     QuerySnapshot qn = await firestore.collection("posts").get();
 
-
     return qn.docs;
   }
 
   TextEditingController _addNameController;
+
   // String searchString = "";
   String category = "Personalize";
   final TextEditingController _filter = TextEditingController();
-    String currentLocation = '';
+  String currentLocation = '';
   int reload = 0;
   QuerySnapshot<Object> postData;
 
   Future _data;
+
   @override
   initState() {
     super.initState();
@@ -114,44 +115,36 @@ class _GridViewPageState extends State<GridViewPage> {
   }
 
   void getCurrentLocation() async {
-    currentLocation= await Location().getLocation();
+    currentLocation = await Location().getLocation();
   }
 
   Stream<DocumentSnapshot> getUserTaglist() {
-    return FirebaseFirestore.instance.collection('users').doc(currentUser).snapshots();
-
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser)
+        .snapshots();
   }
 
-  void _addToDatabase(String name){
-    List <String> splitList = name.split(" ");
+  void _addToDatabase(String name) {
+    List<String> splitList = name.split(" ");
 
-    List <String> indexList = [];
+    List<String> indexList = [];
 
-    for (int i = 0; i < splitList.length; i++){
+    for (int i = 0; i < splitList.length; i++) {
       for (int y = 1; y < splitList[i].length + 1; y++) {
-        indexList.add(splitList[i].substring(0,y).toLowerCase());
+        indexList.add(splitList[i].substring(0, y).toLowerCase());
       }
     }
 
     print(indexList);
 
-    FirebaseFirestore.instance.collection('presidents').doc().
-    set(
-        {
-          'name' : name,
-          'searchIndex' : indexList
-        }
-    );
-
+    FirebaseFirestore.instance
+        .collection('presidents')
+        .doc()
+        .set({'name': name, 'searchIndex': indexList});
   }
 
-  final List<Tab> myTab = <Tab>[
-    Tab(text: '맞춤'),
-    Tab(text: '전체')
-  ];
-
-
-
+  final List<Tab> myTab = <Tab>[Tab(text: '맞춤'), Tab(text: '전체')];
 
   @override
   Widget build(BuildContext context) {
@@ -163,46 +156,63 @@ class _GridViewPageState extends State<GridViewPage> {
         length: 2,
         child: Scaffold(
             appBar: PreferredSize(
-              preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.14),
+              preferredSize:
+                  Size.fromHeight(MediaQuery.of(context).size.height * 0.14),
               child: AppBar(
                 leading: Padding(
                   padding: const EdgeInsets.only(left: 12),
-                  child: Center(child: Text('히 어', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),)),
+                  child: Center(
+                      child: Text(
+                    '히 어',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary),
+                  )),
                 ),
                 actions: <Widget>[
                   // SearchButton(),
                   IconButton(
-                    icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary,),
+                    icon: Icon(
+                      Icons.add,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     onPressed: () {
                       print('on more check: ${currentUser}');
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UploadPage(currentUser: currentUser, user_tag: user_tag),
+                          builder: (context) => UploadPage(
+                              currentUser: currentUser, user_tag: user_tag),
                         ),
                       );
                     },
                   ),
                   IconButton(
-                    icon: Icon(Icons.search, color: Theme.of(context).colorScheme.primary,),
+                    icon: Icon(
+                      Icons.search,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     onPressed: () {
                       showSearch(
                         context: context,
-                        delegate: PostSearchDelegate(postData, user_tag, currentUser),
+                        delegate:
+                            PostSearchDelegate(postData, user_tag, currentUser),
                       );
                     },
                   ),
                 ],
                 bottom: TabBar(
                   onTap: (index) {
-                    index == 1? category = 'all' : category = 'Personalize';
+                    index == 1 ? category = 'all' : category = 'Personalize';
                     print('selected: $category');
                   },
                   indicatorColor: Theme.of(context).colorScheme.primary,
                   labelColor: Theme.of(context).colorScheme.primary,
                   unselectedLabelColor: Colors.black45,
-                  labelStyle:  TextStyle(
-                    fontSize: 16.0, fontWeight: FontWeight.w600,
+                  labelStyle: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
                   ),
                   unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w400),
                   tabs: myTab,
@@ -214,20 +224,20 @@ class _GridViewPageState extends State<GridViewPage> {
                 personalize(),
                 all(),
               ],
-            )
-        )
-    );
+            )));
   }
 
   Widget all() {
-    final Stream <QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('posts').snapshots();
+    final Stream<QuerySnapshot> _usersStream =
+        FirebaseFirestore.instance.collection('posts').snapshots();
     return Container(
       //child: FutureBuilder(
       child: StreamBuilder<QuerySnapshot>(
           //future: _data,
           stream: _usersStream,
           //builder: (_, snapshot) {
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 child: Text("Loading..."),
@@ -240,92 +250,42 @@ class _GridViewPageState extends State<GridViewPage> {
                     child: GridView.count(
                         childAspectRatio: 8.0 / 9.0,
                         crossAxisCount: 3,
-                        //shrinkWrap: true,
-                        //children: List.generate(snapshot.data.length, (index) {
-                        children: snapshot.data.docs.map((DocumentSnapshot document) {
-                          // list 형태로 만들기 위해서는 필요함.
-                          List <dynamic> doc_tags = document["tags"];
-                          final lists = [doc_tags, user_tag];
+                        children:
+                            snapshot.data.docs.map((DocumentSnapshot document) {
 
+                              // list 형태로 만들기 위해서는 필요함 --> Set
+                          List<dynamic> doc_tags = document["tags"];
+                          final lists = [doc_tags, user_tag];
                           var commonElements;
 
-                          if (doc_tags.isEmpty){
+                          print("doc_tags & user_tag");
+                          print(doc_tags);
+                          print(user_tag);
+
+                          if (doc_tags.isEmpty || user_tag == null) {
                             commonElements = {};
-                          }
-                          else{
-                            commonElements = lists.fold <Set>(
+                          } else {
+                            commonElements = lists.fold<Set>(
                                 lists.first.toSet(),
-                                    (a,b) => a.intersection(b.toSet()));
+                                (a, b) => a.intersection(b.toSet()));
                           }
 
                           // 공통이 있다면,
-                          if (commonElements.length != 0){
-                              getdocID(document["docID"]);
-                              getdescription(document["description"]);
-                              getdoctags(document["tags"]);
+                          if (commonElements.length != 0) {
+                            getdocID(document["docID"]);
+                            getdescription(document["description"]);
+                            getdoctags(document["tags"]);
 
+                            if (document["uid"] != currentUser) {
                               CreateNotification(docID, description, doc_tags);
-
-                              // if (flag_snack){
-                              //   WidgetsBinding.instance.addPostFrameCallback((_){
-                              //     ScaffoldMessenger.of(context).showSnackBar(
-                              //         SnackBar(content : Text("Tag하신 게시글이 생성되었습니다."),
-                              //           // duration: const Duration(seconds: 2),
-                              //         ));
-                              //
-                              //     setState(() {
-                              //       flag_snack = false;
-                              //       print("Provider here");
-                              //       print(Provider.of<Favorites>(context, listen: false).fruit);
-                              //       Provider.of<Favorites>(context, listen: false).changeFruit(true);
-                              //       // print("flag screen");
-                              //       // print(flag_snack);
-                              //     });
-                              //
-                              //
-                              //   });
-                              // }
+                            }
                           }
-
-
-
-
-                          // 임의의 값으로 정해놨는데, sign in이나 sign up하는 동시에 인자로 줘야할듯?
-                          // if (doc_tags.contains("money")){
-                          //   print("doc_tags");
-                          //   print(doc_tags);
-                          //   getdocID(document["docID"]);
-                          //   getdescription(document["description"]);
-                          //   getdoctags(document["tags"]);
-                          //
-                          //   // 이제 비교해보기.
-                            // CreateNotification();
-                          //   WidgetsBinding.instance.addPostFrameCallback((_){
-                          //     ScaffoldMessenger.of(context).showSnackBar(
-                          //         SnackBar(content : Text("Tag하신 게시글이 생성되었습니다."),
-                          //       // duration: const Duration(seconds: 2),
-                          //     ));
-                          //   });
-                          // }
-                          // else{
-                          // }
-
-
-
-
-                          //itemCount: snapshot.data.length, //조심하기
-                          //itemBuilder: (_, index) {
-                          // return listItem(snapshot.data[index]);
                           return listItem(document);
                           // );
-                        }
-                        ).toList()
-                    )
-                )
+                        }).toList()))
               ]);
             }
-          }
-      ),
+          }),
     );
   }
 
@@ -345,14 +305,19 @@ class _GridViewPageState extends State<GridViewPage> {
                         stream: getUserTaglist(),
                         builder: (context, userData) {
                           List favoritePosts = [];
-                          if(!userData.hasData) return Text('No post yet.');
+                          if (!userData.hasData) return Text('No post yet.');
                           List tags = userData.data['tags'];
-                          for(int index = 0; index < snapshot.data.length; index++) {
-                            if(currentLocation == snapshot.data[index]['location']) {
-                              List<dynamic> tempList = snapshot.data[index]['tags'];
-                              for(int i = 0; i < tags.length; i++) {
-                                for(int j = 0; j < tempList.length; j++) {
-                                  if((tags[i] != null) && (tags[i] == tempList[j])) {
+                          for (int index = 0;
+                              index < snapshot.data.length;
+                              index++) {
+                            if (currentLocation ==
+                                snapshot.data[index]['location']) {
+                              List<dynamic> tempList =
+                                  snapshot.data[index]['tags'];
+                              for (int i = 0; i < tags.length; i++) {
+                                for (int j = 0; j < tempList.length; j++) {
+                                  if ((tags[i] != null) &&
+                                      (tags[i] == tempList[j])) {
                                     favoritePosts.add(snapshot.data[index]);
                                     print('tag: ${tags[i].toString()}');
                                   }
@@ -361,71 +326,73 @@ class _GridViewPageState extends State<GridViewPage> {
                             }
                           }
                           return GridView.count(
-                            // padding: EdgeInsets.all(16.0),
+                              // padding: EdgeInsets.all(16.0),
                               childAspectRatio: 8.0 / 9.0,
                               crossAxisCount: 3,
                               //shrinkWrap: true,
-                              children: List.generate(favoritePosts.length, (index) {
+                              children:
+                                  List.generate(favoritePosts.length, (index) {
                                 //itemCount: snapshot.data.length, //조심하기
                                 //itemBuilder: (_, index) {
                                 return listItem(favoritePosts[index]);
                               }));
-                      }
-                    ))
+                        }))
               ]);
             }
-          }
-      ),
+          }),
     );
   }
 
   Widget listItem(dynamic snapshot) {
-    return snapshot["imageURL"] != "" ?
-    Padding(
-      padding: const EdgeInsets.all(1.0),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ListViewPage(doc: snapshot, currentUser: currentUser),
+    return snapshot["imageURL"] != ""
+        ? Padding(
+            padding: const EdgeInsets.all(1.0),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ListViewPage(doc: snapshot, currentUser: currentUser),
+                  ),
+                );
+              },
+              child: Container(
+                  child: Image.network(
+                snapshot["imageURL"],
+                fit: BoxFit.cover,
+              )),
             ),
-          );
-        },
-        child: Container(
-            child: Image.network(
-              snapshot["imageURL"],
-              fit: BoxFit.cover,
-            )),
-      ),
-    )
+          )
         : Padding(
-      padding: const EdgeInsets.all(1.0),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ListViewPage(doc: snapshot, currentUser: currentUser),
+            padding: const EdgeInsets.all(1.0),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ListViewPage(doc: snapshot, currentUser: currentUser),
+                  ),
+                );
+              },
+              child: Container(
+                  color: Theme.of(context).colorScheme.surface,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                        child: Text(
+                      snapshot['description'],
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 5,
+                    )),
+                  )),
             ),
           );
-        },
-        child: Container(
-            color: Theme.of(context).colorScheme.surface,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                  child: Text(
-                    snapshot['description'],
-                    style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.onSurface,),
-                    textAlign: TextAlign.center,
-                    maxLines: 5,
-                  )
-              ),
-            )
-        ),
-      ),
-    );
   }
 }
 
@@ -638,4 +605,3 @@ class _GridViewPageState extends State<GridViewPage> {
 // }
 // ),
 // );
-
