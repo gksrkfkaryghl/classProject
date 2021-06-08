@@ -32,7 +32,10 @@ class _ListViewPageState extends State<ListViewPage> {
   var userDoc;
   var user_tag;
 
+  FirebaseAuth auth = FirebaseAuth.instance;
+
   int n = 0;
+  int nn = 0;
 
   _ListViewPageState({this.doc, this.currentUser, this.user_tag});
 
@@ -114,18 +117,18 @@ class _ListViewPageState extends State<ListViewPage> {
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection("posts").snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            print('auth: ${auth.currentUser.uid}');
+            print('Auth: ${currentUser}');
             if (!snapshot.hasData) return Text("There is no expense");
-            // List<Widget> imageCards = getExpenseItems(context, snapshot);
-            // List<String> l = getImageURL(snapshot);
-            // print("@@@@: ${l}");
             selectedItemData(context, snapshot);
             print('selectedItemData: ${data}');
             return FutureBuilder(
               future: FirebaseFirestore.instance.collection("users").get(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot2) {
-                if(!snapshot2.hasData) return Container();
+                if(!snapshot2.hasData) return Text("There is no expense");
                 userDoc = snapshot2.data.docs.where((element) => element['uid'] == doc['uid']);
-                print('userDoc : ${userDoc.first.get('displayname')}');
+                print('snapshot2: ${snapshot2.data.docs}');
+                // print('userDoc : ${userDoc.first.get('displayname')}');
                 selectedPostID = doc['docID'];
                 displayName = userDoc.first.get('displayname');
                 userPhotoURL = userDoc.first.get('userPhotoURL');
@@ -136,7 +139,7 @@ class _ListViewPageState extends State<ListViewPage> {
                       ListView(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        children: postList(context, snapshot, snapshot2),
+                        children: postList(snapshot, snapshot2),
                       ),
                     ],
                   ),
@@ -170,31 +173,42 @@ class _ListViewPageState extends State<ListViewPage> {
     }
   }
 
-  List<Widget> postList (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot1, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot2) {
+  List<Widget> postList (AsyncSnapshot<QuerySnapshot> snapshot1, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot2) {
     try {
       return snapshot1.data.docs
           // .where((element) => element['docID'] != selectedPostID)
           .map((doc2) {
         if(snapshot1.hasData) {
           if(doc['docID'] == doc2['docID']) {
+            nn++;
             doc = doc2;
             return Container();
           }
           // print(snapshot1.data.docs.single.toString());
-          userDoc = snapshot2.data.docs.toList().where((element) => element['uid'] == doc2['uid']).single.data();
-          // print('userDoc!!!: ${userDoc['displayname']}');
-          displayName = userDoc['displayname'];
-          userPhotoURL = userDoc['userPhotoURL'];
-          Map<String, dynamic> dataMap = doc2.data();
-          return postItem(dataMap, doc2, displayName);
+          if(snapshot2.hasData) {
+            nn++;
+            userDoc = snapshot2.data.docs.toList().where((element) => element['uid'] == doc2['uid']).single.data();
+            print('userDoc!!!: ${userDoc['displayname']}');
+            displayName = userDoc['displayname'];
+            userPhotoURL = userDoc['userPhotoURL'];
+            Map<String, dynamic> dataMap = doc2.data();
+            return postItem(dataMap, doc2, displayName);
+          }
+          else {
+            return ListView();
+          }
         }
       }).toList();
     } catch(error) {
+      print("nn? $nn");
+      print("snapshot1 or snapshot2 has no data");
       print(error);
     }
   }
 
   Widget postItem(Map<String, dynamic> data, QueryDocumentSnapshot<Object> doc2, String displayName) {
+    // print('^^^^^^^^^: ${doc2.data()}');
+    // print('*********: ${data.entries}');
     if(doc2['imageURL'] == '') {
       return Column(
         children: <Widget>[
@@ -226,11 +240,9 @@ class _ListViewPageState extends State<ListViewPage> {
                       onPressed: () {
                         bool flag = true;
 
-                        print('?!?!?!: $data');
                         var dataList = data.values.toList();
                         var keyList = data.keys.toList();
                         int tempLength = data.length;
-                        print('?????: $tempLength');
                         for (int i = 0; i < tempLength; i++){
                           print(dataList[i]);
 
@@ -329,12 +341,9 @@ class _ListViewPageState extends State<ListViewPage> {
 
                         //print(target);
 
-                        // 중복되는지 체크.
-                        print('?!?!?!: $data');
                         var dataList = data.values.toList();
                         var keyList = data.keys.toList();
                         int tempLength = data.length;
-                        print('?????: $tempLength');
                         for (int i = 0; i < tempLength; i++){
                           print(dataList[i]);
 
@@ -385,7 +394,6 @@ class _ListViewPageState extends State<ListViewPage> {
                   Text(doc2['likeNum'].toString(), style: TextStyle(fontSize: 18, color: Colors.grey),),
                   SizedBox(width: 10,),
                   IconButton(icon: Icon(Icons.question_answer), onPressed: () {
-                    print("ch??: $currentUser");
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -401,11 +409,9 @@ class _ListViewPageState extends State<ListViewPage> {
                       onPressed: () {
                         bool flag = true;
 
-                        print('?!?!?!: $data');
                         var dataList = data.values.toList();
                         var keyList = data.keys.toList();
                         int tempLength = data.length;
-                        print('?????: $tempLength');
                         for (int i = 0; i < tempLength; i++){
                           print(dataList[i]);
 

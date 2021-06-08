@@ -8,7 +8,6 @@ import 'package:herehear/listview.dart';
 import 'package:herehear/search.dart';
 import 'package:herehear/upload.dart';
 import 'package:provider/provider.dart';
-import 'methods/searchButton.dart';
 
 import 'main.dart';
 
@@ -233,6 +232,7 @@ class _GridViewPageState extends State<GridViewPage> {
                 child: Text("Loading..."),
               );
             } else {
+              if(!snapshot.hasData) return Text("Loading...");
               postData = snapshot.data;
               // final ThemeData theme = Theme.of(context);
               return Column(children: <Widget>[
@@ -255,7 +255,8 @@ class _GridViewPageState extends State<GridViewPage> {
                           else{
                             commonElements = lists.fold <Set>(
                                 lists.first.toSet(),
-                                    (a,b) => a.intersection(b.toSet()));
+                                    (a,b) => a.intersection(b.toSet())
+                            );
                           }
 
                           // 공통이 있다면,
