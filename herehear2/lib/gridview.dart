@@ -5,8 +5,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:herehear/data/location.dart';
 import 'package:herehear/listview.dart';
+import 'package:herehear/search.dart';
 import 'package:herehear/upload.dart';
 import 'package:provider/provider.dart';
+import 'methods/searchButton.dart';
 
 import 'main.dart';
 
@@ -24,9 +26,9 @@ class _GridViewPageState extends State<GridViewPage> {
   var user_tag;
   _GridViewPageState({this.currentUser, this.user_tag});
 
-  String docID;
-  String description;
-  var doc_tags;
+  String docID = '';
+  String description = '';
+  List<dynamic> doc_tags = [];
 
   getdocID(docID){
     this.docID = docID;
@@ -89,12 +91,12 @@ class _GridViewPageState extends State<GridViewPage> {
   }
 
   TextEditingController _addNameController;
-  String searchString = "";
+  // String searchString = "";
   String category = "Personalize";
-  FocusNode focus = FocusNode();
   final TextEditingController _filter = TextEditingController();
     String currentLocation = '';
   int reload = 0;
+  QuerySnapshot<Object> postData;
 
   Future _data;
   @override
@@ -102,7 +104,6 @@ class _GridViewPageState extends State<GridViewPage> {
     super.initState();
     _data = getPosts();
     _addNameController = TextEditingController();
-    focus.addListener(_onFocusChange);
     getUserTaglist();
     getCurrentLocation();
   }
@@ -110,7 +111,6 @@ class _GridViewPageState extends State<GridViewPage> {
   @override
   void dispose() {
     super.dispose();
-    focus.dispose();
   }
 
   void getCurrentLocation() async {
@@ -120,10 +120,6 @@ class _GridViewPageState extends State<GridViewPage> {
   Stream<DocumentSnapshot> getUserTaglist() {
     return FirebaseFirestore.instance.collection('users').doc(currentUser).snapshots();
 
-  }
-
-  void _onFocusChange(){
-    debugPrint("Focus: "+focus.hasFocus.toString());
   }
 
   void _addToDatabase(String name){
@@ -159,7 +155,7 @@ class _GridViewPageState extends State<GridViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("[GridVeiw] current user");
+    print("[GridVeiw] current user & user tag");
     print(currentUser);
     print(user_tag);
 
@@ -174,6 +170,7 @@ class _GridViewPageState extends State<GridViewPage> {
                   child: Center(child: Text('히 어', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),)),
                 ),
                 actions: <Widget>[
+                  // SearchButton(),
                   IconButton(
                     icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary,),
                     onPressed: () {
@@ -181,8 +178,17 @@ class _GridViewPageState extends State<GridViewPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UploadPage(currentUser: currentUser),
+                          builder: (context) => UploadPage(currentUser: currentUser, user_tag: user_tag),
                         ),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.search, color: Theme.of(context).colorScheme.primary,),
+                    onPressed: () {
+                      showSearch(
+                        context: context,
+                        delegate: PostSearchDelegate(postData, user_tag, currentUser),
                       );
                     },
                   ),
@@ -227,28 +233,19 @@ class _GridViewPageState extends State<GridViewPage> {
                 child: Text("Loading..."),
               );
             } else {
+              postData = snapshot.data;
               // final ThemeData theme = Theme.of(context);
               return Column(children: <Widget>[
-                searchField(),
-                searchString != ""
-                    ? searchWidget()
-                    : Expanded(
+                Expanded(
                     child: GridView.count(
                         childAspectRatio: 8.0 / 9.0,
                         crossAxisCount: 3,
                         //shrinkWrap: true,
                         //children: List.generate(snapshot.data.length, (index) {
                         children: snapshot.data.docs.map((DocumentSnapshot document) {
-
                           // list 형태로 만들기 위해서는 필요함.
                           List <dynamic> doc_tags = document["tags"];
-
-
                           final lists = [doc_tags, user_tag];
-
-                          // print("Lists error");
-                          // print(doc_tags);
-                          // print(user_tag); // Upload하고난뒤에 이 값을 못받고 있음.
 
                           var commonElements;
 
@@ -342,30 +339,8 @@ class _GridViewPageState extends State<GridViewPage> {
                 child: Text("Loading..."),
               );
             } else {
-              print('뭐야?: ${snapshot.data[0]['description']}');
-              // final ThemeData theme = Theme.of(context);
               return Column(children: <Widget>[
-                // Row(
-                //   children: <Widget> [
-                //     Expanded(child: Padding(
-                //       padding: const EdgeInsets.all(8.0),
-                //       child: TextField(
-                //         controller: _addNameController,
-                //       ),
-                //     )
-                //     ),
-                //     RaisedButton(
-                //         child: Text("Add to Database"),
-                //         onPressed: (){
-                //           _addToDatabase(_addNameController.text);
-                //         }
-                //         ),
-                //   ],
-                // ),
-                searchField(),
-                searchString != ""
-                    ? searchWidget()
-                    : Expanded(
+                Expanded(
                     child: StreamBuilder<DocumentSnapshot<Object>>(
                         stream: getUserTaglist(),
                         builder: (context, userData) {
@@ -401,116 +376,6 @@ class _GridViewPageState extends State<GridViewPage> {
             }
           }
       ),
-    );
-  }
-
-  Widget searchField() {
-    return Column(
-      children: <Widget> [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            height: 40,
-            color: Colors.grey[350],
-            child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Container(
-                  color: Colors.grey[300],
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: TextField(
-                            focusNode: focus,
-                            cursorColor: Colors.grey,
-                            controller: _filter,
-                            // cursorHeight: 25,
-                            decoration: InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey[300]),
-                                //  when the TextFormField in unfocused
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey[500]),
-                                //  when the TextFormField in focused
-                              ) ,
-                              filled: true,
-                              fillColor: Colors.grey[300],
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Colors.grey[600],
-                                size: 20,
-                              ),
-                              suffixIcon: focus.hasFocus
-                                  ? IconButton(
-                                // splashColor: Colors.grey[600],
-                                focusColor: Colors.grey[600],
-                                color: Colors.grey[600],
-                                icon: Icon(
-                                  Icons.cancel,
-                                  size: 17,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _filter.clear();
-                                    searchString = "";
-                                  });
-                                },
-                              )
-                                  : Container(),
-                            ),
-                            onChanged: (value){
-                              setState(() {
-                                searchString = value.toLowerCase();
-                                print("here");
-                                print(searchString);
-                              });
-                            },
-                          )
-                      ),
-                    ],
-                  ),
-                )
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget searchWidget() {
-    return  Expanded(
-        child: StreamBuilder<QuerySnapshot>(
-      stream: (searchString == null || searchString.trim() == "")
-          ? FirebaseFirestore.instance.collection("posts")
-          .snapshots()
-          : FirebaseFirestore.instance.collection("posts")
-          .where("searchIndex", arrayContains: searchString)
-          .snapshots(),
-      builder: (context, snapshot){
-        if (snapshot.hasError)
-          return Text('Error: ${snapshot.error}');
-        switch (snapshot.connectionState){
-          case ConnectionState.waiting:
-            return Center(child: CircularProgressIndicator());
-          default:
-            return new ListView(
-              children: snapshot.data.docs.map((DocumentSnapshot document){
-                return new ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        document["imageURL"]
-                    ),
-                  ),
-                  title: new Text(document['description']),
-                  onTap: (){
-                    print("Tap here");
-                  },
-                );
-              }).toList(),
-            );
-        }
-      },
-    )
     );
   }
 
@@ -561,52 +426,118 @@ class _GridViewPageState extends State<GridViewPage> {
         ),
       ),
     );
-    Column(
-      // TODO: Center items on the card (103)
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Image.network(snapshot["imageURL"]),
-        SingleChildScrollView(
-          child: Container(
-            child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  snapshot["description"],
-                  //style: theme.textTheme.headline6,
-                  maxLines: 1,
-                ),
-                //SizedBox(height: 8.0),
-                // Text(
-                //   snapshot.data[index]
-                //       .data()["price"]
-                //       .toString(),
-                //   style: theme.textTheme.subtitle2,
-                // ),
-                Row(
-                  //direction: Axis.vertical,
-                    mainAxisAlignment:
-                    MainAxisAlignment.end,
-                    children: <Widget>[
-                      MaterialButton(
-                          child: Text("more",
-                              style: TextStyle(
-                                  color: Colors.blue)),
-                          onPressed: () => print("here button")
-                        // navigateToDetail(
-                        //     snapshot.data[index], widget.target2),
-                      )
-                    ]),
-                //SizedBox(height: 50.0),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }
+
+// Widget searchField() {
+//   return Column(
+//     children: <Widget> [
+//       Padding(
+//         padding: const EdgeInsets.all(8.0),
+//         child: Container(
+//           height: 40,
+//           color: Colors.grey[350],
+//           child: Padding(
+//               padding: const EdgeInsets.all(4.0),
+//               child: Container(
+//                 color: Colors.grey[300],
+//                 child: Row(
+//                   children: <Widget>[
+//                     Expanded(
+//                         child: TextField(
+//                           focusNode: focus,
+//                           cursorColor: Colors.grey,
+//                           controller: _filter,
+//                           // cursorHeight: 25,
+//                           decoration: InputDecoration(
+//                             enabledBorder: UnderlineInputBorder(
+//                               borderSide: BorderSide(color: Colors.grey[300]),
+//                               //  when the TextFormField in unfocused
+//                             ),
+//                             focusedBorder: UnderlineInputBorder(
+//                               borderSide: BorderSide(color: Colors.grey[500]),
+//                               //  when the TextFormField in focused
+//                             ) ,
+//                             filled: true,
+//                             fillColor: Colors.grey[300],
+//                             prefixIcon: Icon(
+//                               Icons.search,
+//                               color: Colors.grey[600],
+//                               size: 20,
+//                             ),
+//                             suffixIcon: focus.hasFocus
+//                                 ? IconButton(
+//                               // splashColor: Colors.grey[600],
+//                               focusColor: Colors.grey[600],
+//                               color: Colors.grey[600],
+//                               icon: Icon(
+//                                 Icons.cancel,
+//                                 size: 17,
+//                               ),
+//                               onPressed: () {
+//                                 setState(() {
+//                                   _filter.clear();
+//                                   searchString = "";
+//                                 });
+//                               },
+//                             )
+//                                 : Container(),
+//                           ),
+//                           onChanged: (value){
+//                             setState(() {
+//                               searchString = value.toLowerCase();
+//                               print("here");
+//                               print(searchString);
+//                             });
+//                           },
+//                         )
+//                     ),
+//                   ],
+//                 ),
+//               )
+//           ),
+//         ),
+//       )
+//     ],
+//   );
+// }
+
+// Widget searchWidget() {
+//   return  Expanded(
+//       child: StreamBuilder<QuerySnapshot>(
+//         stream: (searchString == null || searchString.trim() == "")
+//             ? FirebaseFirestore.instance.collection("posts")
+//             .snapshots()
+//             : FirebaseFirestore.instance.collection("posts")
+//             .where("searchIndex", arrayContains: searchString)
+//             .snapshots(),
+//         builder: (context, snapshot){
+//           if (snapshot.hasError)
+//             return Text('Error: ${snapshot.error}');
+//           switch (snapshot.connectionState){
+//             case ConnectionState.waiting:
+//               return Center(child: CircularProgressIndicator());
+//             default:
+//               return new ListView(
+//                 children: snapshot.data.docs.map((DocumentSnapshot document){
+//                   return new ListTile(
+//                     leading: CircleAvatar(
+//                       backgroundImage: NetworkImage(
+//                           document["imageURL"]
+//                       ),
+//                     ),
+//                     title: new Text(document['description']),
+//                     onTap: (){
+//                       print("Tap here");
+//                     },
+//                   );
+//                 }).toList(),
+//               );
+//           }
+//         },
+//       )
+//   );
+// }
 
 // return Container(
 // child: FutureBuilder(

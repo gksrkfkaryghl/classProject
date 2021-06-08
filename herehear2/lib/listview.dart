@@ -3,18 +3,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:herehear/home.dart';
 import 'package:herehear/upload.dart';
 import 'comments.dart';
 import 'update.dart';
 
 class ListViewPage extends StatefulWidget {
-  ListViewPage({this.doc, this.currentUser});
+  ListViewPage({this.doc, this.currentUser, this.user_tag});
 
+  var user_tag;
   var doc;
   final String currentUser;
 
   @override
-  _ListViewPageState createState() => _ListViewPageState(doc: doc, currentUser: currentUser);
+  _ListViewPageState createState() => _ListViewPageState(doc: doc, currentUser: currentUser, user_tag: user_tag);
 }
 
 class _ListViewPageState extends State<ListViewPage> {
@@ -28,10 +30,11 @@ class _ListViewPageState extends State<ListViewPage> {
   String displayName = '';
   String userPhotoURL = '';
   var userDoc;
+  var user_tag;
 
   int n = 0;
 
-  _ListViewPageState({this.doc, this.currentUser});
+  _ListViewPageState({this.doc, this.currentUser, this.user_tag});
 
   @override
   void initState() {
@@ -40,9 +43,20 @@ class _ListViewPageState extends State<ListViewPage> {
   }
 
 
-  void deleteDoc(String docID) {
-    FirebaseFirestore.instance.collection('posts').doc(docID).delete();
-    FirebaseStorage.instance.ref().child('posts/$docID').delete();
+  void deleteDoc(var doc) async {
+    try {
+      await FirebaseFirestore.instance.collection('posts').doc(doc['docID']).delete();
+      if(doc['imageURL'] != "") await FirebaseStorage.instance.ref().child('posts/${doc['imageURL']}').delete();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(currentUser: currentUser, user_tag: user_tag),
+        ),
+      );
+    } catch(e) {
+      print('권한 없음');
+      print(e);
+    }
   }
 
   @override
@@ -184,37 +198,7 @@ class _ListViewPageState extends State<ListViewPage> {
     if(doc2['imageURL'] == '') {
       return Column(
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: userPhotoURL != '' ? NetworkImage(userPhotoURL) : AssetImage('assets/images/profile.jpg'),
-                        fit: BoxFit.fill
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 8,),
-              Text(displayName, style: TextStyle(fontSize: 17),),
-              Expanded(child: Container()),
-              IconButton(
-                  icon: Icon(Icons.more_horiz),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UpdatePage(doc: doc, currentUser: currentUser),
-                        ),
-                      );
-                  })
-            ],
-          ),
+          postTopBar(doc2),
           Container(
             height: MediaQuery.of(context).size.height * 0.5,
             color: Theme.of(context).colorScheme.surface,
@@ -328,37 +312,7 @@ class _ListViewPageState extends State<ListViewPage> {
     } else {
       return Column(
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: NetworkImage(userPhotoURL),
-                        fit: BoxFit.fill
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 8,),
-              Text(displayName, style: TextStyle(fontSize: 17),),
-              Expanded(child: Container()),
-              IconButton(
-                  icon: Icon(Icons.more_horiz),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UpdatePage(doc: doc, currentUser: currentUser),
-                      ),
-                    );
-                  })
-            ],
-          ),
+          postTopBar(doc2),
           Image.network(
             doc2['imageURL'],
             width: MediaQuery.of(context).size.width,
@@ -502,6 +456,81 @@ class _ListViewPageState extends State<ListViewPage> {
     }
   }
 
+  Widget postTopBar(QueryDocumentSnapshot<Object> doc) {
+    return Row(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                  image: NetworkImage(userPhotoURL),
+                  fit: BoxFit.fill
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: 8,),
+        Text(displayName, style: TextStyle(fontSize: 17),),
+        Expanded(child: Container()),
+        IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpdatePage(doc: doc, currentUser: currentUser),
+                ),
+              );
+            }),
+        IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () async {
+            _showMyDialog(doc);
+          },
+        ),
+      ],
+    );
+  }
+
+  Future<void> _showMyDialog(QueryDocumentSnapshot<Object> doc) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Alert'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Text('게시물을 삭제하시겠습니까?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () async {
+                print('Confirmed');
+                await deleteDoc(doc);
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget likeIcon(Map<String, dynamic> data){
     var dataList = data.values.toList();
     var keyList = data.keys.toList();
@@ -578,11 +607,9 @@ class _ListViewPageState extends State<ListViewPage> {
         if (keyList[i].contains('like_user')){
           continue;
         }
-        print('star!!!!');
         return Icon(Icons.star, color: Colors.yellow);
       }
     }
-    print('star_outline!!!!');
     return Icon(Icons.star_outline, color: Colors.yellow);
   }
 

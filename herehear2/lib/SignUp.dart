@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:image_picker/image_picker.dart';
 import './methods/validators.dart';
 import './methods/toast.dart';
@@ -43,7 +44,9 @@ class _SignUpPageState extends State<SignUpPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // User Firebase에 넣는 함수
-  String downloadURL = "assets/images/profile.jpg";
+  // String downloadURL = "assets/images/profile.jpg";
+  String downloadURL = "https://pbs.twimg.com/media/EhIO_LyVoAA2szZ?format=jpg&name=medium";
+
   Future addUser() async {
     Reference firebaseStorageRef =
     FirebaseStorage.instance.ref().child('users/$UID');

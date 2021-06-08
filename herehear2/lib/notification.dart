@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:herehear/home.dart';
 import 'package:provider/provider.dart';
 
+import 'listview.dart';
 import 'main.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -103,16 +104,22 @@ class _NotificationPageState extends State<NotificationPage> {
                       return ListView(
                           children:
                               List.generate(snapshot2.data.length, (index) {
-                                Map<String, dynamic> post_data =  snapshot2.data[index].data();
+                                var post_data =  snapshot2.data[index].data();
                                 //var date = DateTime.fromMillisecondsSinceEpoch(post_data["generatedTime"] * 1000);
                                 //print(date);
                                 URL = post_data["imageURL"];
+
 
                                 return Column(
                                   children: <Widget>[
                                 ListTile(
                                 onTap: (){
-                                  print("Tapped");
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ListViewPage(doc: post_data, currentUser: currentUser),
+                                    ),
+                                  );
                                 },
                                 onLongPress: (){
                                   print('Long Pressed');

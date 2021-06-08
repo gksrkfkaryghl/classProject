@@ -13,23 +13,26 @@ import 'package:provider/provider.dart';
 
 import 'data/location.dart';
 import 'gridview.dart';
+import 'home.dart';
 import 'listview.dart';
 
 class UpdatePage extends StatefulWidget {
-  UpdatePage({this.doc, this.currentUser});
+  UpdatePage({this.doc, this.currentUser, this.user_tag});
 
   var doc;
   final String currentUser;
+  var user_tag;
 
   @override
-  _UpdatePageState createState() => _UpdatePageState(doc, currentUser);
+  _UpdatePageState createState() => _UpdatePageState(doc, currentUser, user_tag);
 }
 
 class _UpdatePageState extends State<UpdatePage> {
   var doc;
   final String currentUser;
+  var user_tag;
 
-  _UpdatePageState(this.doc, this.currentUser);
+  _UpdatePageState(this.doc, this.currentUser, this.user_tag);
 
   final _picker = ImagePicker();
   final GlobalKey<TagsState> _globalKey = GlobalKey<TagsState>();
@@ -184,11 +187,8 @@ class _UpdatePageState extends State<UpdatePage> {
                   updateToFirebase(_imageFile, doc['docID']).then((value) {
                     if(!is_default)
                       is_default = true;
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ListViewPage(doc: doc, currentUser: currentUser)
-                        )
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(currentUser: currentUser, user_tag: user_tag),
                     );
                   });
                 }
