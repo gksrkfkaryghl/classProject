@@ -62,12 +62,8 @@ class _UpdatePageState extends State<UpdatePage> {
     List <String> splitList = descriptionController.text.split(" ");
     List <String> indexList = [];
 
-    // await firebaseStorageRef.putString(nameController.text);
-
-
-
     if(is_default)
-      downloadURL = '';
+      downloadURL = doc['imageURL'];
     else {
       // UploadTask uploadTask = firebaseStorageRef.putFile(image);
       await firebaseStorageRef.putFile(image);
@@ -113,6 +109,7 @@ class _UpdatePageState extends State<UpdatePage> {
       'location' : currentLocation,
       'searchIndex' : indexList,
     });
+    return;
   }
 
   Future<String> pickAnImageFromGallery() async {
@@ -182,14 +179,16 @@ class _UpdatePageState extends State<UpdatePage> {
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.done, color: Theme.of(context).colorScheme.primary, size: 25,),
-                onPressed: () {
-                  updateToFirebase(_imageFile, doc['docID']).then((value) {
-                    if(!is_default)
-                      is_default = true;
+                onPressed: () async {
+                  await updateToFirebase(_imageFile, doc['docID']);
+                  if(!is_default)
+                    is_default = true;
+                  Navigator.push(
+                    context,
                     MaterialPageRoute(
                       builder: (context) => HomePage(currentUser: currentUser, user_tag: user_tag),
-                    );
-                  });
+                    ),
+                  );
                 }
             )
           ],

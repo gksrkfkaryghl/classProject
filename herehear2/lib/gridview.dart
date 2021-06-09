@@ -144,7 +144,7 @@ class _GridViewPageState extends State<GridViewPage> {
         .set({'name': name, 'searchIndex': indexList});
   }
 
-  final List<Tab> myTab = <Tab>[Tab(text: '맞춤'), Tab(text: '전체')];
+  final List<Tab> myTab = <Tab>[Tab(text: '전체'), Tab(text: '맞춤')];
 
   @override
   Widget build(BuildContext context) {
@@ -221,8 +221,8 @@ class _GridViewPageState extends State<GridViewPage> {
             ),
             body: TabBarView(
               children: <Widget>[
-                personalize(),
                 all(),
+                personalize(),
               ],
             )));
   }

@@ -32,6 +32,10 @@ class _ListViewPageState extends State<ListViewPage> {
   var userDoc;
   var user_tag;
 
+  var currentUserDoc;
+  String currentUserDisplayName = '';
+  String currentUserPhotoURL = '';
+
   int n = 0;
 
   _ListViewPageState({this.doc, this.currentUser, this.user_tag});
@@ -125,14 +129,17 @@ class _ListViewPageState extends State<ListViewPage> {
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot2) {
                 if(!snapshot2.hasData) return Container();
                 userDoc = snapshot2.data.docs.where((element) => element['uid'] == doc['uid']);
-                print('userDoc : ${userDoc.first.get('displayname')}');
                 selectedPostID = doc['docID'];
                 displayName = userDoc.first.get('displayname');
                 userPhotoURL = userDoc.first.get('userPhotoURL');
+
+                currentUserDoc = snapshot2.data.docs.where((element) => element['uid'] == currentUser);
+                currentUserDisplayName = currentUserDoc.first.get('displayname');
+                currentUserPhotoURL = currentUserDoc.first.get('userPhotoURL');
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      postItem(data, doc, displayName),
+                      postItem(data, doc, displayName, userPhotoURL),
                       ListView(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -186,7 +193,7 @@ class _ListViewPageState extends State<ListViewPage> {
           displayName = userDoc['displayname'];
           userPhotoURL = userDoc['userPhotoURL'];
           Map<String, dynamic> dataMap = doc2.data();
-          return postItem(dataMap, doc2, displayName);
+          return postItem(dataMap, doc2, displayName, userPhotoURL);
         }
       }).toList();
     } catch(error) {
@@ -194,7 +201,7 @@ class _ListViewPageState extends State<ListViewPage> {
     }
   }
 
-  Widget postItem(Map<String, dynamic> data, QueryDocumentSnapshot<Object> doc2, String displayName) {
+  Widget postItem(Map<String, dynamic> data, QueryDocumentSnapshot<Object> doc2, String displayName, String userPhotoURL) {
     if(doc2['imageURL'] == '') {
       return Column(
         children: <Widget>[
@@ -226,11 +233,9 @@ class _ListViewPageState extends State<ListViewPage> {
                       onPressed: () {
                         bool flag = true;
 
-                        print('?!?!?!: $data');
                         var dataList = data.values.toList();
                         var keyList = data.keys.toList();
                         int tempLength = data.length;
-                        print('?????: $tempLength');
                         for (int i = 0; i < tempLength; i++){
                           print(dataList[i]);
 
@@ -275,7 +280,7 @@ class _ListViewPageState extends State<ListViewPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CommentPage(doc: doc2, currentUser: currentUser, docUserName: displayName, docUserPhotoURL: userPhotoURL),
+                        builder: (context) => CommentPage(doc: doc2, currentUser: currentUser, docUserName: displayName, docUserPhotoURL: userPhotoURL, currentUserDisplayName: currentUserDisplayName, currentUserPhotoURL: currentUserPhotoURL),
                       ),
                     );
                   }),
@@ -287,6 +292,7 @@ class _ListViewPageState extends State<ListViewPage> {
                       onPressed: () {
                         ScrapData(doc2);
                         setState(() {
+                          n += 1;
                         });
                       }),
                 ],
@@ -327,19 +333,14 @@ class _ListViewPageState extends State<ListViewPage> {
                       onPressed: () {
                         bool flag = true;
 
-                        //print(target);
-
-                        // 중복되는지 체크.
-                        print('?!?!?!: $data');
                         var dataList = data.values.toList();
                         var keyList = data.keys.toList();
                         int tempLength = data.length;
-                        print('?????: $tempLength');
                         for (int i = 0; i < tempLength; i++){
                           print(dataList[i]);
 
                           if (currentUser == dataList[i].toString()){
-                            if ((keyList[i] == "uid") || (keyList[i].contains('scraped_user'))){
+                            if ((keyList[i] == "uid") || (keyList[i].contains('scrap_user'))){
                               continue;
                             }
                             flag = false;
@@ -352,11 +353,9 @@ class _ListViewPageState extends State<ListViewPage> {
                         if (flag == true){
                           print("변경가능");
 
-                          // LikeData(widget.target3, widget.post.data()['like'] + 1);
                           likeData(doc2);
 
                           setState(() async {
-                            // doc = await FirebaseFirestore.instance.collection('posts').doc(doc['docID']);
                             n++;
                           });
 
@@ -365,14 +364,7 @@ class _ListViewPageState extends State<ListViewPage> {
                             duration: const Duration(seconds: 2),
                           )
                           );
-
-
-                          // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          //   return Wrapper(target: widget.target3,);
-                          // }));
-
                         }
-                        //변경불가
                         else{
                           print("변경불가");
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -385,11 +377,10 @@ class _ListViewPageState extends State<ListViewPage> {
                   Text(doc2['likeNum'].toString(), style: TextStyle(fontSize: 18, color: Colors.grey),),
                   SizedBox(width: 10,),
                   IconButton(icon: Icon(Icons.question_answer), onPressed: () {
-                    print("ch??: $currentUser");
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CommentPage(doc: doc2, currentUser: currentUser, docUserName: displayName, docUserPhotoURL: userPhotoURL),
+                        builder: (context) => CommentPage(doc: doc2, currentUser: currentUser, docUserName: displayName, docUserPhotoURL: userPhotoURL, currentUserDisplayName: currentUserDisplayName, currentUserPhotoURL: currentUserPhotoURL),
                       ),
                     );
                   }),
@@ -397,41 +388,12 @@ class _ListViewPageState extends State<ListViewPage> {
                     child: Container(),
                   ),
                   IconButton(
-                      icon: Icon(Icons.star_border, color: Colors.yellow),
+                      icon: ScrapIcon(data),
                       onPressed: () {
-                        bool flag = true;
-
-                        print('?!?!?!: $data');
-                        var dataList = data.values.toList();
-                        var keyList = data.keys.toList();
-                        int tempLength = data.length;
-                        print('?????: $tempLength');
-                        for (int i = 0; i < tempLength; i++){
-                          print(dataList[i]);
-
-                          if (currentUser == dataList[i].toString()){
-                            if ((keyList[i] == "uid") || (keyList[i].contains('like_user'))){
-                              continue;
-                            }
-                            flag = false;
-                            print("같음");
-                            break;
-                          }
-                        }
-
-                        // 변경가능.
-                        if (flag == true){
-                          print("변경가능");
-
-                          ScrapData(doc2);
-
-                          setState(() async {
-                            n++;
-                          });
-                        }
-                        else{
-                          print("변경불가");
-                        }
+                        ScrapData(doc2);
+                        setState(() {
+                          n += 1;
+                        });
                       }),
                 ],
               ),
@@ -479,17 +441,35 @@ class _ListViewPageState extends State<ListViewPage> {
         IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UpdatePage(doc: doc, currentUser: currentUser),
-                ),
-              );
+              if(doc['uid'] == currentUser) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UpdatePage(doc: doc, currentUser: currentUser),
+                  ),
+                );
+              }
+              else {
+                final snackBar = SnackBar(
+                  content: Text('게시글의 작성자만 수정할 수 있습니다.'),
+                  duration: Duration(seconds: 1),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
             }),
         IconButton(
           icon: Icon(Icons.delete),
           onPressed: () async {
-            _showMyDialog(doc);
+            if(doc['uid'] == currentUser) {
+              _showMyDialog(doc);
+            }
+            else {
+              final snackBar = SnackBar(
+                content: Text('게시글의 작성자만 삭제할 수 있습니다.'),
+                duration: Duration(seconds: 1),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
           },
         ),
       ],
@@ -557,25 +537,6 @@ class _ListViewPageState extends State<ListViewPage> {
       field_name : currentUser,
       'likeNum' : likeNum,
     }).whenComplete(() => print('완료!!'));
-
-
-
-    // Map<String, dynamic> products = {
-    //   "name": widget.data.data()['name'],
-    //   "price": widget.post.data()['price'],
-    //   "description": widget.post.data()['description'],
-    //   "imgurl": widget.post.data()['imgurl'],
-    //   "like": widget.post.data()['like'] + 1,
-    //   "created": widget.post.data()['created'],
-    //   "modified": widget.post.data()['modified'],
-    //   field_name : like_user
-    // };
-
-    // String temp2 = widget.post.data()['imgurl'];
-
-    // documentReference.set(tempp).whenComplete(() {
-    //   print("like updated 완료");
-    // });
   }
 
   ScrapData(QueryDocumentSnapshot<Object> doc) async{
@@ -601,15 +562,17 @@ class _ListViewPageState extends State<ListViewPage> {
     int tempLength = data.length;
     for (int i = 0; i < tempLength; i++){
       if (currentUser == dataList[i].toString()){
-        if (keyList[i] == "uid"){
-          continue;
-        }
-        if (keyList[i].contains('like_user')){
+        print('keyList[i]: ${keyList[i].toString()}');
+        print('dataList[i]: ${dataList[i].toString()}');
+        print('currentUser: ${currentUser}');
+        if ((keyList[i] == "uid") || (keyList[i].contains('like_user'))){
+          print('ooooooooooooooooooooooooooooooooooooooooooooooooooo');
           continue;
         }
         return Icon(Icons.star, color: Colors.yellow);
       }
     }
+
     return Icon(Icons.star_outline, color: Colors.yellow);
   }
 

@@ -11,11 +11,13 @@ class CommentPage extends StatefulWidget {
   String currentUser;
   String docUserName;
   String docUserPhotoURL;
+  String currentUserDisplayName = '';
+  String currentUserPhotoURL = '';
 
-  CommentPage({this.doc, this.currentUser, this.docUserName, this.docUserPhotoURL});
+  CommentPage({this.doc, this.currentUser, this.docUserName, this.docUserPhotoURL, this.currentUserDisplayName, this.currentUserPhotoURL});
 
   @override
-  _CommentPageState createState() => _CommentPageState(doc, currentUser, docUserName, docUserPhotoURL);
+  _CommentPageState createState() => _CommentPageState(doc, currentUser, docUserName, docUserPhotoURL, currentUserDisplayName, currentUserPhotoURL);
 }
 
 class _CommentPageState extends State<CommentPage> {
@@ -30,12 +32,58 @@ class _CommentPageState extends State<CommentPage> {
   String displayName = '';
   String userPhotoURL = '';
   var userDoc;
+  var currentUserDoc;
+  String currentUserDisplayName = '';
+  String currentUserPhotoURL = '';
+  int reloadFlag = 0;
 
-  _CommentPageState(this.doc, this.currentUser, this.docUserName, this.docUserPhotoURL);
+  _CommentPageState(this.doc, this.currentUser, this.docUserName, this.docUserPhotoURL, this.currentUserDisplayName, this.currentUserPhotoURL);
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // getCurrentUserData();
+  }
+
+
+  // Future getCurrentUserData() async {
+  //   var currentUserData = await FirebaseFirestore.instance.collection('users').doc(currentUser);
+  //   currentUserData.get().then((doc) => currentUserDoc = doc.data());
+  //   print('씨바라: ${currentUserDoc}');
+  //
+  //   var currentUserData = await FirebaseFirestore.instance.collection('users').get().data.docs.where((element) => element['uid'] == doc['uid']);
+  //   currentUserData.get().then((doc) => currentUserDoc = doc.data());
+  //   print('씨바라: ${currentUserDoc}');
+  //
+  //
+  //   userDoc = snapshot2.data.docs.where((element) => element['uid'] == doc['uid']);
+  //   selectedPostID = doc['docID'];
+  //   displayName = userDoc.first.get('displayname');
+  //   userPhotoURL = userDoc.first.get('userPhotoURL');
+  //   // currentUserDisplayName = currentUserDoc['displayname'];
+  //   // currentUserPhotoURL = currentUserDoc['userPhotoURL'];
+  // }
+
+
+  void deleteDoc(var commentDoc) async {
+    try {
+      await FirebaseFirestore.instance.collection('posts').doc(doc['docID']).collection('comments').doc(commentDoc['docID']).delete();
+      print('댓글 삭제 완료!');
+      setState(() {
+        reloadFlag += 1;
+      });
+    } catch(e) {
+      print('권한 없음');
+      print(e);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    print("docUserName: ${docUserName}, docUserPhotoURL: ${docUserPhotoURL}");
+    print("????: $currentUserPhotoURL");
     Future.delayed(Duration(milliseconds: 500),(){
     });
     return Scaffold(
@@ -52,7 +100,7 @@ class _CommentPageState extends State<CommentPage> {
       ),
       body: Container(
         child: CommentBox(
-          userImage: 'assets/images/profile.jpg',
+          userImage: currentUserPhotoURL,
           //currentUser.photoUrl,
           child: ListView(
             children: [
@@ -68,7 +116,7 @@ class _CommentPageState extends State<CommentPage> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             image: DecorationImage(
-                                image: AssetImage('assets/images/profile.jpg'),
+                                image: NetworkImage(docUserPhotoURL),
                                 fit: BoxFit.fill
                             ),
                           ),
@@ -111,11 +159,8 @@ class _CommentPageState extends State<CommentPage> {
                         future: FirebaseFirestore.instance.collection("users").get(),
                         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot2) {
                           if(!snapshot2.hasData) return Container();
-                          userDoc = snapshot2.data.docs.where((element) => element['uid'] == doc['uid']);
-                          print('userDoc : ${userDoc.first.get('displayname')}');
-                          // selectedPostID = doc['docID'];
-                          displayName = userDoc.first.get('displayname');
-                          userPhotoURL = userDoc.first.get('userPhotoURL');
+                          print("댓글 다는 유저: ${currentUserDisplayName}");
+
                           return SingleChildScrollView(
                             child: Column(
                               children: [
@@ -150,8 +195,8 @@ class _CommentPageState extends State<CommentPage> {
               // 'type': _results.first["label"],
               'message' : commentController.text,
               'uid' : currentUser,
-              // 'displayname' : currentUser.displayName,
-              // 'userPhotoURL' : currentUser.photoUrl,
+              'displayname' : currentUserDisplayName,
+              'userPhotoURL' : currentUserPhotoURL,
               'likeNum' : 0,
               'docID': docID,
               'generatedTime': now,
@@ -213,10 +258,16 @@ class _CommentPageState extends State<CommentPage> {
     try{
         return snapshot1.data.docs
             .map((doc2) {
+          if (snapshot1.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Text("Loading..."),
+            );
+          } else {
             userDoc = snapshot2.data.docs.toList().where((element) => element['uid'] == doc2['uid']).single.data();
             print('userDoc!!!: ${userDoc['displayname']}');
+            print('user포토!!: ${userDoc['displayname']}');
             displayName = userDoc['displayname'];
-            // userPhotoURL = userDoc['userPhotoURL'];
+            userPhotoURL = userDoc['userPhotoURL'];
             return ListTile(
               leading: Container(
                 width: 40,
@@ -224,7 +275,7 @@ class _CommentPageState extends State<CommentPage> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      image: AssetImage('assets/images/profile.jpg'),
+                      image: NetworkImage(userPhotoURL),
                       fit: BoxFit.fill
                   ),
                 ),
@@ -242,20 +293,26 @@ class _CommentPageState extends State<CommentPage> {
                       Text('좋아요 ${doc2['likeNum']}개', style: TextStyle(color: Colors.grey),),
                       SizedBox(width: 20,),
                       TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ReCommentsPage(doc: doc2, currentUser: currentUser, ancestorDoc: doc),
-                              ),
+                        child: Text('삭제', style: TextStyle(color: Colors.grey),),
+                        onPressed: () async {
+                          if(doc2['uid'] == currentUser) {
+                            _showMyDialog(doc2);
+                          }
+                          else {
+                            final snackBar = SnackBar(
+                              content: Text('댓글 작성자만 삭제할 수 있습니다.'),
+                              duration: Duration(seconds: 1),
                             );
-                          },
-                          child: Text('답글 달기', style: TextStyle(color: Colors.grey),))
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          }
+                        },
+                      ),
                     ],
                   ),
                 ],
               ),
             );
+          }
         }).toList();
         //     return ListTile(
         // leading: Icon(Icons.account_circle),
@@ -264,8 +321,44 @@ class _CommentPageState extends State<CommentPage> {
         // ),
       // );
     } catch(error) {
+      print('commentlist error!!');
       print(error);
     }
+  }
+
+  Future<void> _showMyDialog(QueryDocumentSnapshot<Object> doc) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Alert'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Text('댓글을 삭제하시겠습니까?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () async {
+                print('Confirmed');
+                await deleteDoc(doc);
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
 
