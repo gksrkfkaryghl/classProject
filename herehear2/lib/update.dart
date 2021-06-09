@@ -55,7 +55,6 @@ class _UpdatePageState extends State<UpdatePage> {
 
   Future updateToFirebase(File image, String docID) async {
     final String currentLocation = await Location().getLocation();
-    String docID = Timestamp.now().seconds.toString();
     final now = FieldValue.serverTimestamp();
     Reference firebaseStorageRef =
     FirebaseStorage.instance.ref().child('posts/$docID');
