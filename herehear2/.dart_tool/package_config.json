@@ -152,6 +152,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_page_indicator",
+      "rootUri": "file:///Users/igyuseog/.pub-cache/hosted/pub.dartlang.org/flutter_page_indicator-0.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "flutter_plugin_android_lifecycle",
       "rootUri": "file:///Users/igyuseog/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.1",
       "packageUri": "lib/",
@@ -168,6 +174,12 @@
       "rootUri": "file:///Users/igyuseog/.pub-cache/hosted/pub.dartlang.org/flutter_signin_button-2.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_swiper",
+      "rootUri": "file:///Users/igyuseog/.pub-cache/hosted/pub.dartlang.org/flutter_swiper-1.1.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
     },
     {
       "name": "flutter_tags",
@@ -416,6 +428,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "transformer_page_view",
+      "rootUri": "file:///Users/igyuseog/.pub-cache/hosted/pub.dartlang.org/transformer_page_view-0.1.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "tuple",
       "rootUri": "file:///Users/igyuseog/.pub-cache/hosted/pub.dartlang.org/tuple-2.0.0",
       "packageUri": "lib/",
@@ -446,7 +464,7 @@
       "languageVersion": "2.7"
     }
   ],
-  "generated": "2021-06-08T14:11:57.215998Z",
+  "generated": "2021-06-08T23:55:12.907430Z",
   "generator": "pub",
   "generatorVersion": "2.14.0-176.0.dev"
 }

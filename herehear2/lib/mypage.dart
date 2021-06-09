@@ -6,7 +6,7 @@ import 'package:flutter_tags/flutter_tags.dart';
 // import 'package:herehear/%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C/SignUp.dart';
 
 import 'Fixmypage.dart';
-import 'Scroll_test.dart';
+import 'new_my_page.dart';
 import 'app.dart';
 import 'login.dart';
 
@@ -66,7 +66,8 @@ class _MyPageState extends State<MyPage> {
     print(user_tag);
 
     CollectionReference users = FirebaseFirestore.instance.collection('users');
-    return FutureBuilder<DocumentSnapshot>(
+    return
+      FutureBuilder<DocumentSnapshot>(
       future: users.doc(currentUser).get(),
       builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
@@ -93,7 +94,7 @@ class _MyPageState extends State<MyPage> {
                     Navigator.push(
                       context,
                       // MaterialPageRoute(builder: (context) => FixPage(currentUser: currentUser, )),
-                        MaterialPageRoute(builder: (context) => Scroll_page()),
+                        MaterialPageRoute(builder: (context) => Scroll_page(currentUser: currentUser, user_tag: user_tag,)),
 
                     );
                   },
@@ -199,7 +200,8 @@ class _MyPageState extends State<MyPage> {
                             },
                           )
                         ],
-                      )),
+                      )
+                  ),
 
 
 

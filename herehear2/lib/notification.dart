@@ -127,6 +127,9 @@ class _NotificationPageState extends State<NotificationPage> {
                       return ListView(
                           children:
                               List.generate(snapshot2.data.length, (index) {
+                                print("List.generate");
+                                print(snapshot2.data[index]);
+
                                 var post_data =  snapshot2.data[index].data();
                                 //var date = DateTime.fromMillisecondsSinceEpoch(post_data["generatedTime"] * 1000);
                                 //print(date);
@@ -140,7 +143,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ListViewPage(doc: post_data, currentUser: currentUser),
+                                      builder: (context) => ListViewPage(doc: snapshot2.data[index], currentUser: currentUser),
                                     ),
                                   );
                                 },
