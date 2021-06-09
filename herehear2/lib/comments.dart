@@ -13,11 +13,12 @@ class CommentPage extends StatefulWidget {
   String docUserPhotoURL;
   String currentUserDisplayName = '';
   String currentUserPhotoURL = '';
+  var user_tag;
 
-  CommentPage({this.doc, this.currentUser, this.docUserName, this.docUserPhotoURL, this.currentUserDisplayName, this.currentUserPhotoURL});
+  CommentPage({this.doc, this.currentUser, this.docUserName, this.docUserPhotoURL, this.currentUserDisplayName, this.currentUserPhotoURL, this.user_tag});
 
   @override
-  _CommentPageState createState() => _CommentPageState(doc, currentUser, docUserName, docUserPhotoURL, currentUserDisplayName, currentUserPhotoURL);
+  _CommentPageState createState() => _CommentPageState(doc, currentUser, docUserName, docUserPhotoURL, currentUserDisplayName, currentUserPhotoURL,user_tag );
 }
 
 class _CommentPageState extends State<CommentPage> {
@@ -25,6 +26,7 @@ class _CommentPageState extends State<CommentPage> {
   String currentUser;
   String docUserName;
   String docUserPhotoURL;
+  var user_tag;
 
   // final formKey = GlobalKey<FormState>();
   final TextEditingController commentController = TextEditingController();
@@ -37,7 +39,7 @@ class _CommentPageState extends State<CommentPage> {
   String currentUserPhotoURL = '';
   int reloadFlag = 0;
 
-  _CommentPageState(this.doc, this.currentUser, this.docUserName, this.docUserPhotoURL, this.currentUserDisplayName, this.currentUserPhotoURL);
+  _CommentPageState(this.doc, this.currentUser, this.docUserName, this.docUserPhotoURL, this.currentUserDisplayName, this.currentUserPhotoURL, this.user_tag);
 
 
   @override

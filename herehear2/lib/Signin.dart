@@ -98,11 +98,12 @@ class _SignInPageState extends State<SignInPage> {
               ),
               Center(
                 child: FlatButton(
+                  minWidth: 220,
                   child: Text(
                     'Sign In',
                     style: TextStyle(fontSize: 20.0),
                   ),
-                  color: Colors.blue,
+                  color: Color(0xFF2FC1FF),
                   textColor: Colors.white,
                   onPressed: () async {
 
@@ -145,7 +146,6 @@ class _SignInPageState extends State<SignInPage> {
                 ),
               ),
 
-              Text('or'),
               SignInButton(
                 Buttons.Google,
                 onPressed: () async {
@@ -180,9 +180,18 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
+
         appBar: AppBar(
+          leading: IconButton(icon: Icon(Icons.arrow_back, color:Color(0xFF2FC1FF)),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+          ),
           centerTitle: true,
-          title: Text('Sign in')
+          title: Text('Sign in',
+          style: TextStyle(color: Color(0xFF2FC1FF))),
+          backgroundColor: Colors.white,
+
         ),
         body: _loading ? _buildLoading() : _buildBody());
   }

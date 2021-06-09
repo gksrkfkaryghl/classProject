@@ -63,7 +63,7 @@ class _SignUpPageState extends State<SignUpPage> {
       "displayname" : displayController.text,
       "Scrap": [''],
       "tags" : tagList,
-      "location" : locationController.text,
+      // "location" : locationController.text,
       "uid":UID,
       "userPhotoURL" : downloadURL,
     };
@@ -181,14 +181,14 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: displayController,
               ),
               SizedBox(height: 10,),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Location',
-                  //hintText: '',
-                  border: OutlineInputBorder(),
-                ),
-                controller: locationController,
-              ),
+              // TextFormField(
+              //   decoration: InputDecoration(
+              //     labelText: 'Location',
+              //     //hintText: '',
+              //     border: OutlineInputBorder(),
+              //   ),
+              //   controller: locationController,
+              // ),
               Padding(
                   padding: EdgeInsets.fromLTRB(24, 0, 24, 5),
                   child: Column(
@@ -252,11 +252,13 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               Center(
                 child: FlatButton(
+                  minWidth: 220,
                   child: Text(
                     'Sign Up',
                     style: TextStyle(fontSize: 20.0),
                   ),
-                  color: Colors.blue,
+                  color: Color(0xFF2FC1FF),
+
                   textColor: Colors.white,
                   onPressed: () async {
                     if (!_formKey.currentState.validate()) return;
@@ -281,7 +283,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                 ),
               ),
-              Text('or'),
+              // Text('or'),
               SignInButton(
                 Buttons.Google,
                 onPressed: () async {
@@ -315,7 +317,18 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(title: Text('Sign Up')),
+        appBar: AppBar(
+
+          leading: IconButton(icon: Icon(Icons.arrow_back, color:Color(0xFF2FC1FF)),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          title: Text('Sign Up', style: TextStyle(color: Color(0xFF2FC1FF))),
+
+        ),
         body: _loading? _buildLoading() : _buildBody()
     );
   }

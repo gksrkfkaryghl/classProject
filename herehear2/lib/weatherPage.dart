@@ -131,7 +131,11 @@ class _weatherPageState extends State<weatherPage> {
         centerTitle: true,
         title: Text(
           "Here 날씨",
-          style: TextStyle(color: Theme.of(context).colorScheme.onBackground, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.bold,
+
+
+          ),
         ),
         actions: [
           Icon(Icons.menu),
@@ -175,7 +179,8 @@ class _weatherPageState extends State<weatherPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(Icons.location_on),
+                    Icon(Icons.location_on,
+                    ),
                     SizedBox(width: 5),
                     Text(
                       "${weather.areaName}",

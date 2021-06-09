@@ -18,6 +18,8 @@ import 'listview.dart';
 
 class FixPage extends StatefulWidget {
   final String currentUser;
+
+
   FixPage({this.currentUser});
 
   static const routeName = '/signup';
@@ -75,8 +77,8 @@ class _FixPageState extends State<FixPage> {
       "displayname": displayController.text,
       "Scrap": Scrap_list,
       "tags": tagList,
-      "location": locationController.text,
-      "uid": UID,
+      // "location": locationController.text,
+      "uid": currentUser,
       "userPhotoURL" : downloadURL,
     };
     FirebaseFirestore.instance.collection('users').doc(currentUser).set(data);
@@ -201,14 +203,14 @@ class _FixPageState extends State<FixPage> {
                     SizedBox(
                       height: 10,
                     ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Location',
-                        //hintText: '',
-                        border: OutlineInputBorder(),
-                      ),
-                      controller: locationController,
-                    ),
+                    // TextFormField(
+                    //   decoration: InputDecoration(
+                    //     labelText: 'Location',
+                    //     //hintText: '',
+                    //     border: OutlineInputBorder(),
+                    //   ),
+                    //   controller: locationController,
+                    // ),
                     Padding(
                         padding: EdgeInsets.fromLTRB(24, 0, 24, 5),
                         child: Column(
@@ -277,7 +279,7 @@ class _FixPageState extends State<FixPage> {
                           'Fix it',
                           style: TextStyle(fontSize: 20.0),
                         ),
-                        color: Colors.blue,
+                        color: Theme.of(context).colorScheme.primary,
                         textColor: Colors.white,
                         onPressed: () async {
                           if (!_formKey.currentState.validate()) return;
@@ -317,7 +319,7 @@ class _FixPageState extends State<FixPage> {
           centerTitle: true,
           title: Text(
             'Fix My Page',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
           ),
           leading: IconButton(
             onPressed: () {

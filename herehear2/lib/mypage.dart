@@ -85,8 +85,8 @@ class _MyPageState extends State<MyPage> {
           return Scaffold(
               appBar: AppBar(
                 centerTitle: true,
-                title: const Text('My Page',
-                  style: TextStyle(color: Colors.black,
+                title: Text('My Page',
+                  style: TextStyle(color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 leading: IconButton(

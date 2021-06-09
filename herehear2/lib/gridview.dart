@@ -262,7 +262,7 @@ class _GridViewPageState extends State<GridViewPage> {
                           print(doc_tags);
                           print(user_tag);
 
-                          if (doc_tags.isEmpty || user_tag == null) {
+                          if (doc_tags.isEmpty || user_tag == null || currentLocation != document["location"]) {
                             commonElements = {};
                           } else {
                             commonElements = lists.fold<Set>(
@@ -310,19 +310,34 @@ class _GridViewPageState extends State<GridViewPage> {
                           for (int index = 0;
                               index < snapshot.data.length;
                               index++) {
-                            if (currentLocation ==
-                                snapshot.data[index]['location']) {
-                              List<dynamic> tempList =
-                                  snapshot.data[index]['tags'];
-                              for (int i = 0; i < tags.length; i++) {
-                                for (int j = 0; j < tempList.length; j++) {
-                                  if ((tags[i] != null) &&
-                                      (tags[i] == tempList[j])) {
-                                    favoritePosts.add(snapshot.data[index]);
-                                    print('tag: ${tags[i].toString()}');
-                                  }
-                                }
+                            if (currentLocation == snapshot.data[index]['location']) {
+                              List<dynamic> tempList = snapshot.data[index]['tags'];
+
+                              var commonElements;
+                              final lists = [tempList, tags];
+
+                              if (tempList.isEmpty || tags.isEmpty) {
+                                commonElements = {};
+                              } else {
+                                commonElements = lists.fold<Set>(
+                                    lists.first.toSet(),
+                                        (a, b) => a.intersection(b.toSet()));
                               }
+
+                              if (commonElements.length != 0){
+                                favoritePosts.add(snapshot.data[index]);
+                              }
+
+
+                              // for (int i = 0; i < tags.length; i++) {
+                              //   for (int j = 0; j < tempList.length; j++) {
+                              //     if ((tags[i] != null) &&
+                              //         (tags[i] == tempList[j])) {
+                              //       favoritePosts.add(snapshot.data[index]);
+                              //       print('tag: ${tags[i].toString()}');
+                              //     }
+                              //   }
+                              // }
                             }
                           }
                           return GridView.count(
@@ -353,7 +368,7 @@ class _GridViewPageState extends State<GridViewPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        ListViewPage(doc: snapshot, currentUser: currentUser),
+                        ListViewPage(doc: snapshot, currentUser: currentUser, user_tag: user_tag),
                   ),
                 );
               },
@@ -372,7 +387,7 @@ class _GridViewPageState extends State<GridViewPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        ListViewPage(doc: snapshot, currentUser: currentUser),
+                        ListViewPage(doc: snapshot, currentUser: currentUser, user_tag: user_tag,),
                   ),
                 );
               },
@@ -395,213 +410,3 @@ class _GridViewPageState extends State<GridViewPage> {
           );
   }
 }
-
-// Widget searchField() {
-//   return Column(
-//     children: <Widget> [
-//       Padding(
-//         padding: const EdgeInsets.all(8.0),
-//         child: Container(
-//           height: 40,
-//           color: Colors.grey[350],
-//           child: Padding(
-//               padding: const EdgeInsets.all(4.0),
-//               child: Container(
-//                 color: Colors.grey[300],
-//                 child: Row(
-//                   children: <Widget>[
-//                     Expanded(
-//                         child: TextField(
-//                           focusNode: focus,
-//                           cursorColor: Colors.grey,
-//                           controller: _filter,
-//                           // cursorHeight: 25,
-//                           decoration: InputDecoration(
-//                             enabledBorder: UnderlineInputBorder(
-//                               borderSide: BorderSide(color: Colors.grey[300]),
-//                               //  when the TextFormField in unfocused
-//                             ),
-//                             focusedBorder: UnderlineInputBorder(
-//                               borderSide: BorderSide(color: Colors.grey[500]),
-//                               //  when the TextFormField in focused
-//                             ) ,
-//                             filled: true,
-//                             fillColor: Colors.grey[300],
-//                             prefixIcon: Icon(
-//                               Icons.search,
-//                               color: Colors.grey[600],
-//                               size: 20,
-//                             ),
-//                             suffixIcon: focus.hasFocus
-//                                 ? IconButton(
-//                               // splashColor: Colors.grey[600],
-//                               focusColor: Colors.grey[600],
-//                               color: Colors.grey[600],
-//                               icon: Icon(
-//                                 Icons.cancel,
-//                                 size: 17,
-//                               ),
-//                               onPressed: () {
-//                                 setState(() {
-//                                   _filter.clear();
-//                                   searchString = "";
-//                                 });
-//                               },
-//                             )
-//                                 : Container(),
-//                           ),
-//                           onChanged: (value){
-//                             setState(() {
-//                               searchString = value.toLowerCase();
-//                               print("here");
-//                               print(searchString);
-//                             });
-//                           },
-//                         )
-//                     ),
-//                   ],
-//                 ),
-//               )
-//           ),
-//         ),
-//       )
-//     ],
-//   );
-// }
-
-// Widget searchWidget() {
-//   return  Expanded(
-//       child: StreamBuilder<QuerySnapshot>(
-//         stream: (searchString == null || searchString.trim() == "")
-//             ? FirebaseFirestore.instance.collection("posts")
-//             .snapshots()
-//             : FirebaseFirestore.instance.collection("posts")
-//             .where("searchIndex", arrayContains: searchString)
-//             .snapshots(),
-//         builder: (context, snapshot){
-//           if (snapshot.hasError)
-//             return Text('Error: ${snapshot.error}');
-//           switch (snapshot.connectionState){
-//             case ConnectionState.waiting:
-//               return Center(child: CircularProgressIndicator());
-//             default:
-//               return new ListView(
-//                 children: snapshot.data.docs.map((DocumentSnapshot document){
-//                   return new ListTile(
-//                     leading: CircleAvatar(
-//                       backgroundImage: NetworkImage(
-//                           document["imageURL"]
-//                       ),
-//                     ),
-//                     title: new Text(document['description']),
-//                     onTap: (){
-//                       print("Tap here");
-//                     },
-//                   );
-//                 }).toList(),
-//               );
-//           }
-//         },
-//       )
-//   );
-// }
-
-// return Container(
-// child: FutureBuilder(
-// future: _data,
-// builder: (_, snapshot) {
-// if (snapshot.connectionState == ConnectionState.waiting) {
-// return Center(
-// child: Text("Loading..."),
-// );
-// } else {
-// final ThemeData theme = Theme.of(context);
-// return Column(children: <Widget>[
-// // Row(
-// //   children: <Widget> [
-// //     Expanded(child: Padding(
-// //       padding: const EdgeInsets.all(8.0),
-// //       child: TextField(
-// //         controller: _addNameController,
-// //       ),
-// //     )
-// //     ),
-// //     RaisedButton(
-// //         child: Text("Add to Database"),
-// //         onPressed: (){
-// //           _addToDatabase(_addNameController.text);
-// //         }
-// //         ),
-// //   ],
-// // ),
-// Divider(),
-// Column(
-// children: <Widget> [
-// Padding(
-// padding: const EdgeInsets.all(1.0),
-// child: TextField(
-// cursorColor: Colors.black38,
-// onChanged: (value){
-// setState(() {
-// searchString = value.toLowerCase();
-// print("here");
-// print(searchString);
-// });
-// },
-// )
-// )
-// ],
-// ),
-//
-// searchString != ""
-// ? Expanded(child: StreamBuilder<QuerySnapshot>(
-// stream: (searchString == null || searchString.trim() == "")
-// ? FirebaseFirestore.instance.collection("posts")
-//     .snapshots()
-//     : FirebaseFirestore.instance.collection("posts")
-//     .where("searchIndex", arrayContains: searchString)
-//     .snapshots(),
-// builder: (context, snapshot){
-// if (snapshot.hasError)
-// return Text('Error: ${snapshot.error}');
-// switch (snapshot.connectionState){
-// case ConnectionState.waiting:
-// return Center(child: CircularProgressIndicator());
-// default:
-// return new ListView(
-// children: snapshot.data.docs.map((DocumentSnapshot document){
-// return new ListTile(
-// leading: CircleAvatar(
-// backgroundImage: NetworkImage(
-// document["imageURL"]
-// ),
-// ),
-// title: new Text(document['description']),
-// onTap: (){
-// print("Tap here");
-// },
-// );
-// }).toList(),
-// );
-// }
-// },
-// )
-// )
-//
-//     : Expanded(
-// child: GridView.count(
-// padding: EdgeInsets.all(16.0),
-// childAspectRatio: 8.0 / 9.0,
-// crossAxisCount: 3,
-// //shrinkWrap: true,
-// children: List.generate(snapshot.data.length, (index) {
-// //itemCount: snapshot.data.length, //조심하기
-// //itemBuilder: (_, index) {
-// return listItem(snapshot.data[index]);
-// // );
-// })))
-// ]);
-// }
-// }
-// ),
-// );

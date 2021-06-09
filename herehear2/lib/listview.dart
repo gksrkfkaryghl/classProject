@@ -13,6 +13,8 @@ class ListViewPage extends StatefulWidget {
 
   var user_tag;
   var doc;
+
+
   final String currentUser;
 
   @override
@@ -68,8 +70,10 @@ class _ListViewPageState extends State<ListViewPage> {
     print("here it is: ${doc["description"]}");
     print('currentUser?!!: ${currentUser}');
 
-    print("[Listview] current user");
+    print("[Listview] current user & user_tags");
     print(currentUser);
+    print(user_tag);
+
 
     return Scaffold(
       appBar: AppBar(
@@ -90,7 +94,7 @@ class _ListViewPageState extends State<ListViewPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => UploadPage(currentUser: currentUser),
+                  builder: (context) => UploadPage(currentUser: currentUser, user_tag: user_tag),
                 ),
               );
             },
@@ -280,7 +284,7 @@ class _ListViewPageState extends State<ListViewPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CommentPage(doc: doc2, currentUser: currentUser, docUserName: displayName, docUserPhotoURL: userPhotoURL, currentUserDisplayName: currentUserDisplayName, currentUserPhotoURL: currentUserPhotoURL),
+                        builder: (context) => CommentPage(doc: doc2, currentUser: currentUser, docUserName: displayName, docUserPhotoURL: userPhotoURL, currentUserDisplayName: currentUserDisplayName, currentUserPhotoURL: currentUserPhotoURL, user_tag: user_tag),
                       ),
                     );
                   }),
