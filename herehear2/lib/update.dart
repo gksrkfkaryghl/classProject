@@ -184,6 +184,7 @@ class _UpdatePageState extends State<UpdatePage> {
             IconButton(
                 icon: Icon(Icons.done, color: Theme.of(context).colorScheme.primary, size: 25,),
                 onPressed: () {
+                  print('imgURL + docID : ${_imageFile}, ${doc['docID']}');
                   updateToFirebase(_imageFile, doc['docID']).then((value) {
                     if(!is_default)
                       is_default = true;

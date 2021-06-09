@@ -33,22 +33,22 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
-      setState(() {
-        _currentUser = account;
-      });
-      if(_currentUser != null) {
-        print('here!');
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              // builder: (context) => HomePage(currentUser: _currentUser),
-              builder: (context) => HomePage(),
-            ),
-          );
-      }
-    });
-    _googleSignIn.signInSilently();
+    // _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+    //   setState(() {
+    //     _currentUser = account;
+    //   });
+    //   if(_currentUser != null) {
+    //     print('here!');
+    //     Navigator.push(
+    //         context,
+    //         MaterialPageRoute(
+    //           // builder: (context) => HomePage(currentUser: _currentUser),
+    //           builder: (context) => HomePage(),
+    //         ),
+    //       );
+    //   }
+    // });
+    // _googleSignIn.signInSilently();
   }
 
   Future<User> _handlegoogleSignIn() async {
