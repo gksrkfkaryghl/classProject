@@ -40,6 +40,8 @@ dependencies:
   swipeable_page_route: ^0.2.1
   multiple_stream_builder: ^2.0.0
   confirm_dialog: ^1.0.0
+  flutter_swiper: ^1.1.6
+
 
 
   flutter:

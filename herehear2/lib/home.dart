@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'gridview.dart';
 import 'listview.dart';
 import 'mypage.dart';
+import 'new_my_page.dart';
 import 'notification.dart';
 import 'theme/colors.dart';
 
@@ -50,7 +51,8 @@ class _HomePageState extends State<HomePage> {
       //GridViewPage(),
       // CalendarPage(),
       weatherPage(),
-      MyPage(currentUser : currentUser, user_tag: user_tag),
+      //MyPage(currentUser : currentUser, user_tag: user_tag),
+      Scroll_page(currentUser: currentUser,user_tag: user_tag),
 
     ];
     return ChangeNotifierProvider(
