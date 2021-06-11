@@ -394,13 +394,13 @@ class _CommentPageState extends State<CommentPage> {
     return Text('좋아요 ${doc['likeNum']}개', style: TextStyle(color: Colors.grey),);
   }
 
-  likeData(QueryDocumentSnapshot<Object> doc) async {
-    String field_name = "like_user" + (doc['likeNum'] + 1).toString();
+  likeData(QueryDocumentSnapshot<Object> doc2) async {
+    String field_name = "like_user" + (doc2['likeNum'] + 1).toString();
     print(field_name);
 
-    int likeNum = doc['likeNum'] + 1;
+    int likeNum = doc2['likeNum'] + 1;
 
-    FirebaseFirestore.instance.collection('posts').doc(doc['docID']).update({
+    FirebaseFirestore.instance.collection('posts').doc(doc['docID']).collection('comments').doc(doc2['docID']).update({
       field_name : currentUser,
       'likeNum' : likeNum,
     }).whenComplete(() => print('완료!!'));
