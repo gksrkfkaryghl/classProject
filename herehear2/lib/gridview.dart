@@ -148,9 +148,11 @@ class _GridViewPageState extends State<GridViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("[GridVeiw] current user & user tag");
-    print(currentUser);
-    print(user_tag);
+    // print("[GridVeiw] current user & user tag");
+    // print(currentUser);
+    // print(user_tag);
+
+    print("current location: ${currentLocation}");
 
     return DefaultTabController(
         length: 2,
@@ -175,7 +177,7 @@ class _GridViewPageState extends State<GridViewPage> {
                   IconButton(
                     icon: Icon(
                       Icons.add,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     onPressed: () {
                       print('on more check: ${currentUser}');
@@ -191,7 +193,7 @@ class _GridViewPageState extends State<GridViewPage> {
                   IconButton(
                     icon: Icon(
                       Icons.search,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     onPressed: () {
                       showSearch(

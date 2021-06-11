@@ -51,7 +51,7 @@ class Location {
     var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
     var first = addresses.first;
     print("detail address : ${first.addressLine}");
-    print("needed address data : ${first.locality} ${first.subLocality}");
+    // print("needed address data : ${first.locality} ${first.subLocality}");
     location = '${first.locality} ${first.subLocality}';
     print('location: $location');
     return location;

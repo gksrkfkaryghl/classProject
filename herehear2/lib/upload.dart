@@ -168,7 +168,7 @@ class _UploadPageState extends State<UploadPage> {
               is_default = true;
             },
           ),
-          title: Center(child: Text('Add')),
+          title: Center(child: Text('새 게시물', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),)),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.done, color: Theme.of(context).colorScheme.primary, size: 25,),
@@ -207,6 +207,7 @@ class _UploadPageState extends State<UploadPage> {
                 )
               ],
             ),
+            // Divider(),
             Padding(
               padding: EdgeInsets.fromLTRB(24, 0, 24, 5),
               child: Column(

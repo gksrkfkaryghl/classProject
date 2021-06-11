@@ -80,16 +80,16 @@ class _ListViewPageState extends State<ListViewPage> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 12),
           child: IconButton(
-            icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.primary,),
+            icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.secondary,),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
         ),
-        // title: Center(child: Text('Detail')),
+        title: Center(child: Text('히 어', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),)),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary,),
+            icon: Icon(Icons.add, color: Theme.of(context).colorScheme.secondary,),
             onPressed: () {
               Navigator.push(
                 context,

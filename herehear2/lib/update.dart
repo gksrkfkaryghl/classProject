@@ -175,7 +175,7 @@ class _UpdatePageState extends State<UpdatePage> {
               is_default = true;
             },
           ),
-          title: Center(child: Text('Add')),
+          title: Center(child: Text('게시글 수정', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),)),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.done, color: Theme.of(context).colorScheme.primary, size: 25,),

@@ -99,6 +99,8 @@ class _CommentPageState extends State<CommentPage> {
             Navigator.pop(context);
           },
         ),
+        centerTitle: true,
+        title: Text('댓글', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),),
       ),
       body: Container(
         child: CommentBox(
@@ -270,6 +272,7 @@ class _CommentPageState extends State<CommentPage> {
             print('user포토!!: ${userDoc['displayname']}');
             displayName = userDoc['displayname'];
             userPhotoURL = userDoc['userPhotoURL'];
+            Map<String, dynamic> dataMap = doc2.data();
             return ListTile(
               leading: Container(
                 width: 40,
@@ -292,7 +295,53 @@ class _CommentPageState extends State<CommentPage> {
                   ),
                   Row(
                     children: <Widget>[
-                      Text('좋아요 ${doc2['likeNum']}개', style: TextStyle(color: Colors.grey),),
+                      // Text('좋아요 ${doc2['likeNum']}개', style: TextStyle(color: Colors.grey),),
+                      TextButton(
+                          child: likeText(dataMap, doc2),
+                          onPressed: () {
+                            bool flag = true;
+
+                            var dataList = dataMap.values.toList();
+                            var keyList = dataMap.keys.toList();
+                            int tempLength = dataMap.length;
+                            for (int i = 0; i < tempLength; i++){
+                              print(dataList[i]);
+
+                              if (currentUser == dataList[i].toString()){
+                                if (keyList[i] == "uid"){
+                                  continue;
+                                }
+                                flag = false;
+                                print("같음");
+                                break;
+                              }
+                            }
+
+                            // 변경가능.
+                            if (flag == true){
+                              print("변경가능");
+
+                              likeData(doc2);
+
+                              setState(() async {
+                                reloadFlag++;
+                              });
+
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content : Text("I Like it !!"),
+                                duration: const Duration(seconds: 2),
+                              )
+                              );
+                            }
+                            else{
+                              print("변경불가");
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content : Text("You can only do it once !!"),
+                                duration: const Duration(seconds: 2),
+                              )
+                              );
+                            }
+                          }),
                       SizedBox(width: 20,),
                       TextButton(
                         child: Text('삭제', style: TextStyle(color: Colors.grey),),
@@ -326,6 +375,35 @@ class _CommentPageState extends State<CommentPage> {
       print('commentlist error!!');
       print(error);
     }
+  }
+
+  Widget likeText(Map<String, dynamic> data, QueryDocumentSnapshot<Object> doc){
+    var dataList = data.values.toList();
+    var keyList = data.keys.toList();
+    int tempLength = data.length;
+    for (int i = 0; i < tempLength; i++){
+
+      if (currentUser == dataList[i].toString()){
+        if (keyList[i] == "uid"){
+          continue;
+        }
+        return Text('좋아요 ${doc['likeNum']}개', style: TextStyle(color: Theme.of(context).colorScheme.primary),);
+        return Icon(Icons.favorite, color: Colors.red);
+      }
+    }
+    return Text('좋아요 ${doc['likeNum']}개', style: TextStyle(color: Colors.grey),);
+  }
+
+  likeData(QueryDocumentSnapshot<Object> doc) async {
+    String field_name = "like_user" + (doc['likeNum'] + 1).toString();
+    print(field_name);
+
+    int likeNum = doc['likeNum'] + 1;
+
+    FirebaseFirestore.instance.collection('posts').doc(doc['docID']).update({
+      field_name : currentUser,
+      'likeNum' : likeNum,
+    }).whenComplete(() => print('완료!!'));
   }
 
   Future<void> _showMyDialog(QueryDocumentSnapshot<Object> doc) async {

@@ -36,6 +36,24 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   //List<Widget> _children;
   //_HomePageState(this.currentUser);
+  Future<bool> _onBackPressed(){
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("앱을 종료하시겠습니까?"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("아니오"),
+              onPressed: ()=>Navigator.pop(context, false),
+            ),
+            FlatButton(
+              child: Text("네"),
+              onPressed: ()=>Navigator.pop(context, true),
+            )
+          ],
+        )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +80,10 @@ class _HomePageState extends State<HomePage> {
           return MaterialApp(
             theme: notifier.darkTheme ? dark_theme : light_theme,
             home: Scaffold(
-              body: _children[_currentIndex],
+              body: WillPopScope(
+                child: _children[_currentIndex],
+                onWillPop: _onBackPressed,
+              ),
               bottomNavigationBar: BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
                 currentIndex: _currentIndex,

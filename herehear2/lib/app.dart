@@ -14,7 +14,7 @@ class HeHeApp extends StatelessWidget {
     return MaterialApp(
       // home: LoginPage()
       title: 'HereHear',
-      home: LoginPage(),
+      home: HomePage(),
       initialRoute: '/login',
       routes: {
         '/home': (context) => HomePage(),

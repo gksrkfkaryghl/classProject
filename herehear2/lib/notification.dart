@@ -66,7 +66,7 @@ class _NotificationPageState extends State<NotificationPage> {
               appBar: AppBar(
                 centerTitle: true,
                 title: Text(
-                  "Notification",
+                  "알 림",
                   style:
                   TextStyle(color: Theme.of(context).colorScheme.primary),
                 ),
@@ -81,7 +81,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     );
                   },
                   icon: Icon(Icons.arrow_back),
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             body: Center(child: Text("Notification does not exist"))

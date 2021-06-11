@@ -103,7 +103,7 @@ class _SignInPageState extends State<SignInPage> {
                     'Sign In',
                     style: TextStyle(fontSize: 20.0),
                   ),
-                  color: Color(0xFF2FC1FF),
+                  color: Color(0xFF25BEFF),
                   textColor: Colors.white,
                   onPressed: () async {
 
@@ -182,7 +182,7 @@ class _SignInPageState extends State<SignInPage> {
         key: _scaffoldKey,
 
         appBar: AppBar(
-          leading: IconButton(icon: Icon(Icons.arrow_back, color:Color(0xFF2FC1FF)),
+          leading: IconButton(icon: Icon(Icons.arrow_back, color:Color(0xFF21252A)),
           onPressed: (){
             Navigator.pop(context);
           },

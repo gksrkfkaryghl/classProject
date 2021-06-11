@@ -276,17 +276,17 @@ class _FixPageState extends State<FixPage> {
                     Center(
                       child: FlatButton(
                         child: Text(
-                          'Fix it',
+                          '완료',
                           style: TextStyle(fontSize: 20.0),
                         ),
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.primaryVariant,
                         textColor: Colors.white,
                         onPressed: () async {
                           if (!_formKey.currentState.validate()) return;
                           try {
                             setState(() => _loading = true);
                             addUser();
-                            print("Fix up Sccess");
+                            print("수정되었습니다.");
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => HomePage(currentUser: currentUser, user_tag: tagList)),
